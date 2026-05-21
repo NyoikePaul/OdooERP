@@ -90,24 +90,20 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 ---
 
-## 🏗️ Architecture
-┌─────────────────────────────────────────────────────────┐
-│                    OdooERP Kenya                        │
-├──────────────┬──────────────┬──────────────────────────┤
-│  M-Pesa      │  Real Estate │  Kenya Localization       │
-│  Acquirer    │  CRM         │  (KRA eTIMS, VAT, WHT)   │
-│  ↓           │  ↓           │                           │
-│  M-Pesa      │  Lease Mgmt  │                           │
-│  Connector   │  PDF Reports │                           │
-│  (Daraja)    │  Bulk Wizard │                           │
-│  ↓           │              │                           │
-│  Transaction │              │                           │
-│  Log         │              │                           │
-├──────────────┴──────────────┴──────────────────────────┤
-│         PostgreSQL + Docker + Nginx + SSL               │
-└─────────────────────────────────────────────────────────┘
 
----
+## Architecture
+
+| M-Pesa Layer | Real Estate Layer | Kenya Layer |
+|---|---|---|
+| `kenya_mpesa_acquirer` | `kenya_real_estate` | KRA eTIMS OSCU |
+| STK Push · Callback · Reconcile | Properties · Leases · Tenants | VAT 16% · WHT · PIN |
+| `mpesa_connector` (Daraja 2.0) | PDF Agreements · Bulk Wizard | eTIMS Invoice Submission |
+| Access Token · STK Push API | M-Pesa Rent Collection | |
+| `mpesa_integration` | | |
+| Transaction Audit Log | | |
+
+> **Infrastructure:** PostgreSQL · Docker Compose v2 · Nginx · SSL · GitHub Actions CI
+
 
 ## 📸 Screenshots
 
