@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
   pull_request:
     branches: [ main ]
 
@@ -10,39 +10,49 @@ jobs:
   lint:
     name: Lint & Validate
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install linting tools
-        run: pip install flake8 pylint
+        run: pip install flake8 bandit --quiet
 
-      - name: Lint custom_addons with flake8
+      - name: Lint with flake8
         run: |
           flake8 custom_addons/ \
             --max-line-length=120 \
             --exclude=__pycache__,*.pyc \
-            --statistics || true
+            --statistics \
+            --count || true
 
-      - name: Validate docker-compose syntax
-        run: docker compose config -q
+      - name: Security scan with bandit
+        run: |
+          bandit -r custom_addons/ \
+            -x custom_addons/*/tests/ \
+            -ll --format txt || true
 
-      - name: Validate docker-compose.prod syntax
-        run: docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q
+      - name: Check for hardcoded credentials
+        run: |
+          if grep -rn "consumer_secret\s*=\s*['\"][A-Za-z0-9]\{10\}" custom_addons/ 2>/dev/null; then
+            echo "WARNING: Possible hardcoded credentials"
+          else
+            echo "OK: No hardcoded credentials"
+          fi
 
-  structure:
+  validate:
     name: Repo Structure Check
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Check required files exist
         run: |
@@ -51,15 +61,41 @@ jobs:
             if [ ! -f "$f" ]; then
               echo "MISSING: $f"
               exit 1
-            else
-              echo "OK: $f"
             fi
+            echo "OK: $f"
           done
 
-      - name: Check .env is not committed
+      - name: Validate manifests are valid Python
         run: |
-          if [ -f ".env" ]; then
-            echo "ERROR: .env file is committed! Remove it immediately."
-            exit 1
-          fi
-          echo "OK: .env not in repo"
+          for f in $(find custom_addons/ -name "__manifest__.py"); do
+            python3 -c "
+import ast, sys
+try:
+    ast.literal_eval(open('$f').read())
+    print('OK: $f')
+except Exception as e:
+    print('FAIL: $f -', e)
+    sys.exit(1)
+"
+          done
+
+      - name: Check all modules have security file
+        run: |
+          for module in custom_addons/*/; do
+            if [ ! -f "${module}security/ir.model.access.csv" ]; then
+              echo "MISSING security: $module"
+              exit 1
+            fi
+            echo "OK: $module"
+          done
+
+      - name: Verify .env not committed
+        run: |
+          [ ! -f ".env" ] && echo "OK: .env not committed" || (echo "FAIL: .env committed!" && exit 1)
+
+      - name: Validate docker compose syntax
+        run: |
+          cp .env.example .env
+          docker compose config -q && echo "OK: docker-compose.yml"
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q && echo "OK: prod config"
+          rm -f .env
