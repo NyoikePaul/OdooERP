@@ -18,6 +18,9 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'demo': [
+        'demo/demo.xml',
+    ],
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
