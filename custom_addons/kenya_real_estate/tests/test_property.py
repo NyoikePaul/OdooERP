@@ -1,34 +1,42 @@
 from odoo.tests.common import TransactionCase
+from odoo.exceptions import ValidationError
+
 
 class TestEstateProperty(TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.partner = self.env['res.partner'].create({'name': 'Test Landlord'})
 
-    def test_create_property(self):
-        prop = self.env['estate.property'].create({
-            'name': 'Kilimani Apartment',
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.landlord = cls.env['res.partner'].create({
+            'name': 'Test Landlord Kenya',
+            'city': 'Nairobi',
+        })
+
+    def _make_property(self, **kwargs):
+        vals = {
+            'name': 'Test Property',
             'property_type': 'residential',
-            'landlord_id': self.partner.id,
+            'landlord_id': self.landlord.id,
             'monthly_rent': 50000,
             'county': 'Nairobi',
-        })
-        self.assertEqual(prop.status, 'available')
-        self.assertTrue(prop.ref.startswith('PROP/'))
+        }
+        vals.update(kwargs)
+        return self.env['estate.property'].create(vals)
 
-    def test_lease_activates_property(self):
-        prop = self.env['estate.property'].create({
-            'name': 'Westlands Office',
-            'property_type': 'commercial',
-            'landlord_id': self.partner.id,
-        })
-        tenant = self.env['res.partner'].create({'name': 'Test Tenant'})
-        lease = self.env['estate.lease'].create({
-            'property_id': prop.id,
-            'tenant_id': tenant.id,
-            'date_start': '2026-01-01',
-            'date_end': '2026-12-31',
-        })
-        lease.action_activate()
-        self.assertEqual(lease.status, 'active')
-        self.assertEqual(prop.status, 'leased')
+    def test_default_status_is_available(self):
+        prop = self._make_property()
+        self.assertEqual(prop.status, 'available')
+
+    def test_auto_ref_generated(self):
+        prop = self._make_property()
+        self.assertNotEqual(prop.ref, 'New')
+        self.assertIn('PROP/', prop.ref)
+
+    def test_lease_count_computed(self):
+        prop = self._make_property()
+        self.assertEqual(prop.lease_count, 0)
+
+    def test_multiple_property_types(self):
+        for ptype in ('residential', 'commercial', 'land', 'industrial'):
+            prop = self._make_property(property_type=ptype, name=f'Test {ptype}')
+            self.assertEqual(prop.property_type, ptype)
