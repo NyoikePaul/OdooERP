@@ -2,7 +2,7 @@
 
 # 🇰🇪 OdooERP Kenya
 
-### The most complete open-source Odoo stack for the African market
+### Complete open-source Odoo stack for the African market
 
 [![CI](https://github.com/NyoikePaul/OdooERP/actions/workflows/ci.yml/badge.svg)](https://github.com/NyoikePaul/OdooERP/actions)
 [![Release](https://img.shields.io/github/v/release/NyoikePaul/OdooERP?color=00c67a)](https://github.com/NyoikePaul/OdooERP/releases)
