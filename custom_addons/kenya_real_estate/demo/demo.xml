@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_landlord_demo" model="res.partner">
+        <field name="name">Kamau Properties Ltd</field>
+        <field name="company_type">company</field>
+        <field name="city">Nairobi</field>
+        <field name="country_id" ref="base.ke"/>
+    </record>
+
+    <record id="partner_tenant_demo" model="res.partner">
+        <field name="name">Wanjiru Mwangi</field>
+        <field name="city">Nairobi</field>
+        <field name="country_id" ref="base.ke"/>
+    </record>
+
+    <record id="property_demo_1" model="estate.property">
+        <field name="name">Kilimani 3BR Apartment</field>
+        <field name="property_type">residential</field>
+        <field name="landlord_id" ref="partner_landlord_demo"/>
+        <field name="monthly_rent">85000</field>
+        <field name="location">Kilimani, Argwings Kodhek Rd</field>
+        <field name="county">Nairobi</field>
+        <field name="bedrooms">3</field>
+        <field name="bathrooms">2</field>
+        <field name="size_sqft">1200</field>
+        <field name="status">available</field>
+    </record>
+
+    <record id="property_demo_2" model="estate.property">
+        <field name="name">Westlands Commercial Office</field>
+        <field name="property_type">commercial</field>
+        <field name="landlord_id" ref="partner_landlord_demo"/>
+        <field name="monthly_rent">150000</field>
+        <field name="location">Westlands, Waiyaki Way</field>
+        <field name="county">Nairobi</field>
+        <field name="size_sqft">2500</field>
+        <field name="status">leased</field>
+    </record>
+
+    <record id="property_demo_3" model="estate.property">
+        <field name="name">Nyali Beach Villa</field>
+        <field name="property_type">residential</field>
+        <field name="landlord_id" ref="partner_landlord_demo"/>
+        <field name="monthly_rent">200000</field>
+        <field name="location">Nyali, Links Road</field>
+        <field name="county">Mombasa</field>
+        <field name="bedrooms">4</field>
+        <field name="bathrooms">3</field>
+        <field name="size_sqft">3000</field>
+        <field name="status">available</field>
+    </record>
+</odoo>

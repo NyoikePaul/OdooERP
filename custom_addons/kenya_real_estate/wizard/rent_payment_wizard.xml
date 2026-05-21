@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rent_payment_wizard" model="ir.ui.view">
+        <field name="name">estate.rent.payment.wizard.form</field>
+        <field name="model">estate.rent.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Rent Invoices">
+                <group>
+                    <group>
+                        <field name="invoice_date"/>
+                        <field name="due_date"/>
+                        <field name="send_email"/>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="Optional note on all invoices..."/>
+                    </group>
+                </group>
+                <field name="lease_ids" widget="many2many_tags"/>
+                <footer>
+                    <button name="action_generate_invoices" type="object"
+                            string="Generate Invoices" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rent_payment_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Rent Invoices</field>
+        <field name="res_model">estate.rent.payment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_rent_wizard" name="Generate Rent Invoices"
+              parent="menu_real_estate_root"
+              action="action_rent_payment_wizard" sequence="10"/>
+</odoo>

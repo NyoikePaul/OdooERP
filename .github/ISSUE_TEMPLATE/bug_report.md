@@ -12,21 +12,4 @@ labels: bug
 **Expected:** 
 **Actual:** 
 **Logs:**
-# Complete the bug report template
-> ```
-> paste logs here
-> ```
-> EOF
-git add . && git commit -m "ci: add bug report issue template"
-
-cat > .github/ISSUE_TEMPLATE/feature_request.md << 'EOF'
----
-name: Feature Request
-about: Suggest a new feature or module
-labels: enhancement
----
-
-**Module:** (existing or new)
-**Problem it solves:**
-**Proposed solution:**
-**Kenya/Africa business context:**
+paste logs here

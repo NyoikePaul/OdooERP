@@ -1,0 +1,43 @@
+# Swahili Translation — Kenya Real Estate CRM
+# Copyright (C) 2026 NyoikePaul
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Kenya Real Estate\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-21\n"
+"Language: sw\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Properties"
+msgstr "Mali"
+
+msgid "Leases"
+msgstr "Mikataba ya Kupanga"
+
+msgid "Real Estate"
+msgstr "Mali Isiyohamishika"
+
+msgid "Tenant"
+msgstr "Mpangaji"
+
+msgid "Landlord"
+msgstr "Mmiliki wa Mali"
+
+msgid "Monthly Rent (KES)"
+msgstr "Kodi ya Kila Mwezi (KES)"
+
+msgid "Available"
+msgstr "Inapatikana"
+
+msgid "Leased"
+msgstr "Imepangwa"
+
+msgid "Security Deposit (KES)"
+msgstr "Amana ya Usalama (KES)"
+
+msgid "Generate Rent Invoices"
+msgstr "Tengeneza Ankara za Kodi"
+
+msgid "Tenancy Agreement"
+msgstr "Mkataba wa Kupanga"

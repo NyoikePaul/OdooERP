@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_report_lease" model="ir.actions.report">
+        <field name="name">Tenancy Agreement</field>
+        <field name="model">estate.lease</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kenya_real_estate.report_lease_template</field>
+        <field name="report_file">kenya_real_estate.report_lease_template</field>
+        <field name="binding_model_id" ref="model_estate_lease"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWeb Template -->
+    <template id="report_lease_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="lease">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h2>TENANCY AGREEMENT</h2>
+                                <h4><t t-esc="lease.name"/></h4>
+                                <p class="text-muted">Republic of Kenya</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Property:</strong>
+                                <p><t t-esc="lease.property_id.name"/><br/>
+                                <t t-esc="lease.property_id.location"/><br/>
+                                <t t-esc="lease.property_id.county"/> County</p>
+                            </div>
+                            <div class="col-6">
+                                <strong>Tenant:</strong>
+                                <p><t t-esc="lease.tenant_id.name"/><br/>
+                                <t t-if="lease.tenant_id.phone">
+                                    Tel: <t t-esc="lease.tenant_id.phone"/>
+                                </t></p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Term</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Monthly Rent (KES)</th>
+                                            <th>Deposit (KES)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Fixed Term</td>
+                                            <td><t t-esc="lease.date_start"/></td>
+                                            <td><t t-esc="lease.date_end"/></td>
+                                            <td class="text-end">
+                                                <t t-esc="'{:,.0f}'.format(lease.monthly_rent)"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <t t-esc="'{:,.0f}'.format(lease.deposit)"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h5>Terms and Conditions</h5>
+                                <ol>
+                                    <li>Rent is payable on or before the 5th of each month via M-Pesa or bank transfer.</li>
+                                    <li>The tenant shall not sublet the property without written consent from the landlord.</li>
+                                    <li>The security deposit is refundable upon vacating, subject to property inspection.</li>
+                                    <li>One month's notice is required before vacating the property.</li>
+                                    <li>This agreement is governed by the laws of Kenya — Landlord and Tenant Act (Cap 301).</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <p>____________________________</p>
+                                <p><strong>Landlord / Agent Signature</strong></p>
+                                <p><t t-esc="lease.property_id.landlord_id.name"/></p>
+                            </div>
+                            <div class="col-6">
+                                <p>____________________________</p>
+                                <p><strong>Tenant Signature</strong></p>
+                                <p><t t-esc="lease.tenant_id.name"/></p>
+                            </div>
+                        </div>
+                        <div class="row mt-3 text-center text-muted">
+                            <small>Generated by OdooERP Kenya · github.com/NyoikePaul/OdooERP</small>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
