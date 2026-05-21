@@ -11,6 +11,7 @@
         'views/property_views.xml',
         'views/lease_views.xml',
         'data/sequences.xml',
+        'report/lease_report.xml',
         'views/menu_views.xml',
     ],
     'demo': [
