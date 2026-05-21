@@ -13,6 +13,7 @@
         'data/sequences.xml',
         'report/lease_report.xml',
         'wizard/rent_payment_wizard.xml',
+        'report/lease_report.xml',
         'views/menu_views.xml',
     ],
     'demo': [
