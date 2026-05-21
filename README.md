@@ -46,6 +46,4 @@ Reverse proxy
 <img width="1366" height="729" alt="image" src="https://github.com/user-attachments/assets/6b1439be-47f6-4a93-8ed4-2f3510e72768" />
 
 
-
-# Odoo ERP Development
 # Odoo ERP Development
