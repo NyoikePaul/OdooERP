@@ -1,316 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>OdooERP Kenya — Enterprise Made African</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --green:#00c67a;--green2:#00ff9d;--dark:#080e0b;--dark2:#0d1a12;
+      --card:#111c15;--border:#1e3326;--text:#c8e6d4;--muted:#5a8a6a;
+      --white:#f0faf4;
+    }
+    html{scroll-behavior:smooth;}
+    body{font-family:'DM Mono',monospace;background:var(--dark);color:var(--text);overflow-x:hidden;}
 
-    :root {
-      --green:   #00c67a;
-      --green2:  #00ff9d;
-      --dark:    #080e0b;
-      --dark2:   #0d1a12;
-      --card:    #111c15;
-      --border:  #1e3326;
-      --text:    #c8e6d4;
-      --muted:   #5a8a6a;
-      --white:   #f0faf4;
-      --red:     #ff4d4d;
-      --gold:    #f5c842;
-    }
+    /* grid bg */
+    body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;opacity:.25;}
 
-    html { scroll-behavior: smooth; }
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);background:rgba(8,14,11,.92);backdrop-filter:blur(12px);}
+    .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--green);}
+    .nav-logo span{color:var(--white);}
+    .nav-links{display:flex;gap:1.8rem;list-style:none;}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+    .nav-links a:hover{color:var(--green2);}
+    .nav-cta{background:var(--green);color:var(--dark);padding:.45rem 1.1rem;border-radius:3px;font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;text-decoration:none;white-space:nowrap;transition:all .2s;}
+    .nav-cta:hover{background:var(--green2);}
 
-    body {
-      font-family: 'DM Mono', monospace;
-      background: var(--dark);
-      color: var(--text);
-      overflow-x: hidden;
-      cursor: crosshair;
-    }
+    /* hamburger */
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--text);transition:all .3s;}
+    .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
 
-    /* ─── noise overlay ─── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 0; opacity: .45;
-    }
+    /* mobile nav drawer */
+    .mobile-nav{display:none;position:fixed;top:57px;left:0;right:0;background:rgba(8,14,11,.98);border-bottom:1px solid var(--border);padding:1.5rem 2rem;z-index:99;flex-direction:column;gap:1.2rem;}
+    .mobile-nav.open{display:flex;}
+    .mobile-nav a{color:var(--text);text-decoration:none;font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;padding:.5rem 0;border-bottom:1px solid var(--border);}
+    .mobile-nav a:last-child{border:none;}
+    .mobile-nav .mob-cta{background:var(--green);color:var(--dark);padding:.7rem 1.5rem;border-radius:3px;font-family:'Syne',sans-serif;font-weight:700;text-align:center;margin-top:.5rem;}
 
-    /* ─── grid bg ─── */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none; z-index: 0; opacity: .3;
-    }
+    /* HERO */
+    .hero{position:relative;z-index:1;min-height:100svh;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:8rem 2rem 4rem;max-width:1100px;margin:0 auto;}
+    .hero-tag{display:inline-flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--border);padding:.3rem .85rem;border-radius:2px;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:2rem;}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0;}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,198,122,.5);}50%{box-shadow:0 0 0 6px rgba(0,198,122,0);}}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,7vw,5.5rem);font-weight:800;line-height:.95;letter-spacing:-.04em;color:var(--white);margin-bottom:1.5rem;}
+    h1 em{font-style:normal;color:var(--green);display:block;}
+    .hero-sub{max-width:500px;font-size:.92rem;line-height:1.75;color:var(--muted);margin-bottom:2.5rem;}
+    .hero-btns{display:flex;gap:.85rem;flex-wrap:wrap;}
+    .btn-primary{background:var(--green);color:var(--dark);padding:.8rem 1.8rem;border-radius:3px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;text-decoration:none;transition:all .2s;white-space:nowrap;}
+    .btn-primary:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,198,122,.25);}
+    .btn-ghost{border:1px solid var(--border);color:var(--text);padding:.8rem 1.8rem;border-radius:3px;font-family:'Syne',sans-serif;font-weight:600;font-size:.88rem;text-decoration:none;transition:all .2s;white-space:nowrap;}
+    .btn-ghost:hover{border-color:var(--green);color:var(--green);}
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.2rem 3rem;
-      border-bottom: 1px solid var(--border);
-      background: rgba(8,14,11,.85);
-      backdrop-filter: blur(12px);
-    }
-    .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 1.15rem;
-      color: var(--green);
-      letter-spacing: -.02em;
-    }
-    .nav-logo span { color: var(--white); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      color: var(--muted); text-decoration: none;
-      font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
-      transition: color .2s;
-    }
-    .nav-links a:hover { color: var(--green2); }
-    .nav-cta {
-      background: var(--green); color: var(--dark);
-      padding: .5rem 1.2rem; border-radius: 3px;
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: .8rem; text-decoration: none; letter-spacing: .05em;
-      transition: background .2s, transform .15s;
-    }
-    .nav-cta:hover { background: var(--green2); transform: translateY(-1px); }
+    /* STATS */
+    .stats{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);}
+    .stat{padding:2rem 1.5rem;border-right:1px solid var(--border);}
+    .stat:last-child{border-right:none;}
+    .stat-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--white);letter-spacing:-.04em;line-height:1;}
+    .stat-num span{color:var(--green);}
+    .stat-label{font-size:.68rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;}
 
-    /* ─── HERO ─── */
-    .hero {
-      position: relative; z-index: 1;
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: flex-start; justify-content: center;
-      padding: 10rem 3rem 6rem;
-      max-width: 1100px; margin: 0 auto;
-    }
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: .6rem;
-      background: var(--card); border: 1px solid var(--border);
-      padding: .35rem .9rem; border-radius: 2px;
-      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
-      color: var(--green); margin-bottom: 2.5rem;
-      animation: fadeUp .6s ease both;
-    }
-    .hero-tag .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(0,198,122,.5); }
-      50%      { box-shadow: 0 0 0 6px rgba(0,198,122,0); }
-    }
+    /* SECTIONS */
+    section{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:5rem 2rem;}
+    .section-tag{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;}
+    h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-.03em;color:var(--white);line-height:1.05;margin-bottom:1.2rem;}
+    .section-sub{max-width:480px;color:var(--muted);line-height:1.7;font-size:.9rem;margin-bottom:3rem;}
 
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(3rem, 7vw, 6rem);
-      font-weight: 800; line-height: .95;
-      letter-spacing: -.04em; color: var(--white);
-      margin-bottom: 1.8rem;
-      animation: fadeUp .6s .1s ease both;
-    }
-    h1 em {
-      font-style: normal;
-      color: var(--green);
-      display: block;
-    }
+    /* FEATURES */
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+    .feature-card{background:var(--dark);padding:2rem 1.6rem;transition:background .2s;position:relative;overflow:hidden;}
+    .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+    .feature-card:hover{background:var(--card);}
+    .feature-card:hover::before{transform:scaleX(1);}
+    .feature-icon{font-size:1.6rem;margin-bottom:1rem;display:block;}
+    .feature-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.6rem;}
+    .feature-desc{font-size:.78rem;color:var(--muted);line-height:1.7;}
 
-    .hero-sub {
-      max-width: 520px;
-      font-size: 1rem; line-height: 1.7;
-      color: var(--muted);
-      margin-bottom: 3rem;
-      animation: fadeUp .6s .2s ease both;
-    }
+    /* MODULES */
+    .modules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;}
+    .module-item{display:flex;align-items:flex-start;gap:.9rem;background:var(--card);border:1px solid var(--border);padding:1.2rem 1.4rem;border-radius:3px;transition:border-color .2s;}
+    .module-item:hover{border-color:var(--green);}
+    .module-num{font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;color:var(--green);min-width:26px;padding-top:.1rem;flex-shrink:0;}
+    .module-title{font-family:'Syne',sans-serif;font-weight:600;color:var(--white);font-size:.88rem;margin-bottom:.3rem;}
+    .module-desc{font-size:.76rem;color:var(--muted);line-height:1.6;}
 
-    .hero-btns {
-      display: flex; gap: 1rem; flex-wrap: wrap;
-      animation: fadeUp .6s .3s ease both;
-    }
-    .btn-primary {
-      background: var(--green); color: var(--dark);
-      padding: .85rem 2rem; border-radius: 3px;
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: .9rem; text-decoration: none;
-      transition: all .2s; letter-spacing: .03em;
-    }
-    .btn-primary:hover { background: var(--green2); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,198,122,.25); }
-    .btn-ghost {
-      border: 1px solid var(--border); color: var(--text);
-      padding: .85rem 2rem; border-radius: 3px;
-      font-family: 'Syne', sans-serif; font-weight: 600;
-      font-size: .9rem; text-decoration: none;
-      transition: all .2s;
-    }
-    .btn-ghost:hover { border-color: var(--green); color: var(--green); }
+    /* STACK */
+    .stack-grid{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.5rem;}
+    .tag{border:1px solid var(--border);color:var(--text);padding:.4rem .9rem;border-radius:2px;font-size:.74rem;letter-spacing:.05em;transition:all .2s;cursor:default;}
+    .tag:hover{border-color:var(--green);color:var(--green);}
+    .tag.hl{border-color:var(--green);color:var(--green);background:rgba(0,198,122,.07);}
 
-    /* ─── STATS STRIP ─── */
-    .stats {
-      position: relative; z-index: 1;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      display: grid; grid-template-columns: repeat(4,1fr);
-    }
-    .stat {
-      padding: 2.5rem 2rem;
-      border-right: 1px solid var(--border);
-      animation: fadeUp .6s ease both;
-    }
-    .stat:last-child { border-right: none; }
-    .stat-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 2.6rem; font-weight: 800;
-      color: var(--white); letter-spacing: -.04em;
-    }
-    .stat-num span { color: var(--green); }
-    .stat-label { font-size: .72rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: .4rem; }
+    /* DARK SECTION */
+    .dark-section{position:relative;z-index:1;background:var(--dark2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+    .dark-section > div{max-width:1100px;margin:0 auto;padding:5rem 2rem;}
 
-    /* ─── SECTIONS ─── */
-    section {
-      position: relative; z-index: 1;
-      max-width: 1100px; margin: 0 auto;
-      padding: 7rem 3rem;
+    /* CTA */
+    .cta{position:relative;z-index:1;background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5rem 2rem;text-align:center;}
+    .cta h2{margin:0 auto 1rem;max-width:560px;}
+    .cta p{color:var(--muted);margin-bottom:2rem;font-size:.9rem;}
+
+    /* FOOTER */
+    footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;font-size:.74rem;color:var(--muted);flex-wrap:wrap;gap:.8rem;}
+    footer a{color:var(--green);text-decoration:none;}
+    footer a:hover{color:var(--green2);}
+
+    /* ═══ RESPONSIVE ═══ */
+    @media(max-width:768px){
+      /* nav */
+      .nav-links{display:none;}
+      .hamburger{display:flex;}
+      nav{padding:.9rem 1.2rem;}
+
+      /* hero */
+      .hero{padding:7rem 1.2rem 3rem;}
+      .hero-tag{font-size:.62rem;}
+      h1{font-size:clamp(2rem,10vw,3rem);}
+      .hero-sub{font-size:.85rem;}
+      .hero-btns{flex-direction:column;width:100%;}
+      .btn-primary,.btn-ghost{text-align:center;padding:.75rem 1.2rem;}
+
+      /* stats — 2x2 grid on mobile */
+      .stats{grid-template-columns:repeat(2,1fr);}
+      .stat{border-bottom:1px solid var(--border);}
+      .stat:nth-child(2){border-right:none;}
+      .stat:nth-child(3){border-bottom:none;}
+      .stat:nth-child(4){border-right:none;border-bottom:none;}
+      .stat-num{font-size:1.8rem;}
+      .stat{padding:1.5rem 1rem;}
+
+      /* features — single col */
+      .features-grid{grid-template-columns:1fr;}
+
+      /* modules — single col */
+      .modules-grid{grid-template-columns:1fr;}
+
+      /* sections */
+      section,.dark-section > div,.cta{padding:3.5rem 1.2rem;}
+
+      /* footer */
+      footer{justify-content:center;text-align:center;}
     }
 
-    .section-tag {
-      font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
-      color: var(--green); margin-bottom: 1.2rem;
-    }
-    h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 800; letter-spacing: -.03em;
-      color: var(--white); line-height: 1.05;
-      margin-bottom: 1.5rem;
-    }
-    .section-sub {
-      max-width: 500px; color: var(--muted);
-      line-height: 1.7; font-size: .95rem;
-      margin-bottom: 4rem;
-    }
-
-    /* ─── FEATURES GRID ─── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-    .feature-card {
-      background: var(--dark);
-      padding: 2.5rem 2rem;
-      transition: background .2s;
-      position: relative; overflow: hidden;
-    }
-    .feature-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 2px; background: var(--green);
-      transform: scaleX(0); transform-origin: left;
-      transition: transform .3s;
-    }
-    .feature-card:hover { background: var(--card); }
-    .feature-card:hover::before { transform: scaleX(1); }
-    .feature-icon {
-      font-size: 1.8rem; margin-bottom: 1.2rem;
-      display: block;
-    }
-    .feature-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1rem; font-weight: 700;
-      color: var(--white); margin-bottom: .7rem;
-    }
-    .feature-desc {
-      font-size: .82rem; color: var(--muted);
-      line-height: 1.7;
-    }
-
-    /* ─── TECH STACK ─── */
-    .stack-grid {
-      display: flex; flex-wrap: wrap; gap: .75rem;
-      margin-top: 2rem;
-    }
-    .tag {
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: .45rem 1rem; border-radius: 2px;
-      font-size: .78rem; letter-spacing: .06em;
-      transition: all .2s; cursor: default;
-    }
-    .tag:hover { border-color: var(--green); color: var(--green); }
-    .tag.highlight { border-color: var(--green); color: var(--green); background: rgba(0,198,122,.07); }
-
-    /* ─── MODULES LIST ─── */
-    .modules-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
-    }
-    .module-item {
-      display: flex; align-items: flex-start; gap: 1rem;
-      background: var(--card); border: 1px solid var(--border);
-      padding: 1.4rem 1.6rem; border-radius: 3px;
-      transition: border-color .2s;
-    }
-    .module-item:hover { border-color: var(--green); }
-    .module-num {
-      font-family: 'Syne', sans-serif; font-weight: 700;
-      font-size: .75rem; color: var(--green);
-      min-width: 28px; padding-top: .1rem;
-    }
-    .module-title {
-      font-family: 'Syne', sans-serif; font-weight: 600;
-      color: var(--white); font-size: .9rem; margin-bottom: .3rem;
-    }
-    .module-desc { font-size: .78rem; color: var(--muted); line-height: 1.6; }
-
-    /* ─── CTA BANNER ─── */
-    .cta-banner {
-      position: relative; z-index: 1;
-      background: var(--card);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 6rem 3rem;
-      text-align: center;
-    }
-    .cta-banner h2 { margin: 0 auto 1rem; max-width: 600px; }
-    .cta-banner p { color: var(--muted); margin-bottom: 2.5rem; font-size: .95rem; }
-
-    /* ─── FOOTER ─── */
-    footer {
-      position: relative; z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: .78rem; color: var(--muted);
-    }
-    footer a { color: var(--green); text-decoration: none; }
-    footer a:hover { color: var(--green2); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.2rem; }
-      .nav-links { display: none; }
-      .hero { padding: 8rem 1.5rem 4rem; }
-      .stats { grid-template-columns: repeat(2,1fr); }
-      .stat { border-bottom: 1px solid var(--border); }
-      section { padding: 5rem 1.5rem; }
-      .features-grid { grid-template-columns: 1fr; }
-      .modules-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    @media(max-width:400px){
+      h1{font-size:1.9rem;}
+      .stat-num{font-size:1.5rem;}
     }
   </style>
 </head>
@@ -325,20 +162,24 @@
     <li><a href="#stack">Stack</a></li>
   </ul>
   <a href="https://github.com/NyoikePaul/OdooERP" class="nav-cta" target="_blank">GitHub →</a>
+  <div class="hamburger" id="ham" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#features" onclick="closeMenu()">Features</a>
+  <a href="#modules" onclick="closeMenu()">Modules</a>
+  <a href="#stack" onclick="closeMenu()">Stack</a>
+  <a href="https://github.com/NyoikePaul/OdooERP" class="mob-cta" target="_blank">View on GitHub →</a>
+</div>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-tag">
-    <span class="dot"></span>
-    Kenya-Localized ERP · Odoo 16/17/18
-  </div>
+  <div class="hero-tag"><span class="dot"></span>Kenya-Localized ERP · Odoo 16/17/18</div>
   <h1>Enterprise ERP,<em>Built for Africa.</em></h1>
-  <p class="hero-sub">
-    A production-grade Odoo deployment with M-Pesa payment integration,
-    Real Estate CRM, KRA-compliant workflows, and custom Kenya-localized modules —
-    built for real African businesses.
-  </p>
+  <p class="hero-sub">A production-grade Odoo deployment with M-Pesa payment integration, Real Estate CRM, KRA-compliant workflows, and custom Kenya-localized modules — built for real African businesses.</p>
   <div class="hero-btns">
     <a href="https://github.com/NyoikePaul/OdooERP" class="btn-primary" target="_blank">View on GitHub</a>
     <a href="#features" class="btn-ghost">Explore Features</a>
@@ -350,7 +191,7 @@
   <div class="stat"><div class="stat-num">3<span>+</span></div><div class="stat-label">Odoo Versions</div></div>
   <div class="stat"><div class="stat-num">M<span>-Pesa</span></div><div class="stat-label">Payment Integration</div></div>
   <div class="stat"><div class="stat-num">KE<span> 🇰🇪</span></div><div class="stat-label">Kenya Localized</div></div>
-  <div class="stat"><div class="stat-num">∞<span>+</span></div><div class="stat-label">Custom Modules</div></div>
+  <div class="stat"><div class="stat-num">4<span>+</span></div><div class="stat-label">Custom Modules</div></div>
 </div>
 
 <!-- FEATURES -->
@@ -359,108 +200,86 @@
   <h2>ERP for the<br>African Market</h2>
   <p class="section-sub">Purpose-built modules that go beyond vanilla Odoo — localized for Kenya's business environment, regulations, and payment ecosystem.</p>
   <div class="features-grid">
-    <div class="feature-card">
-      <span class="feature-icon">📱</span>
-      <div class="feature-title">M-Pesa Payment Provider</div>
-      <div class="feature-desc">Native M-Pesa STK Push, C2B, and B2C integrations. Auto-reconcile Mpesa payments directly in Odoo accounting with real-time confirmations.</div>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">🏠</span>
-      <div class="feature-title">Real Estate CRM</div>
-      <div class="feature-desc">End-to-end property management — listings, leads, tenancy agreements, rent collection, and commission tracking all in one place.</div>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">🇰🇪</span>
-      <div class="feature-title">Kenya Localization</div>
-      <div class="feature-desc">KRA PIN, VAT (16%), WHT, and eTIMS-compliant invoicing. Chart of accounts aligned to Kenya accounting standards.</div>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">⚙️</span>
-      <div class="feature-title">Custom Workflows</div>
-      <div class="feature-desc">Bespoke approval flows, automated actions, and scheduled jobs tailored to Kenyan business processes and multi-branch operations.</div>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">🐳</span>
-      <div class="feature-title">Production Docker Setup</div>
-      <div class="feature-desc">Hardened docker-compose production configuration with Nginx reverse proxy, Let's Encrypt SSL, and automated backups.</div>
-    </div>
-    <div class="feature-card">
-      <span class="feature-icon">🔐</span>
-      <div class="feature-title">Security Hardened</div>
-      <div class="feature-desc">Production-grade security with env-based secrets, role-based access control, and audit logging for financial compliance.</div>
-    </div>
+    <div class="feature-card"><span class="feature-icon">📱</span><div class="feature-title">M-Pesa Payment Provider</div><div class="feature-desc">Native STK Push, C2B, B2C integrations. Auto-reconcile payments directly in Odoo accounting with real-time confirmations.</div></div>
+    <div class="feature-card"><span class="feature-icon">🏠</span><div class="feature-title">Real Estate CRM</div><div class="feature-desc">End-to-end property management — listings, leases, tenancy agreements, rent collection, and PDF agreement generation.</div></div>
+    <div class="feature-card"><span class="feature-icon">🇰🇪</span><div class="feature-title">Kenya Localization</div><div class="feature-desc">KRA PIN, VAT (16%), WHT, and eTIMS-compliant invoicing. Chart of accounts aligned to Kenya accounting standards.</div></div>
+    <div class="feature-card"><span class="feature-icon">⚙️</span><div class="feature-title">Custom Workflows</div><div class="feature-desc">Bespoke approval flows, bulk rent invoice wizards, and scheduled jobs tailored to Kenyan business processes.</div></div>
+    <div class="feature-card"><span class="feature-icon">🐳</span><div class="feature-title">Production Docker Setup</div><div class="feature-desc">Hardened docker-compose configuration with Nginx reverse proxy, Let's Encrypt SSL, and one-command backup.</div></div>
+    <div class="feature-card"><span class="feature-icon">🔐</span><div class="feature-title">Security Hardened</div><div class="feature-desc">Env-based secrets, role-based access control, Bandit security scanning, and Dependabot auto-updates.</div></div>
   </div>
 </section>
 
 <!-- MODULES -->
-<section id="modules" style="background: var(--dark2); max-width: 100%; padding: 7rem 0;">
-  <div style="max-width:1100px; margin:0 auto; padding: 0 3rem;">
+<div class="dark-section" id="modules">
+  <div>
     <div class="section-tag">// Custom Add-ons</div>
     <h2>Included Modules</h2>
-    <p class="section-sub">A growing library of custom Odoo modules built for real Kenyan business needs.</p>
+    <p class="section-sub">A production-grade library of custom Odoo modules built for real Kenyan business needs.</p>
     <div class="modules-grid">
-      <div class="module-item">
-        <span class="module-num">01</span>
-        <div><div class="module-title">M-Pesa Payment Gateway</div><div class="module-desc">Full STK Push, paybill, and till number support with instant reconciliation.</div></div>
-      </div>
-      <div class="module-item">
-        <span class="module-num">02</span>
-        <div><div class="module-title">Real Estate Management</div><div class="module-desc">Properties, units, tenants, leases, and automated rent invoicing.</div></div>
-      </div>
-      <div class="module-item">
-        <span class="module-num">03</span>
-        <div><div class="module-title">Kenya Tax Configuration</div><div class="module-desc">Pre-configured KRA taxes, VAT rates, and withholding tax schedules.</div></div>
-      </div>
-      <div class="module-item">
-        <span class="module-num">04</span>
-        <div><div class="module-title">Multi-Branch Operations</div><div class="module-desc">Manage multiple business locations with consolidated reporting.</div></div>
-      </div>
-      <div class="module-item">
-        <span class="module-num">05</span>
-        <div><div class="module-title">Custom Approval Workflows</div><div class="module-desc">Configurable multi-level approvals for purchases, leaves, and expenses.</div></div>
-      </div>
-      <div class="module-item">
-        <span class="module-num">06</span>
-        <div><div class="module-title">Automated Reporting</div><div class="module-desc">Scheduled financial reports delivered via email to management.</div></div>
-      </div>
+      <div class="module-item"><span class="module-num">01</span><div><div class="module-title">M-Pesa Payment Acquirer</div><div class="module-desc">Full STK Push, paybill, and till number support with instant reconciliation and transaction logging.</div></div></div>
+      <div class="module-item"><span class="module-num">02</span><div><div class="module-title">M-Pesa Connector Core</div><div class="module-desc">Reusable Daraja 2.0 API mixin — access token, STK push, sandbox/live switching.</div></div></div>
+      <div class="module-item"><span class="module-num">03</span><div><div class="module-title">M-Pesa Transaction Log</div><div class="module-desc">Persistent audit trail — every Safaricom callback stored with receipt, amount, status.</div></div></div>
+      <div class="module-item"><span class="module-num">04</span><div><div class="module-title">Real Estate Management</div><div class="module-desc">Properties, units, tenants, leases, and automated rent invoicing with PDF agreements.</div></div></div>
+      <div class="module-item"><span class="module-num">05</span><div><div class="module-title">Bulk Rent Wizard</div><div class="module-desc">Generate all tenant rent invoices in one click — filterable by lease, date range, and property.</div></div></div>
+      <div class="module-item"><span class="module-num">06</span><div><div class="module-title">Kenya Tax Configuration</div><div class="module-desc">Pre-configured KRA taxes, VAT 16%, withholding tax schedules, and eTIMS integration.</div></div></div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- STACK -->
 <section id="stack">
   <div class="section-tag">// Tech Stack</div>
   <h2>Built With</h2>
-  <p class="section-sub">Modern, battle-tested technologies chosen for reliability, scalability, and ease of deployment in the African cloud landscape.</p>
+  <p class="section-sub">Modern, battle-tested technologies chosen for reliability and East African cloud deployments.</p>
   <div class="stack-grid">
-    <span class="tag highlight">Odoo 16/17/18</span>
-    <span class="tag highlight">Python 3.10+</span>
-    <span class="tag highlight">M-Pesa API</span>
+    <span class="tag hl">Odoo 16/17/18</span>
+    <span class="tag hl">Python 3.11+</span>
+    <span class="tag hl">M-Pesa Daraja 2.0</span>
     <span class="tag">PostgreSQL</span>
     <span class="tag">Docker</span>
-    <span class="tag">Docker Compose</span>
+    <span class="tag">Docker Compose v2</span>
     <span class="tag">Nginx</span>
-    <span class="tag">Redis</span>
     <span class="tag">Let's Encrypt</span>
     <span class="tag">GitHub Actions</span>
-    <span class="tag">XML/QWEB</span>
-    <span class="tag">JavaScript (OWL)</span>
+    <span class="tag">Bandit Security</span>
+    <span class="tag">Dependabot</span>
+    <span class="tag">QWeb Reports</span>
+    <span class="tag">OWL Framework</span>
+    <span class="tag">KRA eTIMS</span>
   </div>
 </section>
 
 <!-- CTA -->
-<div class="cta-banner">
-  <div class="section-tag">// Open Source</div>
+<div class="cta">
+  <div class="section-tag">// Open Source · MIT License</div>
   <h2>Ready to Deploy<br>Your African ERP?</h2>
-  <p>Clone the repo, configure your M-Pesa credentials, and launch.<br>Full documentation included.</p>
+  <p>Clone, configure M-Pesa credentials, and launch in minutes.<br>Full setup guide and documentation included.</p>
   <a href="https://github.com/NyoikePaul/OdooERP" class="btn-primary" target="_blank">Star on GitHub ★</a>
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div>© 2026 <a href="https://github.com/NyoikePaul" target="_blank">NyoikePaul</a> · OdooERP Kenya</div>
-  <div>Built with 🇰🇪 in Naivasha · <a href="https://github.com/NyoikePaul/OdooERP" target="_blank">GitHub</a></div>
+  <div>Built with 🇰🇪 in Nairobi · <a href="https://github.com/NyoikePaul/OdooERP" target="_blank">GitHub</a></div>
 </footer>
 
+<script>
+  function toggleMenu(){
+    document.getElementById('ham').classList.toggle('open');
+    document.getElementById('mobileNav').classList.toggle('open');
+  }
+  function closeMenu(){
+    document.getElementById('ham').classList.remove('open');
+    document.getElementById('mobileNav').classList.remove('open');
+  }
+  // close on outside click
+  document.addEventListener('click', e => {
+    const nav = document.getElementById('mobileNav');
+    const ham = document.getElementById('ham');
+    if(nav.classList.contains('open') && !nav.contains(e.target) && !ham.contains(e.target)){
+      closeMenu();
+    }
+  });
+</script>
 </body>
 </html>
