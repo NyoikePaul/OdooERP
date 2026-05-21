@@ -1,5 +1,5 @@
 # External Python dependencies for custom modules
 # Install: pip install -r odoo-requirements.txt
 
-requests>=2.31.0          # M-Pesa Daraja API calls
+requests>=2.34.2          # M-Pesa Daraja API calls
 python-dateutil>=2.8.2    # Lease date calculations
