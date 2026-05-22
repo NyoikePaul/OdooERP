@@ -107,10 +107,10 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 ## 📸 Screenshots
 
-| Point of Sale | Receipt | Sales |
+| Real Estate | Properties |
 |---|---|---|
-| ![POS](https://github.com/user-attachments/assets/8d55e311-7e27-40e8-b418-872da26df7eb) | ![Receipt](https://github.com/user-attachments/assets/a8cf2965-e7e8-4b3c-86db-13f4be1719d1) | ![Sales](https://github.com/user-attachments/assets/0f98825c-e0a0-400b-8780-06c3e100d592) |
 
+<img width="1365" height="641" alt="image" src="https://github.com/user-attachments/assets/77ea77ed-856d-4854-9412-b85771c64f51" />
 
 ## 📸 Real Estate 
 
