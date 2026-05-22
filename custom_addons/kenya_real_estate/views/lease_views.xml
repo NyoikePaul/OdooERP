@@ -47,7 +47,7 @@
         </header>
         <sheet>
           <div class="oe_button_box" name="button_box">
-            <button name="payment_ids" type="object"
+            <button name="action_open_invoices" type="object"
                     class="oe_stat_button" icon="fa-money">
               <field name="payment_count" widget="statinfo" string="Invoices"/>
             </button>

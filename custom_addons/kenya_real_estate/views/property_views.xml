@@ -76,7 +76,7 @@
                          'sold':        'muted'
                        }}"/>
                 <span class="float-end">
-                  <i class="fa fa-home me-1"/> <field name="lease_count"/>
+                  <i class="fa fa-home me-1" title="Leases"/> <field name="lease_count"/>
                 </span>
               </div>
             </div>

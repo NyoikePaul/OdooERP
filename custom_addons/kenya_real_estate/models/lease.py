@@ -219,6 +219,17 @@ class EstateLease(models.Model):
                 )
         _logger.info("Expiry reminders sent.")
 
+    def action_open_invoices(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Rent Invoices',
+            'res_model': 'account.move',
+            'view_mode': 'list,form',
+            'domain': [('lease_id', '=', self.id)],
+            'context': {'default_lease_id': self.id},
+        }
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
