@@ -6,4 +6,7 @@
             action="estate_property_action" sequence="1"/>
   <menuitem id="menu_leases" name="Leases" parent="menu_real_estate_root"
             action="estate_lease_action" sequence="2"/>
+  <menuitem id="menu_rent_wizard" name="Generate Rent Invoices"
+            parent="menu_real_estate_root"
+            action="action_rent_payment_wizard" sequence="10"/>
 </odoo>
