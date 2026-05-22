@@ -40,6 +40,17 @@ class EstateProperty(models.Model):
         for rec in self:
             rec.lease_count = len(rec.lease_ids)
 
+    def action_open_leases(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Leases',
+            'res_model': 'estate.lease',
+            'view_mode': 'list,form',
+            'domain': [('property_id', '=', self.id)],
+            'context': {'default_property_id': self.id},
+        }
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

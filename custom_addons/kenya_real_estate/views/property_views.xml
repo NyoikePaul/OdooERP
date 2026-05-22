@@ -30,7 +30,7 @@
         </header>
         <sheet>
           <div class="oe_button_box" name="button_box">
-            <button name="lease_ids" type="object" class="oe_stat_button" icon="fa-home">
+            <button name="action_open_leases" type="object" class="oe_stat_button" icon="fa-home">
               <field name="lease_count" widget="statinfo" string="Leases"/>
             </button>
           </div>
