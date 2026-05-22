@@ -1,24 +1,24 @@
 {
     'name': 'Kenya Real Estate CRM',
-    'version': '18.0.1.0.0',
+    'version': '18.0.2.0.0',
     'category': 'Real Estate',
-    'summary': 'Property listings, tenant leases, M-Pesa rent collection for Kenya',
+    'summary': 'Enterprise property management — listings, leases, M-Pesa rent, maintenance, KPIs',
     'author': 'Paul Nyoike - Nairobi',
     'website': 'https://github.com/NyoikePaul/OdooERP',
     'depends': ['base', 'account', 'mail', 'mpesa_connector'],
     'data': [
+        'security/groups.xml',
         'security/ir.model.access.csv',
+        'data/sequences.xml',
+        'data/cron.xml',
+        'views/config_views.xml',
         'views/property_views.xml',
         'views/lease_views.xml',
-        'data/sequences.xml',
-        'report/lease_report.xml',
+        'views/maintenance_views.xml',
         'wizard/rent_payment_wizard.xml',
+        'wizard/lease_renewal_wizard.xml',
         'report/lease_report.xml',
-        'wizard/rent_payment_wizard.xml',
         'views/menu_views.xml',
-    ],
-    'demo': [
-        'demo/demo.xml',
     ],
     'demo': [
         'demo/demo.xml',
@@ -26,4 +26,5 @@
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
+    'images': ['static/description/icon.svg'],
 }

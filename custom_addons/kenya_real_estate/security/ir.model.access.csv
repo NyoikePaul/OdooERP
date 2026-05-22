@@ -3,4 +3,13 @@ access_estate_property_user,estate.property.user,model_estate_property,base.grou
 access_estate_property_manager,estate.property.manager,model_estate_property,base.group_system,1,1,1,1
 access_estate_lease_user,estate.lease.user,model_estate_lease,base.group_user,1,1,1,0
 access_estate_lease_manager,estate.lease.manager,model_estate_lease,base.group_system,1,1,1,1
+access_estate_maintenance_user,estate.maintenance.user,model_estate_maintenance_request,base.group_user,1,1,1,0
+access_estate_maintenance_manager,estate.maintenance.manager,model_estate_maintenance_request,base.group_system,1,1,1,1
+access_estate_property_type,estate.property.type,model_estate_property_type,base.group_user,1,0,0,0
+access_estate_property_type_manager,estate.property.type.manager,model_estate_property_type,base.group_system,1,1,1,1
+access_estate_amenity,estate.amenity,model_estate_amenity,base.group_user,1,0,0,0
+access_estate_amenity_manager,estate.amenity.manager,model_estate_amenity,base.group_system,1,1,1,1
+access_estate_tag,estate.property.tag,model_estate_property_tag,base.group_user,1,0,0,0
+access_estate_tag_manager,estate.property.tag.manager,model_estate_property_tag,base.group_system,1,1,1,1
 access_rent_wizard_user,estate.rent.wizard.user,model_estate_rent_payment_wizard,base.group_user,1,1,1,1
+access_renewal_wizard_user,estate.renewal.wizard.user,model_estate_lease_renewal_wizard,base.group_user,1,1,1,1
