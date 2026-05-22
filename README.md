@@ -119,6 +119,13 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 
 
+
+## 📸 M-Pesa Receipt
+
+<img width="1366" height="644" alt="image" src="https://github.com/user-attachments/assets/6b3bbacc-7261-49b7-b58f-ce6dd3f6ee20" />
+
+
+
 | Accounting | Docker | Nginx |
 |---|---|---|
 | ![Accounting](https://github.com/user-attachments/assets/fb9badd0-8ea0-4627-b5e2-65120bff21dd) | ![Docker](https://github.com/user-attachments/assets/0a97df41-c0de-4b65-928e-a7a670341a11) | ![Nginx](https://github.com/user-attachments/assets/2cc89171-9971-4c58-9ef3-d32bef7704d8) |
