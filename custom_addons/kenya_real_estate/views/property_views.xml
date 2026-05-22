@@ -24,7 +24,7 @@
     <field name="arch" type="xml">
       <form string="Property">
         <header>
-          <button name="%(kenya_real_estate.estate_lease_action)d" string="New Lease" type="action" class="oe_highlight" context="{'default_property_id': active_id}"/>
+
           <field name="status" widget="statusbar"
                  statusbar_visible="available,leased,sold"/>
         </header>
