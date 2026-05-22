@@ -111,6 +111,14 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 |---|---|---|
 | ![POS](https://github.com/user-attachments/assets/8d55e311-7e27-40e8-b418-872da26df7eb) | ![Receipt](https://github.com/user-attachments/assets/a8cf2965-e7e8-4b3c-86db-13f4be1719d1) | ![Sales](https://github.com/user-attachments/assets/0f98825c-e0a0-400b-8780-06c3e100d592) |
 
+
+## 📸 Real Estate 
+
+
+<img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/b65dc5d9-d496-4c68-97d5-07383eeee7cb" />
+
+
+
 | Accounting | Docker | Nginx |
 |---|---|---|
 | ![Accounting](https://github.com/user-attachments/assets/fb9badd0-8ea0-4627-b5e2-65120bff21dd) | ![Docker](https://github.com/user-attachments/assets/0a97df41-c0de-4b65-928e-a7a670341a11) | ![Nginx](https://github.com/user-attachments/assets/2cc89171-9971-4c58-9ef3-d32bef7704d8) |
