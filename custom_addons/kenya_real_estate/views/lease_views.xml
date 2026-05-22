@@ -55,8 +55,8 @@
           <div class="oe_title">
             <h1><field name="name" readonly="1"/></h1>
           </div>
-          <div t-if="is_expiring_soon" class="alert alert-warning" role="alert">
-            ⚠️ This lease expires in <strong><field name="days_to_expiry"/></strong> days!
+          <div class="alert alert-warning" role="alert" invisible="not is_expiring_soon">
+            This lease expires in <field name="days_to_expiry"/> days!
           </div>
           <group>
             <group string="Lease Details">
