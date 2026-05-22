@@ -1,52 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="partner_landlord_demo" model="res.partner">
-        <field name="name">Kamau Properties Ltd</field>
-        <field name="company_type">company</field>
-        <field name="city">Nairobi</field>
-        <field name="country_id" ref="base.ke"/>
-    </record>
 
-    <record id="partner_tenant_demo" model="res.partner">
-        <field name="name">Wanjiru Mwangi</field>
-        <field name="city">Nairobi</field>
-        <field name="country_id" ref="base.ke"/>
-    </record>
+  <!-- ── Property Types ── -->
+  <record id="type_apartment" model="estate.property.type">
+    <field name="name">Apartment</field>
+    <field name="sequence">1</field>
+  </record>
+  <record id="type_villa" model="estate.property.type">
+    <field name="name">Villa</field>
+    <field name="sequence">2</field>
+  </record>
+  <record id="type_office" model="estate.property.type">
+    <field name="name">Commercial Office</field>
+    <field name="sequence">3</field>
+  </record>
+  <record id="type_maisonette" model="estate.property.type">
+    <field name="name">Maisonette</field>
+    <field name="sequence">4</field>
+  </record>
 
-    <record id="property_demo_1" model="estate.property">
-        <field name="name">Kilimani 3BR Apartment</field>
-        <field name="property_type">residential</field>
-        <field name="landlord_id" ref="partner_landlord_demo"/>
-        <field name="monthly_rent">85000</field>
-        <field name="location">Kilimani, Argwings Kodhek Rd</field>
-        <field name="county">Nairobi</field>
-        <field name="bedrooms">3</field>
-        <field name="bathrooms">2</field>
-        <field name="size_sqft">1200</field>
-        <field name="status">available</field>
-    </record>
+  <!-- ── Amenities ── -->
+  <record id="amenity_parking" model="estate.amenity">
+    <field name="name">Parking</field>
+    <field name="category">utility</field>
+    <field name="icon">fa-car</field>
+  </record>
+  <record id="amenity_generator" model="estate.amenity">
+    <field name="name">Backup Generator</field>
+    <field name="category">utility</field>
+    <field name="icon">fa-bolt</field>
+  </record>
+  <record id="amenity_borehole" model="estate.amenity">
+    <field name="name">Borehole Water</field>
+    <field name="category">utility</field>
+    <field name="icon">fa-tint</field>
+  </record>
+  <record id="amenity_security" model="estate.amenity">
+    <field name="name">24hr Security</field>
+    <field name="category">security</field>
+    <field name="icon">fa-shield</field>
+  </record>
+  <record id="amenity_cctv" model="estate.amenity">
+    <field name="name">CCTV</field>
+    <field name="category">security</field>
+    <field name="icon">fa-video-camera</field>
+  </record>
+  <record id="amenity_pool" model="estate.amenity">
+    <field name="name">Swimming Pool</field>
+    <field name="category">leisure</field>
+    <field name="icon">fa-life-ring</field>
+  </record>
+  <record id="amenity_gym" model="estate.amenity">
+    <field name="name">Gym</field>
+    <field name="category">leisure</field>
+    <field name="icon">fa-heartbeat</field>
+  </record>
+  <record id="amenity_fibre" model="estate.amenity">
+    <field name="name">Fibre Internet</field>
+    <field name="category">utility</field>
+    <field name="icon">fa-wifi</field>
+  </record>
 
-    <record id="property_demo_2" model="estate.property">
-        <field name="name">Westlands Commercial Office</field>
-        <field name="property_type">commercial</field>
-        <field name="landlord_id" ref="partner_landlord_demo"/>
-        <field name="monthly_rent">150000</field>
-        <field name="location">Westlands, Waiyaki Way</field>
-        <field name="county">Nairobi</field>
-        <field name="size_sqft">2500</field>
-        <field name="status">leased</field>
-    </record>
+  <!-- ── Tags ── -->
+  <record id="tag_furnished" model="estate.property.tag">
+    <field name="name">Furnished</field>
+    <field name="color">10</field>
+  </record>
+  <record id="tag_pet_friendly" model="estate.property.tag">
+    <field name="name">Pet Friendly</field>
+    <field name="color">3</field>
+  </record>
+  <record id="tag_sea_view" model="estate.property.tag">
+    <field name="name">Sea View</field>
+    <field name="color">4</field>
+  </record>
+  <record id="tag_gated" model="estate.property.tag">
+    <field name="name">Gated Community</field>
+    <field name="color">2</field>
+  </record>
+  <record id="tag_newly_built" model="estate.property.tag">
+    <field name="name">Newly Built</field>
+    <field name="color">1</field>
+  </record>
 
-    <record id="property_demo_3" model="estate.property">
-        <field name="name">Nyali Beach Villa</field>
-        <field name="property_type">residential</field>
-        <field name="landlord_id" ref="partner_landlord_demo"/>
-        <field name="monthly_rent">200000</field>
-        <field name="location">Nyali, Links Road</field>
-        <field name="county">Mombasa</field>
-        <field name="bedrooms">4</field>
-        <field name="bathrooms">3</field>
-        <field name="size_sqft">3000</field>
-        <field name="status">available</field>
-    </record>
+  <!-- ── Partners ── -->
+  <record id="partner_landlord_demo" model="res.partner">
+    <field name="name">Kamau Properties Ltd</field>
+    <field name="company_type">company</field>
+    <field name="city">Nairobi</field>
+    <field name="country_id" ref="base.ke"/>
+    <field name="phone">+254 722 100 200</field>
+    <field name="email">info@kamauproperties.co.ke</field>
+  </record>
+  <record id="partner_landlord_2" model="res.partner">
+    <field name="name">Mombasa Coastal Estates</field>
+    <field name="company_type">company</field>
+    <field name="city">Mombasa</field>
+    <field name="country_id" ref="base.ke"/>
+    <field name="phone">+254 711 300 400</field>
+    <field name="email">info@coastalestates.co.ke</field>
+  </record>
+  <record id="partner_tenant_1" model="res.partner">
+    <field name="name">Wanjiru Mwangi</field>
+    <field name="city">Nairobi</field>
+    <field name="country_id" ref="base.ke"/>
+    <field name="phone">+254 712 345 678</field>
+    <field name="email">wanjiru.mwangi@gmail.com</field>
+  </record>
+  <record id="partner_tenant_2" model="res.partner">
+    <field name="name">Odhiambo &amp; Associates Ltd</field>
+    <field name="company_type">company</field>
+    <field name="city">Nairobi</field>
+    <field name="country_id" ref="base.ke"/>
+    <field name="phone">+254 733 456 789</field>
+    <field name="email">info@odhiamboassociates.co.ke</field>
+  </record>
+  <record id="partner_tenant_3" model="res.partner">
+    <field name="name">Aisha Hassan</field>
+    <field name="city">Mombasa</field>
+    <field name="country_id" ref="base.ke"/>
+    <field name="phone">+254 721 987 654</field>
+    <field name="email">aisha.hassan@outlook.com</field>
+  </record>
+
+  <!-- ── Properties ── -->
+  <record id="property_kilimani" model="estate.property">
+    <field name="name">Kilimani 3BR Apartment</field>
+    <field name="property_type_id" ref="type_apartment"/>
+    <field name="property_type">residential</field>
+    <field name="status">leased</field>
+    <field name="landlord_id" ref="partner_landlord_demo"/>
+    <field name="monthly_rent">85000</field>
+    <field name="location">Kilimani, Argwings Kodhek Rd</field>
+    <field name="street">Argwings Kodhek Rd</field>
+    <field name="county">Nairobi</field>
+    <field name="constituency">Kilimani</field>
+    <field name="bedrooms">3</field>
+    <field name="bathrooms">2</field>
+    <field name="size_sqft">1200</field>
+    <field name="floor">4</field>
+    <field name="total_floors">8</field>
+    <field name="year_built">2019</field>
+    <field name="furnished">semi</field>
+    <field name="parking_spaces">1</field>
+    <field name="garden">False</field>
+    <field name="amenity_ids" eval="[(4, ref('amenity_parking')), (4, ref('amenity_security')), (4, ref('amenity_fibre')), (4, ref('amenity_generator'))]"/>
+    <field name="tag_ids" eval="[(4, ref('tag_gated'))]"/>
+  </record>
+
+  <record id="property_westlands" model="estate.property">
+    <field name="name">Westlands Commercial Office</field>
+    <field name="property_type_id" ref="type_office"/>
+    <field name="property_type">commercial</field>
+    <field name="status">leased</field>
+    <field name="landlord_id" ref="partner_landlord_demo"/>
+    <field name="monthly_rent">150000</field>
+    <field name="sale_price">25000000</field>
+    <field name="location">Westlands, Waiyaki Way</field>
+    <field name="street">Waiyaki Way</field>
+    <field name="county">Nairobi</field>
+    <field name="constituency">Westlands</field>
+    <field name="size_sqft">2500</field>
+    <field name="floor">3</field>
+    <field name="total_floors">10</field>
+    <field name="year_built">2021</field>
+    <field name="furnished">fully</field>
+    <field name="parking_spaces">4</field>
+    <field name="amenity_ids" eval="[(4, ref('amenity_parking')), (4, ref('amenity_cctv')), (4, ref('amenity_security')), (4, ref('amenity_fibre')), (4, ref('amenity_generator'))]"/>
+    <field name="tag_ids" eval="[(4, ref('tag_newly_built'))]"/>
+  </record>
+
+  <record id="property_nyali" model="estate.property">
+    <field name="name">Nyali Beach Villa</field>
+    <field name="property_type_id" ref="type_villa"/>
+    <field name="property_type">residential</field>
+    <field name="status">available</field>
+    <field name="landlord_id" ref="partner_landlord_2"/>
+    <field name="monthly_rent">200000</field>
+    <field name="sale_price">45000000</field>
+    <field name="location">Nyali, Links Road</field>
+    <field name="street">Links Road</field>
+    <field name="county">Mombasa</field>
+    <field name="constituency">Nyali</field>
+    <field name="bedrooms">4</field>
+    <field name="bathrooms">3</field>
+    <field name="size_sqft">3000</field>
+    <field name="floor">0</field>
+    <field name="year_built">2020</field>
+    <field name="furnished">fully</field>
+    <field name="parking_spaces">3</field>
+    <field name="garden">True</field>
+    <field name="garden_area_sqft">800</field>
+    <field name="amenity_ids" eval="[(4, ref('amenity_pool')), (4, ref('amenity_security')), (4, ref('amenity_borehole')), (4, ref('amenity_generator')), (4, ref('amenity_cctv'))]"/>
+    <field name="tag_ids" eval="[(4, ref('tag_sea_view')), (4, ref('tag_furnished')), (4, ref('tag_gated'))]"/>
+  </record>
+
+  <record id="property_karen" model="estate.property">
+    <field name="name">Karen Maisonette 4BR</field>
+    <field name="property_type_id" ref="type_maisonette"/>
+    <field name="property_type">residential</field>
+    <field name="status">available</field>
+    <field name="landlord_id" ref="partner_landlord_demo"/>
+    <field name="monthly_rent">120000</field>
+    <field name="sale_price">35000000</field>
+    <field name="location">Karen, Hardy</field>
+    <field name="street">Hardy Estate</field>
+    <field name="county">Nairobi</field>
+    <field name="constituency">Karen</field>
+    <field name="bedrooms">4</field>
+    <field name="bathrooms">3</field>
+    <field name="size_sqft">2800</field>
+    <field name="year_built">2018</field>
+    <field name="furnished">unfurnished</field>
+    <field name="parking_spaces">2</field>
+    <field name="garden">True</field>
+    <field name="garden_area_sqft">1200</field>
+    <field name="amenity_ids" eval="[(4, ref('amenity_security')), (4, ref('amenity_borehole')), (4, ref('amenity_gym'))]"/>
+    <field name="tag_ids" eval="[(4, ref('tag_pet_friendly')), (4, ref('tag_gated'))]"/>
+  </record>
+
+  <!-- ── Active Leases ── -->
+  <record id="lease_kilimani" model="estate.lease">
+    <field name="property_id" ref="property_kilimani"/>
+    <field name="tenant_id" ref="partner_tenant_1"/>
+    <field name="date_start">2026-01-01</field>
+    <field name="date_end">2026-12-31</field>
+    <field name="monthly_rent">85000</field>
+    <field name="deposit">170000</field>
+    <field name="deposit_paid">True</field>
+    <field name="status">active</field>
+    <field name="penalty_rate">5.0</field>
+    <field name="notice_period">30</field>
+    <field name="notes">Tenant has been reliable. Lease renewable in December 2026.</field>
+  </record>
+
+  <record id="lease_westlands" model="estate.lease">
+    <field name="property_id" ref="property_westlands"/>
+    <field name="tenant_id" ref="partner_tenant_2"/>
+    <field name="date_start">2025-06-01</field>
+    <field name="date_end">2026-05-31</field>
+    <field name="monthly_rent">150000</field>
+    <field name="deposit">300000</field>
+    <field name="deposit_paid">True</field>
+    <field name="status">active</field>
+    <field name="penalty_rate">10.0</field>
+    <field name="notice_period">60</field>
+    <field name="notes">Commercial lease. Notice period 60 days per agreement.</field>
+  </record>
+
+  <!-- ── Maintenance Requests ── -->
+  <record id="maintenance_kilimani_plumbing" model="estate.maintenance.request">
+    <field name="name">Kitchen sink pipe leaking</field>
+    <field name="property_id" ref="property_kilimani"/>
+    <field name="lease_id" ref="lease_kilimani"/>
+    <field name="reported_by" ref="partner_tenant_1"/>
+    <field name="category">plumbing</field>
+    <field name="priority">1</field>
+    <field name="status">in_progress</field>
+    <field name="estimated_cost">5000</field>
+    <field name="date_reported">2026-05-15</field>
+    <field name="description">Kitchen sink drain pipe leaking under the cabinet. Water pooling on cabinet floor.</field>
+  </record>
+
+  <record id="maintenance_westlands_electrical" model="estate.maintenance.request">
+    <field name="name">Office 3B power socket not working</field>
+    <field name="property_id" ref="property_westlands"/>
+    <field name="lease_id" ref="lease_westlands"/>
+    <field name="reported_by" ref="partner_tenant_2"/>
+    <field name="category">electrical</field>
+    <field name="priority">0</field>
+    <field name="status">new</field>
+    <field name="estimated_cost">3500</field>
+    <field name="date_reported">2026-05-20</field>
+    <field name="description">Two power sockets in office 3B have stopped working. Likely tripped circuit.</field>
+  </record>
+
+  <record id="maintenance_nyali_done" model="estate.maintenance.request">
+    <field name="name">Gate motor replacement</field>
+    <field name="property_id" ref="property_nyali"/>
+    <field name="category">security</field>
+    <field name="priority">2</field>
+    <field name="status">done</field>
+    <field name="estimated_cost">45000</field>
+    <field name="actual_cost">42000</field>
+    <field name="date_reported">2026-04-10</field>
+    <field name="date_resolved">2026-04-15</field>
+    <field name="description">Main gate motor burnt out. Replaced with new FAAC motor.</field>
+  </record>
+
 </odoo>
