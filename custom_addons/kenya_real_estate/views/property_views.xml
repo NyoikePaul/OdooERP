@@ -46,7 +46,6 @@
         <field name="image_128"/>
         <field name="current_tenant_id"/>
         <field name="lease_count"/>
-        <field name="color"/>
         <templates>
           <t t-name="card">
             <div class="o_kanban_image_wrapper">
@@ -58,7 +57,7 @@
               <div><field name="property_type"/> · <field name="property_type_id"/></div>
               <div class="o_kanban_tags_section">
                 <field name="tag_ids" widget="many2many_tags"
-                       options="{'color_field': 'color'}"/>
+                       options="{}"/>
               </div>
               <div>
                 <span class="fw-bold text-success">
@@ -124,7 +123,7 @@
               <field name="property_type"/>
               <field name="furnished"/>
               <field name="tag_ids" widget="many2many_tags"
-                     options="{'color_field': 'color'}"/>
+                     options="{}"/>
             </group>
             <group string="Ownership">
               <field name="landlord_id"/>
