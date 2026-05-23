@@ -1,6 +1,4 @@
-## 🌐 Live Landing Page
 
-**[View Marketing Site →](index.html)**
 
 <div align="center">
 
