@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="payment_provider_form_inherit" model="ir.ui.view">
-        <field name="name">M-Pesa Provider Form</field>
-        <field name="model">payment.provider</field>
-        <field name="inherit_id" ref="payment.payment_provider_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='code']" position="after">
-                <field name="mpesa_consumer_key" invisible="code != 'mpesa'"/>
-                <field name="mpesa_consumer_secret" invisible="code != 'mpesa'"/>
-                <field name="mpesa_shortcode" invisible="code != 'mpesa'"/>
-                <field name="mpesa_passkey" invisible="code != 'mpesa'"/>
-            </xpath>
-        </field>
-    </record>
+  <record id="payment_provider_form_inherit" model="ir.ui.view">
+    <field name="name">M-Pesa Provider Form</field>
+    <field name="model">payment.provider</field>
+    <field name="inherit_id" ref="payment.payment_provider_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='code']" position="after">
+        <group string="M-Pesa Daraja Credentials"
+               invisible="code != 'mpesa'">
+          <group>
+            <field name="mpesa_consumer_key"    password="True"/>
+            <field name="mpesa_consumer_secret" password="True"/>
+            <field name="mpesa_shortcode"/>
+            <field name="mpesa_passkey"         password="True"/>
+            <field name="mpesa_sandbox"/>
+          </group>
+          <group>
+            <field name="mpesa_callback_url"/>
+            <field name="mpesa_token_status" readonly="1"/>
+            <field name="mpesa_initiator_name"/>
+            <field name="mpesa_b2c_shortcode"/>
+          </group>
+        </group>
+        <div class="o_field_widget" invisible="code != 'mpesa'">
+          <div class="d-flex gap-2 flex-wrap mt-2">
+            <button name="action_test_mpesa_connection" type="object"
+                    string="Test Connection" class="btn btn-secondary btn-sm"
+                    icon="fa-plug"/>
+            <button name="action_register_c2b_urls" type="object"
+                    string="Register C2B URLs" class="btn btn-secondary btn-sm"
+                    icon="fa-chain"/>
+            <button name="action_initiate_stk_push" type="object"
+                    string="Send STK Push" class="btn btn-primary btn-sm"
+                    icon="fa-mobile"/>
+          </div>
+        </div>
+      </xpath>
+    </field>
+  </record>
 </odoo>

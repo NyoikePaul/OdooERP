@@ -1,28 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+  <!-- ── LIST VIEW ── -->
   <record id="mpesa_transaction_view_list" model="ir.ui.view">
     <field name="name">mpesa.transaction.list</field>
     <field name="model">mpesa.transaction</field>
     <field name="arch" type="xml">
-      <list string="M-Pesa Transactions" decoration-success="status=='success'"
-            decoration-danger="status=='failed'" decoration-muted="status=='cancelled'">
-        <field name="create_date"/>
+      <list string="M-Pesa Transactions"
+            decoration-success="status=='success'"
+            decoration-danger="status=='failed'"
+            decoration-warning="status=='pending'"
+            decoration-muted="status in ('cancelled','reversed')">
+        <field name="create_date" string="Date"/>
         <field name="receipt_number"/>
+        <field name="transaction_type"/>
         <field name="phone"/>
-        <field name="amount"/>
-        <field name="status"/>
+        <field name="partner_id"/>
+        <field name="amount" sum="Total"/>
+        <field name="status" widget="badge"
+               decoration-success="status=='success'"
+               decoration-danger="status=='failed'"
+               decoration-warning="status=='pending'"/>
+        <field name="reconciled" widget="boolean_toggle"/>
         <field name="invoice_id"/>
+        <button name="action_query_status" type="object"
+                string="Check" icon="fa-refresh"
+                invisible="status != 'pending'"/>
+        <button name="action_reconcile_invoice" type="object"
+                string="Reconcile" icon="fa-link"
+                invisible="not can_reconcile"/>
+        <field name="can_reconcile" invisible="1"/>
       </list>
     </field>
   </record>
 
+  <!-- ── FORM VIEW ── -->
+  <record id="mpesa_transaction_view_form" model="ir.ui.view">
+    <field name="name">mpesa.transaction.form</field>
+    <field name="model">mpesa.transaction</field>
+    <field name="arch" type="xml">
+      <form string="M-Pesa Transaction">
+        <header>
+          <button name="action_query_status" type="object"
+                  string="Query Status" class="btn-primary"
+                  invisible="status != 'pending'"/>
+          <button name="action_reconcile_invoice" type="object"
+                  string="Reconcile to Invoice" class="oe_highlight"
+                  invisible="not can_reconcile"/>
+          <button name="action_cancel" type="object"
+                  string="Cancel" invisible="status not in ('pending','failed')"/>
+          <field name="status" widget="statusbar"
+                 statusbar_visible="pending,success,failed"/>
+        </header>
+        <sheet>
+          <group>
+            <group string="Transaction">
+              <field name="receipt_number"/>
+              <field name="transaction_type"/>
+              <field name="checkout_id"/>
+              <field name="merchant_id"/>
+              <field name="transaction_id"/>
+            </group>
+            <group string="Payment Details">
+              <field name="phone"/>
+              <field name="partner_id"/>
+              <field name="amount"/>
+              <field name="currency_id"/>
+              <field name="result_code"/>
+              <field name="result_desc"/>
+            </group>
+          </group>
+          <group string="Reconciliation">
+            <field name="reconciled"/>
+            <field name="reconciled_date" readonly="1"/>
+            <field name="invoice_id"/>
+            <field name="payment_id"/>
+          </group>
+          <notebook>
+            <page string="Raw Payload">
+              <field name="raw_payload" widget="code"/>
+            </page>
+            <page string="Notes">
+              <field name="notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- ── SEARCH VIEW ── -->
+  <record id="mpesa_transaction_view_search" model="ir.ui.view">
+    <field name="name">mpesa.transaction.search</field>
+    <field name="model">mpesa.transaction</field>
+    <field name="arch" type="xml">
+      <search string="Search Transactions">
+        <field name="receipt_number"/>
+        <field name="phone"/>
+        <field name="partner_id"/>
+        <field name="checkout_id"/>
+        <separator/>
+        <filter string="Pending"    name="pending"  domain="[('status','=','pending')]"/>
+        <filter string="Success"    name="success"  domain="[('status','=','success')]"/>
+        <filter string="Failed"     name="failed"   domain="[('status','=','failed')]"/>
+        <filter string="Unreconciled" name="unrecon"
+                domain="[('status','=','success'),('reconciled','=',False)]"/>
+        <separator/>
+        <filter string="Today"      name="today"
+                domain="[('create_date','&gt;=',datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+        <filter string="This Month" name="this_month"
+                domain="[('create_date','&gt;=',datetime.datetime.now().strftime('%Y-%m-01 00:00:00'))]"/>
+        <group expand="0" string="Group By">
+          <filter string="Status"  name="grp_status" context="{'group_by':'status'}"/>
+          <filter string="Type"    name="grp_type"   context="{'group_by':'transaction_type'}"/>
+          <filter string="Partner" name="grp_partner" context="{'group_by':'partner_id'}"/>
+          <filter string="Date"    name="grp_date"   context="{'group_by':'create_date:day'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- ── ACTION ── -->
   <record id="mpesa_transaction_action" model="ir.actions.act_window">
     <field name="name">M-Pesa Transactions</field>
     <field name="res_model">mpesa.transaction</field>
     <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="mpesa_transaction_view_search"/>
+    <field name="context">{'search_default_success': 1}</field>
   </record>
 
-  <menuitem id="menu_mpesa_root" name="M-Pesa" sequence="55"/>
+  <!-- ── MENU ── -->
+  <menuitem id="menu_mpesa_root" name="M-Pesa" sequence="55"
+            web_icon="mpesa_integration,static/description/icon.png"/>
   <menuitem id="menu_mpesa_transactions" name="Transactions"
-            parent="menu_mpesa_root" action="mpesa_transaction_action"/>
+            parent="menu_mpesa_root" action="mpesa_transaction_action" sequence="1"/>
+
 </odoo>

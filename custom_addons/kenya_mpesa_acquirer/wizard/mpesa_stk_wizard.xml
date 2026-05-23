@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_mpesa_stk_wizard" model="ir.ui.view">
+    <field name="name">mpesa.stk.wizard.form</field>
+    <field name="model">mpesa.stk.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Send M-Pesa STK Push">
+        <group string="Payment Request">
+          <field name="provider_id"/>
+          <field name="invoice_id"/>
+          <field name="partner_id"/>
+          <field name="phone" placeholder="0712345678"/>
+          <field name="amount"/>
+          <field name="account_ref"/>
+          <field name="description"/>
+        </group>
+        <footer>
+          <button name="action_send_stk" type="object"
+                  string="Send STK Push" class="btn-primary oe_highlight"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

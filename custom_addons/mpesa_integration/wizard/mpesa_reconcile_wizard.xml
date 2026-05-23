@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_mpesa_reconcile_wizard" model="ir.ui.view">
+    <field name="name">mpesa.reconcile.wizard.form</field>
+    <field name="model">mpesa.reconcile.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Reconcile M-Pesa Transaction">
+        <group string="Transaction">
+          <field name="transaction_id" readonly="1"/>
+          <field name="receipt_number" readonly="1"/>
+          <field name="amount"/>
+          <field name="partner_id"/>
+        </group>
+        <group string="Link to Invoice">
+          <field name="invoice_id"/>
+          <field name="create_payment"/>
+        </group>
+        <field name="notes" placeholder="Optional notes..."/>
+        <footer>
+          <button name="action_reconcile" type="object"
+                  string="Reconcile" class="btn-primary oe_highlight"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>
