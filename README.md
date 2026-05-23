@@ -1,3 +1,7 @@
+## 🌐 Live Landing Page
+
+**[View Marketing Site →](index.html)**
+
 <div align="center">
 
 # 🇰🇪 OdooERP Kenya
@@ -223,3 +227,7 @@ MIT © 2026 [NyoikePaul](https://github.com/NyoikePaul) — free to use, modify,
 Made with 🇰🇪 in Nairobi
 
 </div>
+
+## 🌐 Live Landing Page
+
+**[View Marketing Site →](index.html)**
