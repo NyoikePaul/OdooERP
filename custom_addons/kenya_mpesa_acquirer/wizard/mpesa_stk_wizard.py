@@ -9,13 +9,13 @@ class MpesaStkWizard(models.TransientModel):
     provider_id  = fields.Many2one('payment.provider', string="Provider",
                                    domain=[('code','=','mpesa')], required=True)
     phone        = fields.Char("Phone Number", required=True,
-                               placeholder="e.g. 0712345678 or 254712345678")
+)
     amount       = fields.Monetary("Amount (KES)", currency_field='currency_id',
                                    required=True)
     currency_id  = fields.Many2one('res.currency',
                                    default=lambda s: s.env.ref('base.KES'))
     account_ref  = fields.Char("Account Reference", required=True,
-                               placeholder="e.g. INV/2026/00001")
+)
     invoice_id   = fields.Many2one('account.move', string="Invoice (optional)",
                                    domain=[('move_type','=','out_invoice'),
                                            ('payment_state','!=','paid')])
