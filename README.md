@@ -107,22 +107,48 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 ## 📸 Screenshots
 
-| Real Estate | Properties |
-|---|---|---|
+| Real Estate | 
+
+**Properties**
 
 <img width="1365" height="641" alt="image" src="https://github.com/user-attachments/assets/77ea77ed-856d-4854-9412-b85771c64f51" />
 
-## 📸 Real Estate 
 
 
-<img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/b65dc5d9-d496-4c68-97d5-07383eeee7cb" />
+<img width="1366" height="647" alt="image" src="https://github.com/user-attachments/assets/2cc8a3c8-1f66-40c2-80c0-bd7e871e57f5" />
+
+
+**Leases**
+<img width="1366" height="647" alt="image" src="https://github.com/user-attachments/assets/1f9ed71c-f655-432c-9625-683ff3c05dea" />
+
+
+  
+<img width="1366" height="641" alt="image" src="https://github.com/user-attachments/assets/aab561fa-0ffb-4b0e-b42b-7370352e3899" />
+
+
+**Maintenance**
+<img width="1365" height="644" alt="image" src="https://github.com/user-attachments/assets/a3bef0d4-0de3-4350-807a-7227b8c1baeb" />
+
+
+<img width="1363" height="644" alt="image" src="https://github.com/user-attachments/assets/0d8f335f-0714-4771-a43b-1eac431aa942" />
+
+
+<img width="1366" height="646" alt="image" src="https://github.com/user-attachments/assets/01891f8c-438b-4003-bfc2-b696d9083de4" />
 
 
 
 
-## 📸 M-Pesa Receipt
 
-<img width="1366" height="644" alt="image" src="https://github.com/user-attachments/assets/6b3bbacc-7261-49b7-b58f-ce6dd3f6ee20" />
+
+
+
+
+
+
+
+
+
+
 
 
 
