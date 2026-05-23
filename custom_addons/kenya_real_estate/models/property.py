@@ -175,3 +175,25 @@ class EstateProperty(models.Model):
             if vals.get('ref', 'New') == 'New':
                 vals['ref'] = self.env['ir.sequence'].next_by_code('estate.property') or 'New'
         return super().create(vals_list)
+
+    # ── Compute Methods ────────────────────────────────
+    @api.depends('monthly_rent', 'sale_price')
+    def _compute_yield(self):
+        for record in self:
+            if record.sale_price and record.monthly_rent:
+                record.expected_yield = ((record.monthly_rent * 12) / record.sale_price) * 100
+            else:
+                record.expected_yield = 0.0
+
+    @api.depends('status', 'monthly_rent')
+    def _compute_revenue(self):
+        for record in self:
+            record.total_revenue = record.total_revenue or 0.0
+
+    # ── CRUD Overrides ─────────────────────────────────
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('ref', 'New') == 'New':
+                vals['ref'] = self.env['ir.sequence'].next_by_code('estate.property') or 'New'
+        return super().create(vals_list)
