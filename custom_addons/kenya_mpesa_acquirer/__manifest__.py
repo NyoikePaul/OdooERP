@@ -10,6 +10,7 @@
         'security/ir.model.access.csv',
         'views/payment_provider_views.xml',
         'data/payment_method.xml',
+        'data/payment_provider.xml',
         'wizard/mpesa_stk_wizard.xml',
     ],
     'installable': True,
