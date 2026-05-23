@@ -230,6 +230,88 @@ class EstateLease(models.Model):
             'context': {'default_lease_id': self.id},
         }
 
+
+    @api.model
+    def _cron_late_payment_penalties(self):
+        """Auto-generate penalty invoices for overdue rent."""
+        from datetime import timedelta
+        today = fields.Date.today()
+        grace_days = 5
+        active_leases = self.search([('status','=','active')])
+        for lease in active_leases:
+            if not lease.penalty_rate:
+                continue
+            overdue = lease.payment_ids.filtered(
+                lambda i: i.move_type == 'out_invoice'
+                and i.payment_state != 'paid'
+                and i.invoice_date_due
+                and i.invoice_date_due < today - timedelta(days=grace_days)
+                and not i.name.startswith('PEN/')
+            )
+            for inv in overdue:
+                days_late = (today - inv.invoice_date_due).days
+                penalty   = inv.amount_residual * lease.penalty_rate / 100
+                if penalty < 100:
+                    continue
+                self.env['account.move'].create({
+                    'move_type':  'out_invoice',
+                    'partner_id': lease.tenant_id.id,
+                    'lease_id':   lease.id,
+                    'invoice_date': today,
+                    'ref': f"PEN/{inv.name} — {days_late} days late",
+                    'invoice_line_ids': [(0, 0, {
+                        'name': (f"Late Payment Penalty — {inv.name} "
+                                 f"({days_late} days overdue @ {lease.penalty_rate}%)"),
+                        'quantity':   1,
+                        'price_unit': penalty,
+                    })]
+                })
+                lease.message_post(
+                    body=_(f"Late payment penalty of KES {penalty:,.0f} generated "
+                           f"for overdue invoice {inv.name} ({days_late} days late).")
+                )
+
+
+    @api.model
+    def _cron_late_payment_penalties(self):
+        """Auto-generate penalty invoices for overdue rent."""
+        from datetime import timedelta
+        today = fields.Date.today()
+        grace_days = 5
+        active_leases = self.search([('status','=','active')])
+        for lease in active_leases:
+            if not lease.penalty_rate:
+                continue
+            overdue = lease.payment_ids.filtered(
+                lambda i: i.move_type == 'out_invoice'
+                and i.payment_state != 'paid'
+                and i.invoice_date_due
+                and i.invoice_date_due < today - timedelta(days=grace_days)
+                and not i.name.startswith('PEN/')
+            )
+            for inv in overdue:
+                days_late = (today - inv.invoice_date_due).days
+                penalty   = inv.amount_residual * lease.penalty_rate / 100
+                if penalty < 100:
+                    continue
+                self.env['account.move'].create({
+                    'move_type':  'out_invoice',
+                    'partner_id': lease.tenant_id.id,
+                    'lease_id':   lease.id,
+                    'invoice_date': today,
+                    'ref': f"PEN/{inv.name} — {days_late} days late",
+                    'invoice_line_ids': [(0, 0, {
+                        'name': (f"Late Payment Penalty — {inv.name} "
+                                 f"({days_late} days overdue @ {lease.penalty_rate}%)"),
+                        'quantity':   1,
+                        'price_unit': penalty,
+                    })]
+                })
+                lease.message_post(
+                    body=_(f"Late payment penalty of KES {penalty:,.0f} generated "
+                           f"for overdue invoice {inv.name} ({days_late} days late).")
+                )
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

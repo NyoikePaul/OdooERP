@@ -2,23 +2,21 @@
 <odoo>
   <menuitem id="menu_real_estate_root" name="Real Estate" sequence="50"/>
 
-  <!-- Main menus -->
-  <menuitem id="menu_properties"   name="Properties"   parent="menu_real_estate_root"
-            action="estate_property_action"   sequence="1"/>
-  <menuitem id="menu_leases"       name="Leases"       parent="menu_real_estate_root"
-            action="estate_lease_action"      sequence="2"/>
-  <menuitem id="menu_maintenance"  name="Maintenance"  parent="menu_real_estate_root"
-            action="estate_maintenance_action" sequence="3"/>
-  <menuitem id="menu_rent_wizard"  name="Generate Rent Invoices" parent="menu_real_estate_root"
-            action="action_rent_payment_wizard" sequence="4"/>
+  <!-- Main -->
+  <menuitem id="menu_buildings"    name="Buildings"    parent="menu_real_estate_root" action="estate_building_action"    sequence="1"/>
+  <menuitem id="menu_properties"   name="Properties"   parent="menu_real_estate_root" action="estate_property_action"    sequence="2"/>
+  <menuitem id="menu_leases"       name="Leases"       parent="menu_real_estate_root" action="estate_lease_action"       sequence="3"/>
+  <menuitem id="menu_offers"       name="Offers"       parent="menu_real_estate_root" action="estate_offer_action"       sequence="4"/>
+  <menuitem id="menu_maintenance"  name="Maintenance"  parent="menu_real_estate_root" action="estate_maintenance_action" sequence="5"/>
+  <menuitem id="menu_inspections"  name="Inspections"  parent="menu_real_estate_root" action="estate_inspection_action"  sequence="6"/>
+  <menuitem id="menu_deposits"     name="Deposits"     parent="menu_real_estate_root" action="estate_deposit_action"     sequence="7"/>
+  <menuitem id="menu_commissions"  name="Commissions"  parent="menu_real_estate_root" action="estate_commission_action"  sequence="8"/>
+  <menuitem id="menu_utilities"    name="Utility Bills" parent="menu_real_estate_root" action="estate_utility_reading_action" sequence="9"/>
+  <menuitem id="menu_rent_wizard"  name="Generate Rent Invoices" parent="menu_real_estate_root" action="action_rent_payment_wizard" sequence="10"/>
 
-  <!-- Configuration sub-menu -->
-  <menuitem id="menu_re_config"    name="Configuration" parent="menu_real_estate_root"
-            sequence="99"/>
-  <menuitem id="menu_property_types" name="Property Types" parent="menu_re_config"
-            action="estate_property_type_action" sequence="1"/>
-  <menuitem id="menu_amenities"    name="Amenities"   parent="menu_re_config"
-            action="estate_amenity_action"    sequence="2"/>
-  <menuitem id="menu_tags"         name="Tags"        parent="menu_re_config"
-            action="estate_tag_action"        sequence="3"/>
+  <!-- Configuration -->
+  <menuitem id="menu_re_config"      name="Configuration"   parent="menu_real_estate_root" sequence="99"/>
+  <menuitem id="menu_property_types" name="Property Types"  parent="menu_re_config" action="estate_property_type_action" sequence="1"/>
+  <menuitem id="menu_amenities"      name="Amenities"       parent="menu_re_config" action="estate_amenity_action"       sequence="2"/>
+  <menuitem id="menu_tags"           name="Tags"            parent="menu_re_config" action="estate_tag_action"           sequence="3"/>
 </odoo>
