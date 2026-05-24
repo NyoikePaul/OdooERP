@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_inherit_etims_compliance" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.etims</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="etims_status" widget="statusbar" statusbar_visible="unsubmitted,pending,sent"/>
+            </xpath>
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="KRA eTIMS Certification" name="etims_compliance_ledger" invisible="move_type not in ['out_invoice', 'out_refund']">
+                    <group>
+                        <group string="Transmission Signature Metadata">
+                            <field name="etims_receipt_number" readonly="1"/>
+                            <field name="etims_signature" readonly="1"/>
+                        </group>
+                        <group string="Operational Telemetry Logs" invisible="etims_status != 'failed'">
+                            <field name="etims_error_log" readonly="1" class="text-danger font-weight-bold"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
