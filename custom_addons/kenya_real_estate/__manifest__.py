@@ -20,6 +20,7 @@
         'wizard/lease_renewal_wizard.xml',
         'report/lease_report.xml',
         'views/menu_views.xml',
+        'views/account_move_views.xml',
     ],
     'demo': ['demo/demo.xml'],
     'installable': True,

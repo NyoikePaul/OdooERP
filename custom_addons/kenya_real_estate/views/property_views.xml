@@ -157,7 +157,7 @@
               <field name="monthly_rent"/>
               <field name="sale_price"/>
               <field name="annual_revenue"/>
-              <field name="expected_yield" widget="percentage"/>
+              
             </group>
             <group>
               <field name="total_revenue"/>
