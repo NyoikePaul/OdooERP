@@ -6,7 +6,7 @@
     <field name="name">estate.offer.list</field>
     <field name="model">estate.offer</field>
     <field name="arch" type="xml">
-      <list string="Offers & Enquiries"
+      <list string="Offers &amp; Enquiries"
             decoration-success="status=='accepted'"
             decoration-danger="status=='refused'"
             decoration-warning="status=='viewing'"
