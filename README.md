@@ -11,12 +11,12 @@
 ##  Who is this for?
 
 | You are... | This gives you... |
-|---|---|
-|  **A Kenyan business** | Ready-to-deploy ERP with M-Pesa, KRA compliance out of the box |
-|  **A property manager** | Full Real Estate CRM — tenants, leases, rent collection via M-Pesa |
-|  **An Odoo developer** | Reference implementation for Kenya localization & Daraja integration |
-|  **A student/job seeker** | Production-grade portfolio showing real African fintech expertise |
-|  **An African startup** | The fastest path to a compliant, scalable ERP in East Africa |
+| :--- | :--- |
+| 🏢 **A Kenyan business** | Ready-to-deploy ERP with M-Pesa automated reconciliation and KRA eTIMS compliance out of the box. |
+| 🏭 **A manufacturer / wholesaler** | Advanced inventory tracking, certified dispatch workflows, manufacturing orders, and cost accounting. |
+| 💻 **An Odoo developer** | Reference implementation for Kenya localization, Daraja API webhooks, and secure module design. |
+| 🎓 **A student / job seeker** | Production-grade portfolio showing real African fintech integrations and advanced backend architecture. |
+| 🚀 **An African startup** | The fastest, most secure path to a compliant, scalable ERP system in East Africa. |
 
 ---
 
