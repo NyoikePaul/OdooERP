@@ -1,21 +1,8 @@
 
 
 <div align="center">
+**M-Pesa Daraja 2.0 • KRA eTIMS OSCU • Automated Accounting & Inventory • Production Docker**
 
-# 🇰🇪 OdooERP Kenya
-
-### Complete open-source Odoo stack for the African market
-
-[![CI](https://github.com/NyoikePaul/OdooERP/actions/workflows/ci.yml/badge.svg)](https://github.com/NyoikePaul/OdooERP/actions)
-[![Release](https://img.shields.io/github/v/release/NyoikePaul/OdooERP?color=00c67a)](https://github.com/NyoikePaul/OdooERP/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Odoo](https://img.shields.io/badge/Odoo-18.0-4A4A4A?logo=odoo)](https://odoo.com)
-[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](docker-compose.yml)
-[![Made for Kenya](https://img.shields.io/badge/Made_for-Kenya%20🇰🇪-006600)](https://github.com/NyoikePaul/OdooERP)
-
-**M-Pesa Daraja 2.0 · KRA eTIMS OSCU · Real Estate CRM · Production Docker**
-
-[🌐 Live Demo Site](https://nyoikepaul.github.io/OdooERP/) · [📖 Setup Guide](SETUP.md) · [🐛 Report Bug](https://github.com/NyoikePaul/OdooERP/issues) · [💼 Hire Me](mailto:paul@digifirst.com)
 
 </div>
 
