@@ -16,6 +16,8 @@ class EstateLease(models.Model):
     name        = fields.Char("Lease Ref", readonly=True, copy=False, default='New')
     property_id = fields.Many2one('estate.property', string="Property",
                                   required=True, ondelete='restrict', tracking=True)
+    unit_id     = fields.Many2one('estate.unit', string="Unit",
+                                   ondelete='set null', tracking=True)
     tenant_id   = fields.Many2one('res.partner', string="Tenant",
                                   required=True, tracking=True)
 
