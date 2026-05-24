@@ -111,16 +111,18 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 | Real Estate | 
 
-**Properties**
+## Properties
 
-<img width="1365" height="641" alt="image" src="https://github.com/user-attachments/assets/77ea77ed-856d-4854-9412-b85771c64f51" />
-
-
-
-<img width="1366" height="647" alt="image" src="https://github.com/user-attachments/assets/2cc8a3c8-1f66-40c2-80c0-bd7e871e57f5" />
+<img width="1366" height="644" alt="image" src="https://github.com/user-attachments/assets/34da954b-b6b3-4eaa-8080-5514266f9be8" />
 
 
-**Leases**
+
+## Agent Commissions
+<img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/451a7411-df84-43c5-a059-7ed74dedf723" />
+
+
+
+## Leases
 <img width="1366" height="647" alt="image" src="https://github.com/user-attachments/assets/1f9ed71c-f655-432c-9625-683ff3c05dea" />
 
 
@@ -128,7 +130,7 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 <img width="1366" height="641" alt="image" src="https://github.com/user-attachments/assets/aab561fa-0ffb-4b0e-b42b-7370352e3899" />
 
 
-**Maintenance**
+## Maintenance
 <img width="1365" height="644" alt="image" src="https://github.com/user-attachments/assets/a3bef0d4-0de3-4350-807a-7227b8c1baeb" />
 
 
