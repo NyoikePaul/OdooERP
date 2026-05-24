@@ -85,6 +85,10 @@ class EstateProperty(models.Model):
     commission_ids      = fields.One2many('estate.commission', 'property_id', string="Commissions")
     inspection_ids      = fields.One2many('estate.inspection', 'property_id', string="Inspections")
     unit_ids            = fields.One2many('estate.unit',       'property_id', string="Units")
+    offer_ids           = fields.One2many('estate.offer',      'property_id', string="Offers")
+    commission_ids      = fields.One2many('estate.commission', 'property_id', string="Commissions")
+    inspection_ids      = fields.One2many('estate.inspection', 'property_id', string="Inspections")
+    unit_ids            = fields.One2many('estate.unit',       'property_id', string="Units")
     maintenance_ids     = fields.One2many('estate.maintenance.request', 'property_id',
                                           string="Maintenance Requests")
 
@@ -95,6 +99,7 @@ class EstateProperty(models.Model):
     current_tenant_id   = fields.Many2one('res.partner', compute='_compute_active_lease',
                                           string="Current Tenant", store=True)
     maintenance_count   = fields.Integer(compute='_compute_maintenance_count',  store=True)
+    offer_count         = fields.Integer(compute='_compute_offer_count', store=True)
     offer_count         = fields.Integer(compute='_compute_offer_count', store=True)
     offer_count         = fields.Integer(compute='_compute_offer_count', store=True)
     occupancy_days      = fields.Integer(compute='_compute_occupancy',          store=True)
@@ -113,6 +118,11 @@ class EstateProperty(models.Model):
             active = rec.lease_ids.filtered(lambda l: l.status == 'active')
             rec.active_lease_id   = active[0] if active else False
             rec.current_tenant_id = active[0].tenant_id if active else False
+
+    @api.depends('offer_ids')
+    def _compute_offer_count(self):
+        for rec in self:
+            rec.offer_count = len(rec.offer_ids)
 
     @api.depends('offer_ids')
     def _compute_offer_count(self):
@@ -169,6 +179,17 @@ class EstateProperty(models.Model):
             'res_model': 'estate.lease',
             'view_mode': 'list,form',
             'domain': [('property_id', '=', self.id)],
+            'context': {'default_property_id': self.id},
+        }
+
+    def action_open_offers(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Offers & Enquiries',
+            'res_model': 'estate.offer',
+            'view_mode': 'list,form',
+            'domain': [('property_id','=',self.id)],
             'context': {'default_property_id': self.id},
         }
 
