@@ -1,49 +1,49 @@
 
 
 <div align="center">
-**M-Pesa Daraja 2.0 • KRA eTIMS OSCU • Automated Accounting & Inventory • Production Docker**
+## M-Pesa Daraja 2.0 • KRA eTIMS OSCU • Automated Accounting & Inventory • Production Docker
 
 
 </div>
 
 ---
 
-## 🎯 Who is this for?
+##  Who is this for?
 
 | You are... | This gives you... |
 |---|---|
-| 🏢 **A Kenyan business** | Ready-to-deploy ERP with M-Pesa, KRA compliance out of the box |
-| 🏠 **A property manager** | Full Real Estate CRM — tenants, leases, rent collection via M-Pesa |
-| 👨‍💻 **An Odoo developer** | Reference implementation for Kenya localization & Daraja integration |
-| 🎓 **A student/job seeker** | Production-grade portfolio showing real African fintech expertise |
-| 🌍 **An African startup** | The fastest path to a compliant, scalable ERP in East Africa |
+|  **A Kenyan business** | Ready-to-deploy ERP with M-Pesa, KRA compliance out of the box |
+|  **A property manager** | Full Real Estate CRM — tenants, leases, rent collection via M-Pesa |
+|  **An Odoo developer** | Reference implementation for Kenya localization & Daraja integration |
+|  **A student/job seeker** | Production-grade portfolio showing real African fintech expertise |
+|  **An African startup** | The fastest path to a compliant, scalable ERP in East Africa |
 
 ---
 
-## ✨ Features
+##  Features
 
-### 📱 M-Pesa Integration (Full Daraja 2.0)
+###  M-Pesa Integration (Full Daraja 2.0)
 - **STK Push** — customer pays directly from phone prompt
 - **Auto-reconciliation** — payments matched to invoices automatically
 - **Transaction log** — every Safaricom callback stored with receipt number
 - **Sandbox/Live toggle** — test without real money
 - Works with Sales, POS, eCommerce, and Real Estate rent
 
-### 🏠 Real Estate CRM
+###  Real Estate CRM
 - Property listings (residential, commercial, land, industrial)
 - Tenant lease management with start/end dates
 - One-click **PDF Tenancy Agreement** (Kenya Landlord & Tenant Act compliant)
 - Bulk rent invoice generation wizard
 - M-Pesa rent collection integrated
 
-### 🇰🇪 Kenya Localization
+###  Kenya Localization
 - KRA PIN validation
 - VAT 16%, Withholding Tax schedules
 - **KRA eTIMS OSCU** — real-time invoice submission (no hardware needed)
 - Chart of accounts aligned to Kenya accounting standards
 - Swahili (sw) translations included
 
-### 🐳 Production-Ready DevOps
+###  Production-Ready DevOps
 - Docker + Docker Compose v2 (dev and prod configs)
 - Nginx reverse proxy + Let's Encrypt SSL
 - One-command backup (`make backup`)
@@ -52,23 +52,22 @@
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
-```bash
+bash
 git clone https://github.com/NyoikePaul/OdooERP.git
 cd OdooERP
 cp .env.example .env
 # Edit .env with your M-Pesa Daraja credentials
 make up
-```
 
 Open **http://localhost:8069** → create database → install `kenya_mpesa_acquirer` + `kenya_real_estate`
 
-> 📖 Full production setup: [SETUP.md](SETUP.md)
+>  Full production setup: [SETUP.md](SETUP.md)
 
 ---
 
-## 📦 Custom Modules
+##  Custom Modules
 
 | Module | Description | Depends on |
 |---|---|---|
@@ -94,7 +93,7 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 > **Infrastructure:** PostgreSQL · Docker Compose v2 · Nginx · SSL · GitHub Actions CI
 
 
-## 📸 Screenshots
+##  Screenshots
 
 | Real Estate | 
 
@@ -144,7 +143,7 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 ---
 
-## 🗺️ Roadmap
+##  Roadmap
 
 - [x] M-Pesa STK Push + callback + reconciliation
 - [x] Real Estate CRM (properties, leases, PDF agreements)
@@ -161,42 +160,42 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-```bash
+bash
 git checkout -b feat/your-feature
 # make changes
 git commit -m "feat: describe your change"
 git push origin feat/your-feature
 # open a Pull Request → main
-```
+
 
 ---
 
-## 🛡️ Security
+##  Security
 
 Found a vulnerability? See [SECURITY.md](SECURITY.md) — please **do not** open a public issue.
 
 ---
 
-## 💼 Commercial Support & Consulting
+##  Commercial Support & Consulting
 
 > Need a custom Odoo implementation for your Kenyan or African business?
 
 **Paul Nyoike** — Python Backend Engineer | Odoo ERP Specialist | Nairobi, Kenya
 
-- 🌐 [digifirst.com](https://digifirst.com)
-- 💼 [LinkedIn](https://linkedin.com/in/nyoikepaul)
-- 🐙 [GitHub](https://github.com/NyoikePaul)
-- 📧 [paul@digifirst.com](mailto:paul@digifirst.com)
+-  [digifirst.com](https://digifirst.com)
+-  [LinkedIn](https://linkedin.com/in/nyoikepaul)
+-  [GitHub](https://github.com/NyoikePaul)
+-  [paul@digifirst.com](mailto:paul@digifirst.com)
 
 Services: Odoo deployment · M-Pesa integration · KRA eTIMS setup · Custom module development · Training
 
 ---
 
-## 📄 License
+##  License
 
 MIT © 2026 [NyoikePaul](https://github.com/NyoikePaul) — free to use, modify, and distribute.
 
@@ -210,6 +209,6 @@ Made with 🇰🇪 in Nairobi
 
 </div>
 
-## 🌐 Live Landing Page
+##  Live Landing Page
 
 **[View Marketing Site →](index.html)**
