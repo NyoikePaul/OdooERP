@@ -34,7 +34,11 @@ class EstateLease(models.Model):
     currency_id  = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
     deposit      = fields.Monetary("Security Deposit (KES)", currency_field='currency_id')
     deposit_paid = fields.Boolean("Deposit Paid", tracking=True)
-    penalty_rate = fields.Float("Late Payment Penalty (%)", default=5.0)
+    penalty_rate     = fields.Float("Late Payment Penalty (%)", default=5.0)
+    escalation_rate  = fields.Float("Annual Escalation (%)", default=10.0)
+    next_review_date = fields.Date("Next Rent Review Date")
+    service_charge   = fields.Monetary("Service Charge (KES/month)", currency_field='currency_id')
+    unit_id          = fields.Many2one('estate.unit', string="Unit", ondelete='set null', tracking=True)
 
     # ── Status ────────────────────────────────────────
     status = fields.Selection([
