@@ -124,13 +124,6 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 
 
-## Leases
-<img width="1366" height="647" alt="image" src="https://github.com/user-attachments/assets/1f9ed71c-f655-432c-9625-683ff3c05dea" />
-
-
-  
-<img width="1366" height="641" alt="image" src="https://github.com/user-attachments/assets/aab561fa-0ffb-4b0e-b42b-7370352e3899" />
-
 
 ## Maintenance
 <img width="1365" height="644" alt="image" src="https://github.com/user-attachments/assets/a3bef0d4-0de3-4350-807a-7227b8c1baeb" />
