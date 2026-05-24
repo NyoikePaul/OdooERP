@@ -1,7 +1,7 @@
 
 
 <div align="center">
-## M-Pesa Daraja 2.0 • KRA eTIMS OSCU • Automated Accounting & Inventory • Production Docker
+ M-Pesa Daraja 2.0 • KRA eTIMS OSCU • Automated Accounting & Inventory • Production Docker
 
 
 </div>
@@ -98,12 +98,12 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 | Real Estate | 
 
 
-## Agent Commissions
+ ** Agent Commissions
 <img width="1366" height="645" alt="image" src="https://github.com/user-attachments/assets/fd374b30-7edc-482d-8da2-2f70fdf8e2c7" />
 
 
 
-## Offers & Enquiries
+** Offers & Enquiries
 <img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/df74e856-dc71-4012-a478-06cf94afcf48" />
 
 
@@ -111,7 +111,7 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 
 
-## Maintenance
+** Maintenance
 <img width="1365" height="644" alt="image" src="https://github.com/user-attachments/assets/a3bef0d4-0de3-4350-807a-7227b8c1baeb" />
 
 
