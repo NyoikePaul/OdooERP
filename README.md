@@ -18,7 +18,7 @@
 | 🎓 **A student / job seeker** | Production-grade portfolio showing real African fintech integrations and advanced backend architecture. |
 | 🚀 **An African startup** | The fastest, most secure path to a compliant, scalable ERP system in East Africa. |
 
----
+
 
 ##  Features
 
