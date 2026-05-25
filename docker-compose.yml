@@ -22,8 +22,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     ports:
       - "8069:8069"
+      - "8072:8072"
     environment:
       HOST: ${ODOO_DB_HOST:-db}
       USER: ${ODOO_DB_USER:-odoo}
@@ -31,8 +35,6 @@ services:
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
-      - ./custom_addons:/mnt/custom-addons
-      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
 
 volumes:
   odoo-db-data:
