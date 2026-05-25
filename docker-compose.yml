@@ -17,21 +17,24 @@ services:
 
   web:
     image: odoo:18.0
+    # Install Python deps on startup if present
     container_name: odooerp-web
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
     ports:
       - "8069:8069"
       - "8072:8072"
     environment:
-      HOST: ${ODOO_DB_HOST:-db}
-      USER: ${ODOO_DB_USER:-odoo}
-      PASSWORD: ${ODOO_DB_PASSWORD:?Set ODOO_DB_PASSWORD in .env}
+      - HOST=db
+      - USER=${ODOO_DB_USER}
+      - PASSWORD=${ODOO_DB_PASSWORD}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${ODOO_DB_USER}
+      - DB_PASSWORD=${ODOO_DB_PASSWORD}
+    command: --db_host=db --db_user=${ODOO_DB_USER} --db_password=${ODOO_DB_PASSWORD} -d odoo_kenya
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons

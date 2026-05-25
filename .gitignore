@@ -32,3 +32,16 @@ Thumbs.db
 logs/
 *.log
 addons/
+logs/
+*.log
+# Runtime
+logs/
+*.log
+*.pyc
+__pycache__/
+.env
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
