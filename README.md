@@ -99,7 +99,8 @@ Open **http://localhost:8069** → create database → install `kenya_mpesa_acqu
 
 
  ** Agent Commissions
-<img width="1366" height="645" alt="image" src="https://github.com/user-attachments/assets/fd374b30-7edc-482d-8da2-2f70fdf8e2c7" />
+<img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/c333b226-81b0-49b9-ac08-928e07190619" />
+
 
 
 
