@@ -146,6 +146,13 @@ class EstateProperty(models.Model):
 
     # ═══════════════ COMPUTE METHODS ════════════════ #
 
+
+    _sql_constraints = [
+        ('ref_unique', 'UNIQUE(ref)', 'Property reference must be unique.'),
+        ('monthly_rent_positive', 'CHECK(monthly_rent >= 0)', 'Monthly rent cannot be negative.'),
+        ('sale_price_positive', 'CHECK(sale_price >= 0)', 'Sale price cannot be negative.'),
+    ]
+
     @api.depends('lease_ids', 'offer_ids', 'maintenance_ids', 'inspection_ids')
     def _compute_counts(self):
         for rec in self:

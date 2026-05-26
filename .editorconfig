@@ -1,0 +1,70 @@
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+[*.xml]
+indent_style = space
+indent_size = 4
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+
+# ═══════════════════════════════════════════════════
+# 12. ADD pyproject.toml (modern Python standard)
+# ═══════════════════════════════════════════════════
+cat > pyproject.toml << 'EOF'
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends.legacy:build"
+
+[tool.flake8]
+max-lngth = 120
+exclude = [
+    "__pycache__",
+    "*.pyc",
+    ".git",
+    ".github",
+]
+per-file-ignores = [
+    "__init__.py: F401",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]
+
+[project]
+name = "odoo-kenya-erp"
+version = "3.0.0"
+description = "Kenya-localized Odoo ERP modules — M-Pesa, Real Estate CRM, KRA eTIMS"
+readme = "README.md"
+license = {text = "LGPL-3.0-or-later"}
+authors = [
+    {name = "Paul Nyoike", email = "paul@digifirst.com"}
+]
+keywords = ["odoo", "erp", "kenya", "mpesa", "real-te", "kra"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+requires-python = ">=3.10"

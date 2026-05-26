@@ -1,62 +1,59 @@
-from odoo.tests.common import TransactionCase
+"""Tests for estate.lease model."""
+from .common import EstateTestCommon
 from odoo.exceptions import ValidationError
 from datetime import date
 
 
-class TestEstateLease(TransactionCase):
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.landlord = cls.env['res.partner'].create({'name': 'Landlord Test'})
-        cls.tenant   = cls.env['res.partner'].create({'name': 'Tenant Test'})
-        cls.prop = cls.env['estate.property'].create({
-            'name': 'Test Flat Nairobi',
-            'property_type': 'residential',
-            'landlord_id': cls.landlord.id,
-            'monthly_rent': 60000,
-        })
-
-    def _make_lease(self, **kwargs):
-        vals = {
-            'property_id': self.prop.id,
-            'tenant_id': self.tenant.id,
-            'date_start': date(2026, 1, 1),
-            'date_end': date(2026, 12, 31),
-        }
-        vals.update(kwargs)
-        return self.env['estate.lease'].create(vals)
+class TestEstateLease(EstateTestCommon):
 
     def test_lease_auto_ref(self):
-        lease = self._make_lease()
+        lease = self._make_active_lease()
         self.assertIn('LEASE/', lease.name)
 
     def test_activate_lease_updates_property(self):
-        lease = self._make_lease()
-        self.assertEqual(lease.status, 'draft')
-        lease.action_activate()
+        lease = self._make_active_lease()
         self.assertEqual(lease.status, 'active')
-        self.assertEqual(self.prop.status, 'leased')
+        self.assertEqual(self.property_residential.status, 'leased')
 
     def test_cancel_lease_frees_property(self):
-        lease = self._make_lease()
-        lease.action_activate()
+        lease = self._make_active_lease()
         lease.action_cancel()
         self.assertEqual(lease.status, 'cancelled')
-        self.assertEqual(self.prop.status, 'available')
+        self.assertEqual(self.property_residential.status, 'available')
 
-    def test_date_validation_end_before_start_raises(self):
+    def test_expire_sets_property_available(self):
+        lease = self._make_active_lease()
+        lease.action_expire()
+        self.assertEqual(lease.status, 'expired')
+        self.assertEqual(self.property_residential.status, 'available')
+
+    def test_surrender_workflow(self):
+        lease = self._make_active_lease()
+        lease.action_surrender()
+        self.assertEqual(lease.status, 'surrendered')
+        self.assertEqual(self.property_residential.status, 'available')
+
+    def test_date_validation_end_before_start(self):
         with self.assertRaises(ValidationError):
-            self._make_lease(
-                date_start=date(2026, 12, 31),
-                date_end=date(2026, 1, 1),
-            )
+            self.env['estate.lease'].create({
+                'property_id':  self.property_commercial.id,
+                'tenant_id':    self.tenant_1.id,
+                'date_start':   '2026-12-31',
+                'date_end':     '2026-01-01',
+                'deposit_paid': True,
+            })
 
     def test_generate_rent_invoice(self):
-        lease = self._make_lease()
-        lease.action_activate()
+        lease = self._make_active_lease()
         result = lease.action_generate_rent_invoice()
         self.assertEqual(result['res_model'], 'account.move')
-        invoice = self.env['account.move'].browse(result['res_id'])
-        self.assertEqual(invoice.partner_id, self.tenant)
-        self.assertEqual(invoice.lease_id, lease)
+        inv = self.env['account.move'].browse(result['res_id'])
+        self.assertEqual(inv.partner_id, self.tenant_1)
+        self.assertEqual(inv.lease_id, lease)
+
+    def test_invoice_includes_service_charge(self):
+        lease = self._make_active_lease()
+        lease.write({'service_charge': 5000})
+        result = lease.action_generate_rent_invoice()
+        inv = self.env['account.move'].browse(result['res_id'])
+        self.assertEqual(len(inv.invoice_line_ids), 2)

@@ -111,6 +111,14 @@ class EstateLease(models.Model):
 
     # ═══════════════ COMPUTE METHODS ════════════════ #
 
+
+    _sql_constraints = [
+        ('name_unique', 'UNIQUE(name)', 'Lease reference must be unique.'),
+        ('rent_positive', 'CHECK(monthly_rent >= 0)', 'Monthly rent cannot be negative.'),
+        ('deposit_positive', 'CHECK(deposit >= 0)', 'Deposit cannot be negative.'),
+        ('penalty_rate_valid', 'CHECK(penalty_rate >= 0 AND penalty_rate <= 100)', 'Penalty rate must be between 0 and 100%.'),
+    ]
+
     @api.depends('property_id.property_type', 'monthly_rent', 'apply_wht')
     def _compute_wht_rate(self):
         for rec in self:

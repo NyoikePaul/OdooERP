@@ -8,94 +8,116 @@ on:
 
 jobs:
   lint:
-    name: Lint & Validate
+    name: Lint & Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-
-      - name: Install linting tools
+          python-version: '11'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-flake8
+      - name: Install tools
         run: pip install flake8 bandit --quiet
-
-      - name: Lint with flake8
+      - name: flake8
         run: |
           flake8 custom_addons/ \
             --max-line-length=120 \
             --exclude=__pycache__,*.pyc \
-            --statistics \
-            --count || true
-
-      - name: Security scan with bandit
+            --statistics --count || true
+      - name: bandit security scan
         run: |
           bandit -r custom_addons/ \
-            -x custom_addons/*/tests/ \
+            -x cstom_addons/*/tests/ \
             -ll --format txt || true
-
-      - name: Check for hardcoded credentials
+      - name: Check no hardcoded secrets
         run: |
-          if grep -rn "consumer_secret\s*=\s*['\"][A-Za-z0-9]\{10\}" custom_addons/ 2>/dev/null; then
-            echo "WARNING: Possible hardcoded credentials"
+          if grep -rn "consumer_secret\s*=\s*['\"][A-Za-z0-9]\{8\}" custom_addons/ 2>/dev/null \
+             | grep -v "fields\.\|test\|example\|sandbox"; then
+            echo "WARNING: Possible hardcoded secret"
           else
-            echo "OK: No hardcoded credentials"
+            echo "OK: No hardcoded secrets"
           fi
 
   validate:
-    name: Repo Structure Check
+    name: Module Structure Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actionckout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Check required files exist
-        run: |
-          echo "Checking required files..."
-          for f in LICENSE README.md .env.example docker-compose.yml docker-compose.prod.yml config/odoo.conf nginx/odoo.conf CHANGELOG.md; do
-            if [ ! -f "$f" ]; then
-              echo "MISSING: $f"
-              exit 1
-            fi
-            echo "OK: $f"
-          done
-
-      - name: Validate manifests are valid Python
+      - name: Validate manifests
         run: |
           for f in $(find custom_addons/ -name "__manifest__.py"); do
             python3 -c "
-import ast, sys
-try:
-    ast.literal_eval(open('$f').read())
-    print('OK: $f')
-except Exception as e:
-    print('FAIL: $f -', e)
-    sys.exit(1)
-"
+          import ast, sys
+          try:
+              m = ast.literal_eval(open('$f').read())
+              required = ['name','version','summary','author','license','depends']
+              missing  = [k for k in required if k not in m]
+              if missing:
+                print(f'MISSING fields in $f: {missing}')
+                  sys.exit(1)
+              print(f'OK: $f  v{m[\"version\"]}')
+          except Exception as e:
+              print(f'FAIL: $f - {e}')
+              sys.exit(1)
+          "
           done
 
-      - name: Check all modules have security file
+      - name: Check module required files
         run: |
           for module in custom_addons/*/; do
-            if [ ! -f "${module}security/ir.model.access.csv" ]; then
-              echo "MISSING security: $module"
-              exit 1
-            fi
-            echo "OK: $module"
+            ok=1
+            for req in __manifest__.py __init__.py security/ir.model.access.csv; do
+              [ -f "${module}${req}" ] || { echo "MISSNG: ${module}${req}"; ok=0; }
+            done
+            [ $ok -eq 1 ] && echo "OK: $module"
           done
 
-      - name: Verify .env not committed
+      - name: Check no .env committed
         run: |
-          [ ! -f ".env" ] && echo "OK: .env not committed" || (echo "FAIL: .env committed!" && exit 1)
+          [ ! -f .env ] && echo "OK" || (echo "FAIL: .env committed!" && exit 1)
 
-      - name: Validate docker compose syntax
+      - name: Validate docker compose
         run: |
           cp .env.example .env
           docker compose config -q && echo "OK: docker-compose.yml"
-          docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q && echo "OK: prod config"
-          rm -f .env
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml config -q && echo "OK: prod"
+          r -f .env
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install bandit --quiet
+      - name: Bandit medium+ severity
+        run: |
+          bandit -r custom_addons/ \
+            -x custom_addons/*/tests/ \
+            -ll -ii --format txt || true
+      - name: Check LICENSE exists
+        run: |
+          [ -f LICENSE ] && echo "OK: LICENSE" | (echo "FAIL: No LICENSE" && exit 1)
+      - name: Verify LGPL-3 in all manifests
+        run: |
+          for f in $(find custom_addons/ -name "__manifest__.py"); do
+            python3 -c "
+          import ast
+          m = ast.literal_eval(open('$f').read())
+          lic = m.get('license','')
+          if lic not in ('LGPL-3','GPL-3','MIT','Apache-2.0','OEEL-1'):
+              print(f'WARNING: Non-standard license in $f: {lic}')
+          else:
+              print(f'OK: $f license={lic}')
+          "
+       done

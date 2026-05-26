@@ -1,0 +1,14 @@
+<section class="oe_container">
+  <h2 class="oe_slogan">M-Pesa Connector Core</h2>
+  <h3 class="oe_slogan">Reusable Daraja 2.0 API Kernel for Odoo Developers</h3>
+</section>
+<section class="oe_container oe_dark">
+  <p>Provides <code>mpesa.api.mixin</code> — an abstract model exposing all Daraja 2.0 endpoints.
+  Inherit this mixin in any module to add M-Pesa capabilities without duplicating API logic.</p>
+  <pre>class MyModel(models.Model):
+    _inherit = ['mpesa.api.mixin']
+
+    def pay(self):
+        token = self._get_access_token(key, secret)
+        self._stk_push(token, shortcode, passkey, phone, amount, url, ref)</pre>
+</section>

@@ -198,7 +198,7 @@ Services: Odoo deployment · M-Pesa integration · KRA eTIMS setup · Custom mod
 
 ##  License
 
-MIT © 2026 [NyoikePaul](https://github.com/NyoikePaul) — free to use, modify, and distribute.
+LGPL-3 © 2026 [NyoikePaul](https://github.com/NyoikePaul) — compatible with Odoo Community Edition. Modify freely; changes to this module must be open-sourced.
 
 ---
 
