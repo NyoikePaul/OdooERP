@@ -11,3 +11,4 @@
     'application': True,
     'license': 'LGPL-3',
 }
+'description': 'Professional real estate management', 'summary': 'Manage properties, users, and maintenance.'
