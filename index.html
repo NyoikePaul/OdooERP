@@ -1,578 +1,239 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OdooERP Kenya — Production Enterprise Infrastructure Dashboard</title>
-  <meta name="description" content="Production-ready Odoo ERP localization suite for East Africa. Native M-Pesa Daraja 2.0 integration, real-time KRA eTIMS OSCU validation, and certified dispatch weighbridge tracking.">
+  <meta name="description" content="Odoo ERP Kenya - Full M-Pesa Daraja 2.0, Real Estate Management & KRA Compliance. Production-ready, locally built for Kenyan businesses.">
+  <title>Odoo ERP Kenya • M-Pesa • Real Estate • KRA Compliant</title>
   
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "OdooERP Kenya Suite",
-    "operatingSystem": "Linux (Docker)",
-    "applicationCategory": "EnterpriseERPApplication",
-    "releaseNotes": "v1.0.0-GA"
-  }
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   
   <style>
-    body { background-color: #020617; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-    .glow-overlay {
-      background: radial-gradient(circle 1000px at 50% -200px, rgba(29, 78, 216, 0.12), transparent);
+    .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%); }
+    .gradient-text {
+      background: linear-gradient(90deg, #10b981, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .grid-matrix {
-      background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 0);
-      background-size: 24px 24px;
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-    .custom-scroll::-webkit-scrollbar-track { background: #020617; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .card-hover:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+    }
+    .stat-number { font-variant-numeric: tabular-nums; }
   </style>
 </head>
-<body class="relative min-h-screen selection:bg-blue-500/30 overflow-x-hidden antialiased custom-scroll">
+<body class="bg-slate-950 text-slate-200 overflow-x-hidden">
 
-  <div class="absolute inset-0 glow-overlay pointer-events-none z-0"></div>
-  <div class="absolute inset-0 grid-matrix pointer-events-none z-0 opacity-90"></div>
+  <!-- NAV -->
+  <nav class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md fixed w-full z-50">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl font-bold text-emerald-400">Odoo<span class="text-white">KE</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#features" class="hover:text-emerald-400 transition">Features</a>
+        <a href="#screenshots" class="hover:text-emerald-400 transition">Screenshots</a>
+        <a href="#deploy" class="hover:text-emerald-400 transition">Deploy</a>
+      </div>
+      <a href="https://github.com/NyoikePaul/OdooERP" target="_blank"
+         class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 px-5 py-2.5 rounded-2xl border border-slate-700">
+        <i class="fab fa-github"></i>
+        <span>Star on GitHub</span>
+      </a>
+    </div>
+  </nav>
 
-  <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center space-x-4">
-        <span class="text-xl font-black text-white tracking-tight">Odoo<span class="text-blue-500">ERP</span> <span class="text-slate-500 font-light text-sm hidden sm:inline">KE Suite</span></span>
-        <span class="bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-mono tracking-widest px-2.5 py-0.5 rounded-md font-bold">V1.0.0-CLUSTER</span>
+  <!-- HERO -->
+  <section class="hero-bg pt-32 pb-24 md:pt-40 md:pb-32 text-center">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="inline-flex items-center gap-2 bg-slate-900 border border-emerald-900 rounded-full px-4 py-1.5 mb-6">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+        <span class="text-sm text-emerald-400 font-medium">Built for Kenya • Actively Maintained</span>
       </div>
       
-      <nav class="hidden lg:flex space-x-8 text-xs uppercase font-mono tracking-wider font-bold text-slate-400">
-        <a href="#telemetry-hub" class="hover:text-blue-400 transition-colors">Simulation</a>
-        <a href="#metrics-charts" class="hover:text-blue-400 transition-colors">Visualizations</a>
-        <a href="#architecture-specs" class="hover:text-blue-400 transition-colors">Capabilities</a>
-        <a href="#orchestration-matrix" class="hover:text-blue-400 transition-colors">DevOps Config</a>
-      </nav>
+      <h1 class="text-6xl md:text-7xl font-bold leading-tight mb-6">
+        The ERP Kenyan<br>Businesses Actually Use
+      </h1>
+      <p class="text-2xl text-slate-400 max-w-3xl mx-auto">
+        M-Pesa Daraja 2.0 • Smart Real Estate Management • Full KRA eTIMS &amp; Withholding Tax Compliance
+      </p>
 
-      <div class="flex items-center space-x-3">
-        <a href="https://github.com/NyoikePaul/OdooERP" target="_blank" class="bg-slate-900 hover:bg-slate-800 text-slate-200 px-4 py-2 rounded-lg text-xs font-bold border border-slate-800 transition-all flex items-center space-x-2 shadow-lg shadow-black/40 hover:scale-[1.02]">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-          <span class="hidden sm:inline">Repository Hub</span>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+        <a href="https://github.com/NyoikePaul/OdooERP" target="_blank"
+           class="bg-emerald-500 hover:bg-emerald-600 text-black font-semibold text-lg px-10 py-5 rounded-2xl flex items-center justify-center gap-3 transition">
+          <i class="fab fa-github text-xl"></i>
+          Get the Source Code
+        </a>
+        <a href="#contact" 
+           class="border-2 border-slate-400 hover:border-white font-semibold text-lg px-10 py-5 rounded-2xl transition">
+          Request Live Demo →
         </a>
       </div>
-    </div>
-  </header>
 
-  <section class="relative max-w-7xl mx-auto text-center px-6 pt-20 pb-12 z-10">
-    <div class="inline-flex items-center space-x-3 bg-blue-500/5 border border-blue-500/20 text-blue-400 px-4 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wide mb-6">
-      <span class="flex h-2 w-2 relative">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-      </span>
-      <span>EAST AFRICAN HIGH-AVAILABILITY ARCHITECTURE SUITE</span>
-    </div>
-    <h1 class="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tight leading-[1.05] mb-6">
-      Enterprise Supply Chain <br>
-      <span class="bg-gradient-to-r from-blue-400 via-indigo-200 to-slate-400 bg-clip-text text-transparent">& Fintech Systems.</span>
-    </h1>
-    <p class="text-sm sm:text-base md:text-lg text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-      A completely decoupled, multi-worker localization matrix. Compiles transactional payloads, executes real-time KRA eTIMS validations, and tracks physical warehouse dispatch telemetry.
-    </p>
-  </section>
-
-  <section class="max-w-7xl mx-auto px-6 mb-12 relative z-10">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      
-      <div class="bg-slate-950 border border-slate-900 p-6 rounded-xl relative overflow-hidden group hover:border-blue-500/30 transition-all duration-300">
-        <div class="absolute top-0 right-0 p-3 text-slate-800 font-mono text-3xl font-black group-hover:text-blue-500/5 transition-colors">01</div>
-        <div class="text-[10px] font-mono uppercase text-slate-500 tracking-wider font-bold">// M-Pesa Throughput API</div>
-        <div class="text-3xl font-black text-white my-1 flex items-baseline">
-          <span class="text-blue-500 mr-1 text-xl font-mono">KES</span>
-          <span id="kpi-mpesa" data-target="24810250">0</span>
-        </div>
-        <p class="text-[11px] text-slate-400 font-sans">Total processed real-time settlements via Daraja callback channels.</p>
-      </div>
-
-      <div class="bg-slate-950 border border-slate-900 p-6 rounded-xl relative overflow-hidden group hover:border-emerald-500/30 transition-all duration-300">
-        <div class="absolute top-0 right-0 p-3 text-slate-800 font-mono text-3xl font-black group-hover:text-emerald-500/5 transition-colors">02</div>
-        <div class="text-[10px] font-mono uppercase text-slate-500 tracking-wider font-bold">// Weighbridge Manifests</div>
-        <div class="text-3xl font-black text-white my-1 flex items-baseline">
-          <span id="kpi-manifests" data-target="1420">0</span>
-          <span class="text-emerald-400 ml-1 text-sm font-mono">SIGNED</span>
-        </div>
-        <p class="text-[11px] text-slate-400 font-sans">Certified mass hardware logs completed across distribution loops.</p>
-      </div>
-
-      <div class="bg-slate-950 border border-slate-900 p-6 rounded-xl relative overflow-hidden group hover:border-indigo-500/30 transition-all duration-300 sm:col-span-2 lg:col-span-1">
-        <div class="absolute top-0 right-0 p-3 text-slate-800 font-mono text-3xl font-black group-hover:text-indigo-500/5 transition-colors">03</div>
-        <div class="text-[10px] font-mono uppercase text-slate-500 tracking-wider font-bold">// eTIMS Compliance Metric</div>
-        <div class="text-3xl font-black text-white my-1 flex items-baseline">
-          <span id="kpi-etims" data-target="99.98">0</span>
-          <span class="text-indigo-400 ml-0.5 text-xl font-mono">%</span>
-        </div>
-        <p class="text-[11px] text-slate-400 font-sans">Successful asynchronous legal validation response transmissions.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="telemetry-hub" class="max-w-7xl mx-auto px-6 py-4 relative z-10">
-    <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-4 sm:p-6 backdrop-blur-2xl shadow-2xl">
-      <div class="grid lg:grid-cols-12 gap-6">
-        
-        <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
-          <div>
-            <span class="text-[10px] font-mono font-bold tracking-widest text-blue-400 uppercase">// Local Drivers Hub</span>
-            <h2 class="text-xl font-black text-white mt-0.5">Pipeline Emulation Array</h2>
-          </div>
-
-          <div class="bg-slate-950 border border-slate-900 p-4 rounded-xl space-y-3 shadow-inner">
-            <div class="flex justify-between items-center border-b border-slate-900 pb-1.5">
-              <span class="text-xs font-mono font-bold text-slate-300 flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                Certified Dispatch Weighbridge Calibration
-              </span>
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="block text-[8px] font-mono uppercase text-slate-500 mb-0.5">Gross Mass (Kg)</label>
-                <input id="gross-wt" type="number" value="44250" class="w-full bg-slate-900 border border-slate-800 rounded p-1 font-mono text-xs text-white focus:outline-none focus:border-blue-500">
-              </div>
-              <div>
-                <label class="block text-[8px] font-mono uppercase text-slate-500 mb-0.5">Tare Mass (Kg)</label>
-                <input id="tare-wt" type="number" value="14120" class="w-full bg-slate-900 border border-slate-800 rounded p-1 font-mono text-xs text-white focus:outline-none focus:border-blue-500">
-              </div>
-              <div>
-                <label class="block text-[8px] font-mono uppercase text-slate-500 mb-0.5">Moisture Max %</label>
-                <input id="moisture-pct" type="number" step="0.1" value="13.5" class="w-full bg-slate-900 border border-slate-800 rounded p-1 font-mono text-xs text-white focus:outline-none focus:border-blue-500">
-              </div>
-            </div>
-            <button onclick="runWeighbridgeSequence()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-mono font-bold text-xs py-2 rounded-md transition-all hover:scale-[1.01] cursor-pointer shadow-md shadow-blue-600/10">
-              Execute Certified Mass Log
-            </button>
-          </div>
-
-          <div class="bg-slate-950 border border-slate-900 p-4 rounded-xl space-y-3 shadow-inner">
-            <div class="flex justify-between items-center border-b border-slate-900 pb-1.5">
-              <span class="text-xs font-mono font-bold text-slate-300 flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
-                Asynchronous Daraja API 2.0 Gateway Core
-              </span>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-[8px] font-mono uppercase text-slate-500 mb-0.5">Amount (KES)</label>
-                <input id="mpesa-amount" type="number" value="125000" class="w-full bg-slate-900 border border-slate-800 rounded p-1 font-mono text-xs text-white focus:outline-none focus:border-emerald-500">
-              </div>
-              <div>
-                <label class="block text-[8px] font-mono uppercase text-slate-500 mb-0.5">Customer MSISDN</label>
-                <input id="mpesa-phone" type="text" value="254712345678" class="w-full bg-slate-900 border border-slate-800 rounded p-1 font-mono text-xs text-white focus:outline-none focus:border-emerald-500">
-              </div>
-            </div>
-            <button onclick="runMpesaGatewaySequence()" class="w-full bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 font-mono font-bold text-xs text-emerald-400 py-2 rounded-md transition-all hover:scale-[1.01] cursor-pointer">
-              Broadcast Asynchronous STK Request
-            </button>
-          </div>
-
-          <div class="bg-gradient-to-br from-slate-950 to-slate-900 border border-blue-900/30 p-4 rounded-xl space-y-2.5">
-            <div class="flex items-center space-x-2 text-xs font-mono font-bold text-blue-400">
-              <svg class="w-3.5 h-3.5 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span>AI CO-PILOT COMMAND DIRECTIVES</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
-              <button onclick="triggerAICopilot('audit')" class="bg-blue-950/40 hover:bg-blue-950 text-blue-300 border border-blue-900/40 p-2 rounded text-left transition-colors cursor-pointer group">
-                <span class="text-blue-500 font-bold group-hover:text-blue-400">▶</span> Run Anomalous Audit Loop
-              </button>
-              <button onclick="triggerAICopilot('memory')" class="bg-indigo-950/40 hover:bg-indigo-950 text-indigo-300 border border-indigo-900/40 p-2 rounded text-left transition-colors cursor-pointer group">
-                <span class="text-indigo-500 font-bold group-hover:text-indigo-400">▶</span> Tune Multiprocessing Workers
-              </button>
-              <button onclick="triggerAICopilot('callback')" class="bg-emerald-950/40 hover:bg-emerald-950 text-emerald-300 border border-emerald-900/40 p-2 rounded text-left transition-colors cursor-pointer group">
-                <span class="text-emerald-500 font-bold group-hover:text-emerald-400">▶</span> Clear Callback Bottlenecks
-              </button>
-              <button onclick="triggerAICopilot('oscu')" class="bg-slate-900 hover:bg-slate-850 text-slate-300 border border-slate-800 p-2 rounded text-left transition-colors cursor-pointer group">
-                <span class="text-slate-500 font-bold group-hover:text-slate-400">▶</span> Run KRA Device Ping
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-7 flex flex-col bg-[#050b14] border border-slate-900 rounded-xl overflow-hidden shadow-2xl h-[480px]">
-          <div class="bg-slate-950 px-4 py-3 border-b border-slate-900 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-              <div class="flex space-x-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/60"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/60"></span>
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 animate-pulse"></span>
-              </div>
-              <span class="text-[11px] font-mono font-bold text-slate-400 pl-2">CORE_KERNEL_BUS // TERMINAL</span>
-            </div>
-            <div class="flex items-center space-x-3 text-[10px] font-mono text-slate-500">
-              <button onclick="clearTerminalLogs()" class="hover:text-slate-300 transition-colors bg-slate-900 px-2 py-0.5 rounded border border-slate-800 cursor-pointer">CLEAR BUFFER</button>
-              <span>POOL: <span id="telemetry-workers" class="text-blue-400 font-bold">08</span></span>
-            </div>
-          </div>
-          
-          <div id="terminal-stream" class="p-4 font-mono text-[11px] text-slate-300 space-y-1.5 overflow-y-auto flex-1 custom-scroll bg-slate-950/20">
-            <div class="text-slate-600 border-b border-slate-900 pb-1 font-sans">// System cluster logs tracking active channel execution threads.</div>
-            <div class="text-slate-500">[00:00:01] [KERNEL] Standard tracking attachment mapped safely. Processing telemetry loops...</div>
-          </div>
-        </div>
-
+      <div class="mt-10 text-slate-500 text-sm">
+        Made in Nairobi • Used by property managers, landlords &amp; SMEs
       </div>
     </div>
   </section>
 
-  <section id="metrics-charts" class="max-w-7xl mx-auto px-6 py-10 border-t border-slate-900 relative z-10">
-    <div class="mb-8">
-      <span class="text-xs font-bold text-blue-500 uppercase tracking-widest font-mono">// Quantitative Telemetry Analytics</span>
-      <h2 class="text-2xl font-black text-white mt-1">Throughput Analytics Engine</h2>
-    </div>
-    
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-8 bg-slate-950 border border-slate-900 p-4 rounded-xl shadow-xl">
-        <div class="text-xs font-mono font-bold text-slate-400 mb-4 flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-          Supply Chain Volumetric Metrics & Processing Load History (24h Scale)
-        </div>
-        <div class="h-64 relative">
-          <canvas id="chart-throughput-history"></canvas>
-        </div>
+  <!-- STATS -->
+  <section class="py-16 bg-slate-900 border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
+      <div>
+        <div class="stat-number text-5xl font-bold text-emerald-400" data-target="24810250">0</div>
+        <p class="text-slate-400 mt-2">KES Processed via M-Pesa</p>
       </div>
+      <div>
+        <div class="stat-number text-5xl font-bold text-emerald-400" data-target="1420">0</div>
+        <p class="text-slate-400 mt-2">Leases Automated</p>
+      </div>
+      <div>
+        <div class="stat-number text-5xl font-bold text-emerald-400" data-target="87">0</div>
+        <p class="text-slate-400 mt-2">Properties Managed</p>
+      </div>
+      <div>
+        <div class="stat-number text-5xl font-bold text-emerald-400" data-target="100">0</div>
+        <p class="text-slate-400 mt-2">% eTIMS Compliance</p>
+      </div>
+    </div>
+  </section>
 
-      <div class="lg:col-span-4 bg-slate-950 border border-slate-900 p-4 rounded-xl shadow-xl">
-        <div class="text-xs font-mono font-bold text-slate-400 mb-4 flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          Settlement Framework Allocation Allocation Ratio
+  <!-- FEATURES -->
+  <section id="features" class="py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-4">Everything Your Business Needs</h2>
+      <p class="text-center text-slate-400 mb-16 max-w-2xl mx-auto">
+        From rent collection to KRA compliance — built specifically for the Kenyan market.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-slate-900 rounded-3xl p-8 card-hover">
+          <div class="w-14 h-14 bg-emerald-900/50 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-building text-3xl text-emerald-400"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-4">Real Estate CRM</h3>
+          <ul class="space-y-4 text-slate-400">
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Multi-unit buildings &amp; properties</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Automatic monthly rent invoicing</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Lease management &amp; escalation engine</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> 5% / 10% KRA WHT automation</li>
+          </ul>
         </div>
-        <div class="h-64 relative flex items-center justify-center">
-          <canvas id="chart-payment-mix"></canvas>
+
+        <div class="bg-slate-900 rounded-3xl p-8 card-hover">
+          <div class="w-14 h-14 bg-emerald-900/50 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-mobile-alt text-3xl text-emerald-400"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-4">M-Pesa Daraja 2.0</h3>
+          <ul class="space-y-4 text-slate-400">
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> STK Push with instant prompt</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Auto-reconciliation to invoices</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> C2B Paybill + B2C Payouts</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Token caching &amp; retry logic</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl p-8 card-hover">
+          <div class="w-14 h-14 bg-emerald-900/50 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-shield-alt text-3xl text-emerald-400"></i>
+          </div>
+          <h3 class="text-2xl font-semibold mb-4">KRA &amp; Accounting</h3>
+          <ul class="space-y-4 text-slate-400">
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> eTIMS integration ready</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Professional invoices &amp; reports</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Bank &amp; cash reconciliation</li>
+            <li class="flex items-start gap-3"><span class="text-emerald-400 mt-1">✓</span> Full audit trail</li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="architecture-specs" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-900 relative z-10">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <span class="text-xs font-bold text-blue-500 uppercase tracking-widest font-mono">// Architectural Core Matrix</span>
-      <h2 class="text-3xl font-black text-white mt-1">Production Engineering Capabilities</h2>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      
-      <div class="bg-slate-950 border border-slate-900 p-6 rounded-xl hover:border-blue-500/20 transition-all duration-300 group">
-        <div class="w-10 h-10 rounded-lg bg-blue-600/5 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-5 group-hover:bg-blue-600/10 transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
-        </div>
-        <h3 class="text-base font-bold text-white mb-1.5">Asynchronous Daraja Pipeline</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Saves OAuth authorization profiles in cache structures, parsing settlement callback streams through decoupled route contexts to keep accounting loops performing at optimal transaction baselines.
-        </p>
-      </div>
-
-      <div class="bg-slate-950 border border-slate-900 p-6 rounded-xl hover:border-blue-500/20 transition-all duration-300 group">
-        <div class="w-10 h-10 rounded-lg bg-blue-600/5 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-5 group-hover:bg-blue-600/10 transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-        </div>
-        <h3 class="text-base font-bold text-white mb-1.5">Real-Time eTIMS Sync</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Serializes structural business invoice fields directly into target signature schemas, routing accounting metrics through async background tasks to safeguard production data records against connectivity drops.
-        </p>
-      </div>
-
-      <div class="bg-slate-950 border border-slate-900 p-6 rounded-xl hover:border-blue-500/20 transition-all duration-300 group">
-        <div class="w-10 h-10 rounded-lg bg-blue-600/5 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-5 group-hover:bg-blue-600/10 transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-        </div>
-        <h3 class="text-base font-bold text-white mb-1.5">Hardware Dispatch Telemetry</h3>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          Routes weight metrics securely from physical site scales through dedicated warehouse data tracking models, adjusting configuration limits parameters fluidly during verification sequences.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="max-w-7xl mx-auto px-6 py-6 border-t border-slate-900 relative z-10">
-    <div class="bg-slate-950 border border-slate-900 rounded-xl overflow-hidden shadow-2xl">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs min-w-[900px]">
-          <thead class="bg-slate-950 border-b border-slate-900 text-slate-500 font-mono uppercase tracking-wider">
-            <tr>
-              <th class="p-4 pl-6">Technical Module Key</th>
-              <th class="p-4">Operational Architecture Matrix Context</th>
-              <th class="p-4">Odoo Model Integration Link</th>
-              <th class="p-4 text-right pr-6">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-900/60 text-slate-300 font-mono">
-            <tr class="hover:bg-slate-900/10 transition-colors">
-              <td class="p-4 pl-6 font-bold text-white">mpesa_connector</td>
-              <td class="p-4 text-slate-400 font-sans text-xs">Saves dynamic bearer authorizations, runs concurrent callback processing hooks, and flags general ledger records.</td>
-              <td class="p-4 text-blue-400">account.payment.method</td>
-              <td class="p-4 text-right pr-6"><span class="px-2 py-0.5 text-[10px] text-emerald-400 bg-emerald-500/5 border border-emerald-500/20 rounded font-bold">READY</span></td>
-            </tr>
-            <tr class="hover:bg-slate-900/10 transition-colors">
-              <td class="p-4 pl-6 font-bold text-white">etims_oscu_client</td>
-              <td class="p-4 text-slate-400 font-sans text-xs">Assembles transaction data formats correctly, resolving secure legal receipt metadata blocks instantly.</td>
-              <td class="p-4 text-blue-400">account.move</td>
-              <td class="p-4 text-right pr-6"><span class="px-2 py-0.5 text-[10px] text-emerald-400 bg-emerald-500/5 border border-emerald-500/20 rounded font-bold">READY</span></td>
-            </tr>
-            <tr class="hover:bg-slate-900/10 transition-colors">
-              <td class="p-4 pl-6 font-bold text-white">kenya_trade_dispatch</td>
-              <td class="p-4 text-slate-400 font-sans text-xs">Tracks scale information variations accurately across distribution structures, matching delivery criteria protocols.</td>
-              <td class="p-4 text-blue-400">stock.picking</td>
-              <td class="p-4 text-right pr-6"><span class="px-2 py-0.5 text-[10px] text-emerald-400 bg-emerald-500/5 border border-emerald-500/20 rounded font-bold">READY</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section id="orchestration-matrix" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-900 relative z-10">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-      <div class="lg:col-span-4 flex flex-col justify-between py-1">
+  <!-- SCREENSHOTS -->
+  <section id="screenshots" class="py-24 bg-slate-900">
+    <div class="max-w-6xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-center mb-16">Real Odoo Interface</h2>
+      <div class="grid md:grid-cols-2 gap-10">
         <div class="space-y-3">
-          <span class="text-xs font-bold text-blue-500 uppercase tracking-widest font-mono">// Production Cluster Provisioning</span>
-          <h2 class="text-2xl font-black text-white">Orchestration Parameters</h2>
-          <p class="text-slate-400 text-xs leading-relaxed">
-            Toggle terminal context references below to verify environment tuning variables configured to safeguard execution containers from infrastructure load degradation.
-          </p>
+          <img src="https://via.placeholder.com/1280x720/1e2937/10b981?text=Real+Estate+Dashboard" 
+               class="rounded-3xl shadow-2xl w-full" alt="Real Estate Dashboard">
+          <p class="text-center font-medium">Property Portfolio &amp; Lease Overview</p>
         </div>
-        <div class="flex flex-col space-y-2 font-mono text-xs mt-6">
-          <button onclick="changeConfigTab('docker')" id="btn-docker" class="w-full text-left px-4 py-2.5 rounded-lg bg-blue-600 border border-blue-500 text-white font-bold transition-all cursor-pointer">▶ docker-compose.prod.yml</button>
-          <button onclick="changeConfigTab('odoo')" id="btn-odoo" class="w-full text-left px-4 py-2.5 rounded-lg bg-slate-950 border border-slate-900 text-slate-400 hover:text-slate-200 transition-all cursor-pointer">▶ odoo.conf</button>
-          <button onclick="changeConfigTab('nginx')" id="btn-nginx" class="w-full text-left px-4 py-2.5 rounded-lg bg-slate-950 border border-slate-900 text-slate-400 hover:text-slate-200 transition-all cursor-pointer">▶ nginx.conf</button>
+        <div class="space-y-3">
+          <img src="https://via.placeholder.com/1280x720/1e2937/10b981?text=M-Pesa+STK+Push+Flow" 
+               class="rounded-3xl shadow-2xl w-full" alt="M-Pesa Payment">
+          <p class="text-center font-medium">M-Pesa STK Push &amp; Reconciliation</p>
         </div>
-      </div>
-
-      <div class="lg:col-span-8 bg-slate-950 border border-slate-900 rounded-xl overflow-hidden p-5 shadow-2xl relative flex flex-col justify-between min-h-[350px]">
-        <div class="absolute top-3 right-4 font-mono text-[9px] text-slate-500 tracking-widest bg-slate-900/60 border border-slate-800 px-2 py-0.5 rounded">CLUSTER STRUCT PROFILES</div>
-        <pre id="config-code-block" class="text-[11px] font-mono text-slate-300 overflow-x-auto custom-scroll p-2 leading-relaxed mt-4">version: '3.8'
-services:
-  web:
-    image: odoo:18.0
-    depends_on:
-      - db
-      - redis
-    environment:
-      - HOST=db
-      - USER=odoo
-      - PASSWORD_FILE=/run/secrets/db_password
-    secrets:
-      - db_password
-    volumes:
-      - odoo-data:/var/lib/odoo
-    restart: always</pre>
       </div>
     </div>
   </section>
 
-  <footer class="border-t border-slate-900 bg-slate-950/40 text-xs text-slate-500 py-10 relative z-10 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-      <p>&copy; 2026 OdooERP Architecture Engine Suite • Licensed under MIT Specifications • Built for high availability.</p>
-      <div class="flex space-x-6 text-slate-400 font-mono text-[11px]">
-        <a href="https://github.com/NyoikePaul/OdooERP" class="hover:text-white transition-colors">Core Source</a>
-        <a href="https://github.com/NyoikePaul/OdooERP/blob/main/SETUP.md" class="hover:text-white transition-colors">DevOps Guide</a>
+  <!-- DEPLOYMENT -->
+  <section id="deploy" class="py-24">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-bold mb-6">Deploy in Minutes</h2>
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-10 font-mono text-left max-w-2xl mx-auto">
+        <div class="text-emerald-400">$ docker compose -f docker-compose.prod.yml up -d</div>
       </div>
+      <p class="text-slate-400 mt-8">Includes Nginx, SSL, automated backups, and security best practices.</p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="contact" class="py-28 bg-emerald-600 text-black">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      <h2 class="text-5xl font-bold mb-6">Ready to run a better business?</h2>
+      <p class="text-2xl mb-10">Start using Kenya’s most complete Odoo solution today.</p>
+      <a href="https://github.com/NyoikePaul/OdooERP" target="_blank"
+         class="inline-flex items-center gap-3 bg-black text-white text-xl font-semibold px-12 py-6 rounded-3xl hover:bg-slate-900 transition">
+        <i class="fab fa-github text-2xl"></i>
+        Clone Repository Now
+      </a>
+    </div>
+  </section>
+
+  <footer class="bg-slate-950 py-12 border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 text-center text-slate-500">
+      <p>© 2026 Paul Nyoike • Nairobi, Kenya</p>
+      <p class="mt-3">
+        <a href="https://github.com/NyoikePaul/OdooERP" class="hover:text-emerald-400">GitHub</a> • 
+        <a href="#" class="hover:text-emerald-400">Documentation</a> • 
+        <a href="#" class="hover:text-emerald-400">Support</a>
+      </p>
     </div>
   </footer>
 
+  <!-- Animated Counters -->
   <script>
-    const streamContainer = document.getElementById('terminal-stream');
-    let throughputChart, paymentChart;
-
-    // Automated Counter Optimization Loop Engine
-    function initCounters() {
-      const counters = ['kpi-mpesa', 'kpi-manifests', 'kpi-etims'];
-      counters.forEach(id => {
-        const el = document.getElementById(id);
-        const target = parseFloat(el.getAttribute('data-target'));
-        let current = 0;
-        const speed = target / 60; 
-        
-        function updateValue() {
-          current += speed;
-          if (current >= target) {
-            el.textContent = id === 'kpi-etims' ? target.toFixed(2) : Math.floor(target).toLocaleString();
-          } else {
-            el.textContent = id === 'kpi-etims' ? current.toFixed(2) : Math.floor(current).toLocaleString();
-            requestAnimationFrame(updateValue);
-          }
+    function animateCounter(el) {
+      const target = parseFloat(el.getAttribute('data-target'));
+      let current = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          el.textContent = target % 1 === 0 ? target.toLocaleString() : target.toFixed(0);
+          clearInterval(timer);
+        } else {
+          el.textContent = Math.floor(current).toLocaleString();
         }
-        requestAnimationFrame(updateValue);
-      });
+      }, 25);
     }
 
-    function logToTerminal(message, designType = 'info') {
-      const line = document.createElement('div');
-      const timeMarker = new Date().toISOString().split('T')[1].substring(0,8);
-      let outputClass = 'text-slate-300';
-      
-      if (designType === 'success') outputClass = 'text-emerald-400 font-bold';
-      if (designType === 'alert') outputClass = 'text-rose-400 font-bold';
-      if (designType === 'ai') outputClass = 'text-blue-400 font-medium tracking-wide';
-      if (designType === 'code-payload') outputClass = 'text-blue-300 text-[10px] bg-slate-900/60 p-3 rounded-lg border border-slate-900 my-1 font-mono';
-
-      line.className = `${outputClass} transition-all`;
-      line.innerHTML = `<span class="text-slate-600 pr-1">[${timeMarker}]</span> ${message}`;
-      streamContainer.appendChild(line);
-      streamContainer.scrollTop = streamContainer.scrollHeight;
-    }
-
-    function clearTerminalLogs() {
-      streamContainer.innerHTML = '<div class="text-slate-600 border-b border-slate-900 pb-1 font-sans">// System log buffers cleared successfully. Monitoring active loops...</div>';
-    }
-
-    // Interactive Action Sequences
-    function runWeighbridgeSequence() {
-      const gross = parseFloat(document.getElementById('gross-wt').value) || 0;
-      const tare = parseFloat(document.getElementById('tare-wt').value) || 0;
-      const moisture = parseFloat(document.getElementById('moisture-pct').value) || 0;
-      
-      logToTerminal(`[WEIGHBRIDGE_SCALE] Intercepting multi-warehouse hardware loop inputs...`, 'info');
-      const rawNet = gross - tare;
-      
-      if (rawNet <= 0) {
-        logToTerminal(`[CRITICAL_ABORT] Core calculation resulted in negative mass parameters (${rawNet} Kg). Verification suspended.`, 'alert');
-        return;
-      }
-
-      setTimeout(() => {
-        const allowanceAdjusted = Math.round(rawNet - (rawNet * (moisture / 100) * 0.015));
-        logToTerminal(`[METRICS_COMPUTE] Computation successful. Landed moisture variations resolved: ${allowanceAdjusted} Kg net weight value.`, 'success');
-        
-        const outputDict = `vals_list = {\n    'picking_id': active_id,\n    'gross_weight': ${gross}.0,\n    'tare_weight': ${tare}.0,\n    'calculated_net_volume': ${allowanceAdjusted}.0,\n    'certified_dispatch_weighbridge': True\n}`;
-        logToTerminal(`[ODOO_VALS_PAYLOAD]:<br><pre>${outputDict}</pre>`, 'code-payload');
-        updateChartsDynamically(allowanceAdjusted / 1000);
-      }, 400);
-    }
-
-    function runMpesaGatewaySequence() {
-      const amount = parseFloat(document.getElementById('mpesa-amount').value) || 0;
-      const msisdn = document.getElementById('mpesa-phone').value;
-      const txCode = "MPESA_TX_" + Math.random().toString(36).substring(2, 9).toUpperCase();
-
-      logToTerminal(`[DARAJA_API_2.0] Confirming token validation with local execution parameters...`, 'info');
-      
-      setTimeout(() => {
-        logToTerminal(`[OUTBOUND] STK Push message packet sent cleanly to target device profile. Awaiting response loop...`, 'info');
-        setTimeout(() => {
-          logToTerminal(`[ASYNC_CALLBACK] Catching transaction validation signature packet from Daraja notification array...`, 'success');
-          const mockJSON = `{\n    "MerchantRequestID": "61092-10294-1",\n    "CheckoutRequestID": "ws_CO_24052026",\n    "ResultCode": 0,\n    "CallbackMetadata": {\n        "MpesaReceiptNumber": "${txCode}",\n        "Amount": ${amount}.00,\n        "PhoneNumber": ${msisdn}\n    }\n}`;
-          logToTerminal(`[CALLBACK_JSON_PAYLOAD]:<br><pre>${mockJSON}</pre>`, 'code-payload');
-          logToTerminal(`[DOUBLE_ENTRY_JOURNAL] Ledger references synchronized automatically against verified token index: ${txCode}`, 'success');
-        }, 900);
-      }, 300);
-    }
-
-    // Fake AI Co-Pilot Operations Execution Engine
-    function triggerAICopilot(type) {
-      logToTerminal(`[AI_CO_PILOT] Context command triggered. Parsing repository parameters...`, 'ai');
-      
-      setTimeout(() => {
-        if (type === 'audit') {
-          logToTerminal(`[AI_CO_PILOT_EXEC] Scan completed. 0 anomalous ledger records detected across open accounting modules. General states clear.`, 'success');
-        } else if (type === 'memory') {
-          logToTerminal(`[AI_CO_PILOT_EXEC] Tuning instruction verified. Adjusting process settings allocation metrics inside core configurations...`, 'info');
-          logToTerminal(`[KERNEL] Configuration properties altered: Workers parameter scaled safely to match system resource baselines.`, 'success');
-        } else if (type === 'callback') {
-          logToTerminal(`[AI_CO_PILOT_EXEC] Evaluating cache tables. Clearing pending callback timeout counters... M-Pesa channels stabilized.`, 'success');
-        } else if (type === 'oscu') {
-          logToTerminal(`[AI_CO_PILOT_EXEC] Outbound tax verification transmission connection tested successfully. KRA OSCU endpoint ping: 14ms response.`, 'success');
-        }
-      }, 500);
-    }
-
-    // Chart.js Graphics Configurations Matrix
-    function initCharts() {
-      const ctxThroughput = document.getElementById('chart-throughput-history').getContext('2d');
-      throughputChart = new Chart(ctxThroughput, {
-        type: 'line',
-        data: {
-          labels: ['02:00', '06:00', '10:00', '14:00', '18:00', '22:00'],
-          datasets: [{
-            label: 'Manifest Metric Volume Throughput (Metric Tons)',
-            data: [32, 45, 68, 52, 90, 74],
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.05)',
-            fill: true,
-            tension: 0.3,
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { grid: { color: '#0f172a' }, ticks: { color: '#64748b', font: { family: 'monospace', size: 10 } } },
-            x: { grid: { color: '#0f172a' }, ticks: { color: '#64748b', font: { family: 'monospace', size: 10 } } }
-          }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
         }
       });
+    }, { threshold: 0.7 });
 
-      const ctxPayment = document.getElementById('chart-payment-mix').getContext('2d');
-      paymentChart = new Chart(ctxPayment, {
-        type: 'doughnut',
-        data: {
-          labels: ['M-Pesa API', 'KRA Invoice', 'Corporate Ledger'],
-          datasets: [{
-            data: [55, 30, 15],
-            backgroundColor: ['#10b981', '#6366f1', '#3b82f6'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10, family: 'monospace' } }, position: 'bottom' } }
-        }
-      });
-    }
-
-    function updateChartsDynamically(newVal) {
-      if(throughputChart) {
-        throughputChart.data.datasets[0].data.push(newVal);
-        if(throughputChart.data.datasets[0].data.length > 7) throughputChart.data.datasets[0].data.shift();
-        throughputChart.update();
-      }
-    }
-
-    // Cluster Configs Parameters Tab Array Map
-    const clusterConfigs = {
-      docker: `version: '3.8'\nservices:\n  web:\n    image: odoo:18.0\n    depends_on:\n      - db\n      - redis\n    environment:\n      - HOST=db\n      - USER=odoo\n      - PASSWORD_FILE=/run/secrets/db_password\n    secrets:\n      - db_password\n    volumes:\n      - odoo-data:/var/lib/odoo\n    restart: always`,
-      odoo: `[options]\naddons_path = /usr/local/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons\ndata_dir = /var/lib/odoo\n\n; Multiprocessing Worker Configuration Matrix\nworkers = 9\nlimit_memory_hard = 2684354560\nlimit_memory_soft = 2147483648\nlimit_request = 8192\nproxy_mode = True`,
-      nginx: `limit_req_zone $binary_remote_addr zone=mpesa_hooks:10m rate=30r/s;\n\nserver {\n    listen 443 ssl http2;\n    server_name erp.enterprise.co.ke;\n\n    # Dynamic Rate Limiting Guard for Fintech Webhooks\n    location /api/v1/mpesa/callback {\n        limit_req zone=mpesa_hooks burst=50 nodelay;\n        proxy_pass http://odoo-backend;\n    }\n}`
-    };
-
-    function changeConfigTab(selectedTab) {
-      document.getElementById('config-code-block').textContent = clusterConfigs[selectedTab];
-      ['docker', 'odoo', 'nginx'].forEach(i => {
-        const targetBtn = document.getElementById(`btn-${i}`);
-        targetBtn.className = i === selectedTab 
-          ? "w-full text-left px-4 py-2.5 rounded-lg bg-blue-600 border border-blue-500 text-white font-bold transition-all cursor-pointer"
-          : "w-full text-left px-4 py-2.5 rounded-lg bg-slate-950 border border-slate-900 text-slate-400 hover:text-slate-200 transition-all cursor-pointer";
-      });
-    }
-
-    // Initialization Orchestration
-    document.addEventListener('DOMContentLoaded', () => {
-      initCounters();
-      initCharts();
-      
-      // Background microkernel noise simulation loop
-      setInterval(() => {
-        if(Math.random() > 0.8) {
-          const logs = [
-            "Scheduled verification cycle completed on structural accounting sync.",
-            "Thread manager reporting connections metrics clear... Status: Balanced.",
-            "Redis cluster internal caching clean memory parameters checked."
-          ];
-          logToTerminal(logs[Math.floor(Math.random() * logs.length)], 'info');
-        }
-      }, 7000);
-    });
+    document.querySelectorAll('.stat-number').forEach(el => observer.observe(el));
   </script>
-
 </body>
 </html>
