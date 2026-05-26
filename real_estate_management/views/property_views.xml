@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_property_form" model="ir.ui.view">
+        <field name="model">real.estate.property</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group><field name="name"/></group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>
