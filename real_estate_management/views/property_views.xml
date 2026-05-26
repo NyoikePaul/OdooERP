@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="action_real_estate_property" model="ir.actions.act_window">
+        <field name="name">Properties</field>
+        <field name="res_model">real.estate.property</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
     <record id="view_property_form" model="ir.ui.view">
         <field name="model">real.estate.property</field>
         <field name="arch" type="xml">
@@ -11,4 +17,8 @@
             </form>
         </field>
     </record>
+
+    <menuitem id="menu_real_estate_root" name="Real Estate" sequence="10"/>
+    
+    <menuitem id="menu_property" name="Properties" parent="menu_real_estate_root" action="action_real_estate_property"/>
 </odoo>
