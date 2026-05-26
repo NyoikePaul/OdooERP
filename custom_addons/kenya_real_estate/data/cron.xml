@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_auto_monthly_invoices" model="ir.cron">
+        <field name="name">Real Estate: Auto Monthly Rent Invoices (1st of month)</field>
+        <field name="model_id" ref="model_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_generate_monthly_invoices()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_expire_leases" model="ir.cron">
+        <field name="name">Real Estate: Auto-Expire Leases</field>
+        <field name="model_id" ref="model_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_leases()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_lease_reminders" model="ir.cron">
+        <field name="name">Real Estate: Lease Expiry Reminders (60/30/7 days)</field>
+        <field name="model_id" ref="model_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expiry_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_late_payment_penalties" model="ir.cron">
+        <field name="name">Real Estate: Auto Late Payment Penalties</field>
+        <field name="model_id" ref="model_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_late_payment_penalties()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_rent_escalation" model="ir.cron">
+        <field name="name">Real Estate: Auto Rent Escalation on Review Date</field>
+        <field name="model_id" ref="model_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rent_escalation()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="cron_arrears_reminders" model="ir.cron">
+        <field name="name">Real Estate: Weekly Arrears Reminders (Mondays)</field>
+        <field name="model_id" ref="model_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_arrears_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
