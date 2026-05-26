@@ -66,3 +66,4 @@ echo "from . import test_property" > $MODULE_NAME/tests/__init__.py
 touch $MODULE_NAME/tests/test_property.py
 
 echo "Build complete. Remember to restart your Odoo service."
+# Updated by Contribution Sprint
