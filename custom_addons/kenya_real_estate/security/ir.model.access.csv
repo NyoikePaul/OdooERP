@@ -31,3 +31,10 @@ access_estate_utility_reading,estate.utility.reading,model_estate_utility_readin
 access_estate_utility_reading_mgr,estate.utility.reading.mgr,model_estate_utility_reading,base.group_system,1,1,1,1
 access_rent_wizard_user,estate.rent.wizard.user,model_estate_rent_payment_wizard,base.group_user,1,1,1,1
 access_renewal_wizard_user,estate.renewal.wizard.user,model_estate_lease_renewal_wizard,base.group_user,1,1,1,1
+access_estate_insurance_user,estate.insurance.user,model_estate_insurance,base.group_user,1,1,1,0
+access_estate_insurance_mgr,estate.insurance.mgr,model_estate_insurance,base.group_system,1,1,1,1
+access_estate_valuation_user,estate.valuation.user,model_estate_property_valuation,base.group_user,1,1,1,0
+access_estate_valuation_mgr,estate.valuation.mgr,model_estate_property_valuation,base.group_system,1,1,1,1
+access_estate_lease_template,estate.lease.template,model_estate_lease_template,base.group_user,1,0,0,0
+access_estate_lease_template_mgr,estate.lease.template.mgr,model_estate_lease_template,base.group_system,1,1,1,1
+access_tenant_broadcast,tenant.broadcast,model_estate_tenant_broadcast_wizard,base.group_user,1,1,1,1

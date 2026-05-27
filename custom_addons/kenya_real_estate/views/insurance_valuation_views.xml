@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Insurance List -->
+  <record id="estate_insurance_view_list" model="ir.ui.view">
+    <field name="name">estate.insurance.list</field>
+    <field name="model">estate.insurance</field>
+    <field name="arch" type="xml">
+      <list string="Insurance Policies"
+            decoration-danger="is_expired"
+            decoration-warning="expiring_soon"
+            decoration-success="not is_expired and not expiring_soon">
+        <field name="policy_number"/>
+        <field name="property_id"/>
+        <field name="insurer"/>
+        <field name="policy_type"/>
+        <field name="premium"/>
+        <field name="sum_insured"/>
+        <field name="start_date"/>
+        <field name="expiry_date"/>
+        <field name="days_to_expiry"/>
+        <field name="is_expired" invisible="1"/>
+        <field name="expiring_soon" invisible="1"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_insurance_action" model="ir.actions.act_window">
+    <field name="name">Insurance Policies</field>
+    <field name="res_model">estate.insurance</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Valuation List -->
+  <record id="estate_valuation_view_list" model="ir.ui.view">
+    <field name="name">estate.property.valuation.list</field>
+    <field name="model">estate.property.valuation</field>
+    <field name="arch" type="xml">
+      <list string="Valuation History" editable="bottom">
+        <field name="valuation_date"/>
+        <field name="property_id"/>
+        <field name="valuation_value"/>
+        <field name="valuation_method"/>
+        <field name="valued_by"/>
+        <field name="report_ref"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_valuation_action" model="ir.actions.act_window">
+    <field name="name">Property Valuations</field>
+    <field name="res_model">estate.property.valuation</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Lease Template List -->
+  <record id="estate_lease_template_view_list" model="ir.ui.view">
+    <field name="name">estate.lease.template.list</field>
+    <field name="model">estate.lease.template</field>
+    <field name="arch" type="xml">
+      <list string="Lease Templates" editable="bottom">
+        <field name="name"/>
+        <field name="property_type"/>
+        <field name="duration_months"/>
+        <field name="notice_period"/>
+        <field name="escalation_rate"/>
+        <field name="penalty_rate"/>
+        <field name="apply_wht"/>
+        <field name="auto_escalate"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_lease_template_action" model="ir.actions.act_window">
+    <field name="name">Lease Templates</field>
+    <field name="res_model">estate.lease.template</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

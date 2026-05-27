@@ -126,4 +126,11 @@
         <field name="padding">4</field>
         <field name="company_id" eval="False"/>
     </record>
+    <record id="seq_estate_insurance" model="ir.sequence">
+        <field name="name">Estate Insurance</field>
+        <field name="code">estate.insurance</field>
+        <field name="prefix">INS/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

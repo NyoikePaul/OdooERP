@@ -124,6 +124,8 @@ class EstateProperty(models.Model):
     maintenance_ids  = fields.One2many('estate.maintenance.request', 'property_id',
                                        string="Maintenance")
     unit_ids         = fields.One2many('estate.unit', 'property_id', string="Units")
+    insurance_ids    = fields.One2many('estate.insurance', 'property_id', string="Insurance Policies")
+    valuation_ids    = fields.One2many('estate.property.valuation', 'property_id', string="Valuations")
 
     # ── Computed Counts ───────────────────────────────
     lease_count       = fields.Integer(compute='_compute_counts', store=True)

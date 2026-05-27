@@ -195,6 +195,28 @@
                 </list>
               </field>
             </page>
+            <page string="Insurance">
+              <field name="insurance_ids">
+                <list>
+                  <field name="policy_number"/>
+                  <field name="insurer"/>
+                  <field name="policy_type"/>
+                  <field name="premium"/>
+                  <field name="expiry_date"/>
+                  <field name="days_to_expiry"/>
+                </list>
+              </field>
+            </page>
+            <page string="Valuation History">
+              <field name="valuation_ids">
+                <list>
+                  <field name="valuation_date"/>
+                  <field name="valuation_value"/>
+                  <field name="valuation_method"/>
+                  <field name="valued_by"/>
+                </list>
+              </field>
+            </page>
             <page string="Description">
               <field name="description"/>
             </page>

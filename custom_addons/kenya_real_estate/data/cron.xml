@@ -59,4 +59,13 @@
         <field name="interval_type">days</field>
         <field name="active">True</field>
     </record>
+    <record id="cron_insurance_reminders" model="ir.cron">
+        <field name="name">Real Estate: Insurance Expiry Reminders</field>
+        <field name="model_id" ref="model_estate_insurance"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_insurance_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
 </odoo>
