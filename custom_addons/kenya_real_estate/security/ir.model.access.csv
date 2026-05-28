@@ -38,3 +38,6 @@ access_estate_valuation_mgr,estate.valuation.mgr,model_estate_property_valuation
 access_estate_lease_template,estate.lease.template,model_estate_lease_template,base.group_user,1,0,0,0
 access_estate_lease_template_mgr,estate.lease.template.mgr,model_estate_lease_template,base.group_system,1,1,1,1
 access_tenant_broadcast,tenant.broadcast,model_estate_tenant_broadcast_wizard,base.group_user,1,1,1,1
+access_estate_ltemplate_user,estate_ltemplate_user,model_estate_lease_template,base.group_user,1,0,0,0
+access_estate_ltemplate_mgr,estate_ltemplate_mgr,model_estate_lease_template,base.group_system,1,1,1,1
+access_broadcast_wizard_user,broadcast_wizard_user,model_estate_tenant_broadcast_wizard,base.group_user,1,1,1,1
