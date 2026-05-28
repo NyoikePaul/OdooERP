@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <!-- Insurance List -->
-  <record id="estate_insurance_view_list" model="ir.ui.view">
+  <record id="estate_insurance_list" model="ir.ui.view">
     <field name="name">estate.insurance.list</field>
     <field name="model">estate.insurance</field>
     <field name="arch" type="xml">
@@ -9,18 +9,51 @@
             decoration-danger="is_expired"
             decoration-warning="expiring_soon"
             decoration-success="not is_expired and not expiring_soon">
-        <field name="policy_number"/>
+        <field name="name"/>
         <field name="property_id"/>
         <field name="insurer"/>
         <field name="policy_type"/>
-        <field name="premium"/>
-        <field name="sum_insured"/>
+        <field name="premium" sum="Total Premium"/>
+        <field name="sum_insured" sum="Total Cover"/>
         <field name="start_date"/>
         <field name="expiry_date"/>
         <field name="days_to_expiry"/>
         <field name="is_expired" invisible="1"/>
         <field name="expiring_soon" invisible="1"/>
       </list>
+    </field>
+  </record>
+  <record id="estate_insurance_form" model="ir.ui.view">
+    <field name="name">estate.insurance.form</field>
+    <field name="model">estate.insurance</field>
+    <field name="arch" type="xml">
+      <form string="Insurance Policy">
+        <header>
+          <field name="days_to_expiry" readonly="1"/>
+        </header>
+        <sheet>
+          <div class="alert alert-danger" role="alert" invisible="not is_expired">Policy EXPIRED.</div>
+          <div class="alert alert-warning" role="alert" invisible="not expiring_soon">
+            Expires in <field name="days_to_expiry"/> days.
+          </div>
+          <group>
+            <group>
+              <field name="property_id"/>
+              <field name="insurer"/>
+              <field name="policy_number"/>
+              <field name="policy_type"/>
+            </group>
+            <group>
+              <field name="premium"/>
+              <field name="sum_insured"/>
+              <field name="start_date"/>
+              <field name="expiry_date"/>
+            </group>
+          </group>
+          <field name="notes"/>
+        </sheet>
+        <chatter/>
+      </form>
     </field>
   </record>
   <record id="estate_insurance_action" model="ir.actions.act_window">
@@ -30,11 +63,11 @@
   </record>
 
   <!-- Valuation List -->
-  <record id="estate_valuation_view_list" model="ir.ui.view">
+  <record id="estate_valuation_list" model="ir.ui.view">
     <field name="name">estate.property.valuation.list</field>
     <field name="model">estate.property.valuation</field>
     <field name="arch" type="xml">
-      <list string="Valuation History" editable="bottom">
+      <list string="Valuations" editable="bottom">
         <field name="valuation_date"/>
         <field name="property_id"/>
         <field name="valuation_value"/>
@@ -51,7 +84,7 @@
   </record>
 
   <!-- Lease Template List -->
-  <record id="estate_lease_template_view_list" model="ir.ui.view">
+  <record id="estate_lease_template_list" model="ir.ui.view">
     <field name="name">estate.lease.template.list</field>
     <field name="model">estate.lease.template</field>
     <field name="arch" type="xml">
@@ -64,6 +97,7 @@
         <field name="penalty_rate"/>
         <field name="apply_wht"/>
         <field name="auto_escalate"/>
+        <field name="break_clause"/>
       </list>
     </field>
   </record>
