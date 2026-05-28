@@ -102,21 +102,36 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ---
 
 ## Architecture
+
 OdooERP Kenya
 ├── mpesa_connector        # Abstract Daraja 2.0 API mixin
+
 ├── mpesa_integration      # Transaction log + reconciliation
+
 ├── kenya_mpesa_acquirer   # Payment provider UI + webhooks
+
 └── kenya_real_estate      # Real Estate CRM (16 models)
+
 ├── estate.building    # Buildings + units
+
 ├── estate.property    # Property portfolio
+
 ├── estate.lease       # Tenancy agreements
+
 ├── estate.offer       # Enquiry pipeline
+
 ├── estate.inspection  # Move-in/out checklists
+
 ├── estate.deposit     # Deposit ledger
+
 ├── estate.commission  # Agent commissions
+
 ├── estate.utility.*   # Meter readings + billing
+
 ├── estate.insurance   # Policy tracking
+
 ├── estate.*.valuation # Valuation history
+
 └── estate.maintenance # Maintenance requests
 
 ---
