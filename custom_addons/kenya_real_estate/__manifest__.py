@@ -1,34 +1,39 @@
 {
-    'name':        'Kenya Real Estate CRM',
-    'version':     '18.0.4.0.0',
-    'category':    'Real Estate',
-    'summary':     'Enterprise property management — Buildings, Leases, Rent Roll, Insurance, Valuations, M-Pesa, KRA WHT',
-    'description': '''
-Kenya Real Estate CRM — The most complete Odoo real estate module for East Africa.
+    'name':         'Kenya Real Estate CRM',
+    'version':      '18.0.4.0.0',
+    'category':     'Real Estate',
+    'summary':      'Enterprise Real Estate for Kenya — Buildings, Leases, M-Pesa Rent, KRA WHT, Insurance, PDF Reports',
+    'description':  """
+Kenya Real Estate CRM — Enterprise-grade property management for East Africa.
 
-Features:
-- Building & unit hierarchy management
-- Full lease lifecycle (activate → escalate → renew → expire → surrender)
-- KRA WHT auto-computation (5% residential / 10% commercial)
-- Auto monthly rent invoicing + late payment penalties
-- Security deposit ledger with deductions
-- Agent commission tracking
-- Move-in/out inspection checklists
-- Utility meter readings & billing
+Key Features:
+- Building + unit hierarchy (blocks, floors, apartments)
+- Full lease lifecycle: draft → active → renew → expire → surrender
+- KRA Withholding Tax: 5% residential / 10% commercial (KITA Section 35)
+- Auto monthly rent invoicing + late payment penalties (grace period)
+- Annual rent escalation engine with history log
+- Security deposit ledger: received → deductions → refund
+- Property insurance tracking + 30-day renewal alerts
+- Property valuation history (comparable, income, DCF)
+- Lease templates for quick tenant onboarding
+- Agent commission tracking + invoicing
+- Move-in/out inspection checklists with photos
+- Utility meter readings (water, electricity) + billing
 - Property offers & enquiry pipeline
-- Insurance policy tracking with renewal alerts
-- Property valuation history
-- Lease templates for quick onboarding
-- Tenant broadcast messaging
-- PDF Rent Roll & Arrears reports
-- 7 automated crons for full automation
+- Tenant broadcast messaging (all/building/county/arrears)
+- PDF Rent Roll report
+- PDF Arrears Aging report
+- PDF Tenancy Agreement (Kenya Landlord & Tenant Act)
+- 7 automated crons (invoicing, expiry, reminders, penalties, escalation)
 - M-Pesa Daraja 2.0 rent collection
-    ''',
+- Net Operating Income, Cap Rate, Gross Yield KPIs
+- Vacancy tracking with revenue loss calculation
+    """,
     'author':       'Paul Nyoike',
     'maintainer':   'Paul Nyoike',
     'website':      'https://github.com/NyoikePaul/OdooERP',
     'license':      'LGPL-3',
-    'depends': ['base', 'account', 'mail', 'mpesa_connector'],
+    'depends':      ['base', 'account', 'mail', 'mpesa_connector'],
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
@@ -47,9 +52,9 @@ Features:
         'report/rent_roll_report.xml',
         'views/menu_views.xml',
     ],
-    'demo': ['demo/demo.xml'],
-    'images':        ['static/description/icon.svg'],
-    'installable':   True,
-    'application':   True,
-    'auto_install':  False,
+    'demo':         ['demo/demo.xml'],
+    'images':       ['static/description/icon.svg'],
+    'installable':  True,
+    'application':  True,
+    'auto_install': False,
 }
