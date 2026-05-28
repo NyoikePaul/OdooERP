@@ -1,45 +1,47 @@
-# Odoo
+# Odoo runtime
 *.pyc
 __pycache__/
 *.pyo
 .odoo_modules/
 
-# Environment
+# Environment secrets
 .env
 *.env.local
+*.env.production
 
-# Logs
+# Logs — never commit logs
 logs/
 *.log
 log/
 
-# Docker
+# Docker runtime
 .docker/
+odoo-data/
 
-# OS
+# OS artifacts
 .DS_Store
 Thumbs.db
 desktop.ini
 
 # Editor
-.vscode/
+.vscode/settings.json
 .idea/
 *.swp
 *.swo
 *~
 
-# Python
+# Python build
 *.egg-info/
 dist/
 build/
 .pytest_cache/
 .coverage
 htmlcov/
-.tox/
 
-# Node
-node_modules/
+# Empty placeholder dirs (use .gitkeep if needed)
+addons/
 
-# Backup files
+# Backup
 *.bak
 *.sql.bak
+dump.sql
