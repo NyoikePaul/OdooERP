@@ -11,4 +11,10 @@ from . import deposit
 from . import utility
 from . import insurance
 from . import valuation
+from . import caretaker
+from . import generator
+from . import service_charge
+from . import demand_notice
+from . import kra_return
+from . import tenant_screening
 from . import account_move

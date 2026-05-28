@@ -133,4 +133,32 @@
         <field name="padding">4</field>
         <field name="company_id" eval="False"/>
     </record>
+    <record id="seq_estate_service_charge" model="ir.sequence">
+        <field name="name">Estate Service Charge</field>
+        <field name="code">estate.service.charge</field>
+        <field name="prefix">SC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_demand_notice" model="ir.sequence">
+        <field name="name">Estate Demand Notice</field>
+        <field name="code">estate.demand.notice</field>
+        <field name="prefix">DN/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_kra_return" model="ir.sequence">
+        <field name="name">Estate KRA Return</field>
+        <field name="code">estate.kra.return</field>
+        <field name="prefix">KRA/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_tenant_screening" model="ir.sequence">
+        <field name="name">Estate Tenant Screening</field>
+        <field name="code">estate.tenant.screening</field>
+        <field name="prefix">SCR/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- ═══ CARETAKER ═══ -->
+  <record id="estate_caretaker_list" model="ir.ui.view">
+    <field name="name">estate.caretaker.list</field>
+    <field name="model">estate.caretaker</field>
+    <field name="arch" type="xml">
+      <list string="Caretakers">
+        <field name="name"/>
+        <field name="id_number"/>
+        <field name="phone"/>
+        <field name="monthly_salary"/>
+        <field name="building_ids" widget="many2many_tags"/>
+        <field name="active" widget="boolean_toggle"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_caretaker_form" model="ir.ui.view">
+    <field name="name">estate.caretaker.form</field>
+    <field name="model">estate.caretaker</field>
+    <field name="arch" type="xml">
+      <form string="Caretaker">
+        <sheet>
+          <group>
+            <group string="Personal Details">
+              <field name="name"/>
+              <field name="id_number"/>
+              <field name="phone"/>
+              <field name="email"/>
+              <field name="date_joined"/>
+            </group>
+            <group string="Compensation">
+              <field name="monthly_salary"/>
+              <field name="house_allowance"/>
+              <field name="free_unit_id"/>
+              <field name="kra_pin"/>
+              <field name="nhif_number"/>
+              <field name="nssf_number"/>
+            </group>
+          </group>
+          <group string="Assigned Properties">
+            <field name="building_ids" widget="many2many_tags"/>
+            <field name="property_ids" widget="many2many_tags"/>
+          </group>
+          <field name="responsibilities"/>
+          <field name="notes"/>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_caretaker_action" model="ir.actions.act_window">
+    <field name="name">Caretakers</field>
+    <field name="res_model">estate.caretaker</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ═══ GENERATOR ═══ -->
+  <record id="estate_generator_list" model="ir.ui.view">
+    <field name="name">estate.generator.list</field>
+    <field name="model">estate.generator</field>
+    <field name="arch" type="xml">
+      <list string="Generators">
+        <field name="name"/>
+        <field name="building_id"/>
+        <field name="make_model"/>
+        <field name="capacity_kva"/>
+        <field name="fuel_type"/>
+        <field name="fuel_price_per_litre"/>
+        <field name="total_hours_ytd"/>
+        <field name="total_cost_ytd" sum="Total Cost"/>
+        <field name="next_service_date"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_generator_form" model="ir.ui.view">
+    <field name="name">estate.generator.form</field>
+    <field name="model">estate.generator</field>
+    <field name="arch" type="xml">
+      <form string="Generator">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="building_id"/>
+              <field name="property_id"/>
+              <field name="make_model"/>
+              <field name="serial_number"/>
+              <field name="capacity_kva"/>
+            </group>
+            <group>
+              <field name="fuel_type"/>
+              <field name="fuel_consumption_per_hour"/>
+              <field name="fuel_price_per_litre"/>
+              <field name="last_service_date"/>
+              <field name="next_service_date"/>
+              <field name="service_interval_hours"/>
+            </group>
+          </group>
+          <group string="YTD Summary">
+            <field name="total_hours_ytd" readonly="1"/>
+            <field name="total_fuel_ytd" readonly="1"/>
+            <field name="total_cost_ytd" readonly="1"/>
+          </group>
+          <notebook>
+            <page string="Usage Log">
+              <field name="log_ids">
+                <list editable="bottom">
+                  <field name="date"/>
+                  <field name="hours_run"/>
+                  <field name="fuel_used" readonly="1"/>
+                  <field name="fuel_added"/>
+                  <field name="cost" readonly="1"/>
+                  <field name="notes"/>
+                  <button name="action_bill_tenants" type="object"
+                          string="Bill Tenants" icon="fa-money"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_generator_action" model="ir.actions.act_window">
+    <field name="name">Generators</field>
+    <field name="res_model">estate.generator</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ═══ SERVICE CHARGE ═══ -->
+  <record id="estate_service_charge_list" model="ir.ui.view">
+    <field name="name">estate.service.charge.list</field>
+    <field name="model">estate.service.charge</field>
+    <field name="arch" type="xml">
+      <list string="Service Charges"
+            decoration-success="status=='invoiced'"
+            decoration-warning="status=='posted'"
+            decoration-muted="status=='draft'">
+        <field name="name"/>
+        <field name="building_id"/>
+        <field name="period_date"/>
+        <field name="apportionment"/>
+        <field name="total_amount" sum="Total"/>
+        <field name="status" widget="badge"/>
+        <button name="action_generate_invoices" type="object"
+                string="Generate Invoices" icon="fa-file"
+                invisible="status != 'draft'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_service_charge_form" model="ir.ui.view">
+    <field name="name">estate.service.charge.form</field>
+    <field name="model">estate.service.charge</field>
+    <field name="arch" type="xml">
+      <form string="Service Charge">
+        <header>
+          <button name="action_generate_invoices" type="object"
+                  string="Generate Invoices" class="btn-primary oe_highlight"
+                  invisible="status != 'draft'"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,invoiced"/>
+        </header>
+        <sheet>
+          <group>
+            <field name="building_id"/>
+            <field name="period_date"/>
+            <field name="apportionment"/>
+            <field name="total_amount" readonly="1"/>
+          </group>
+          <field name="line_ids">
+            <list editable="bottom">
+              <field name="description"/>
+              <field name="category"/>
+              <field name="amount" sum="Total"/>
+              <field name="supplier"/>
+              <field name="receipt_ref"/>
+            </list>
+          </field>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_service_charge_action" model="ir.actions.act_window">
+    <field name="name">Service Charges</field>
+    <field name="res_model">estate.service.charge</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ═══ DEMAND NOTICE ═══ -->
+  <record id="estate_demand_notice_list" model="ir.ui.view">
+    <field name="name">estate.demand.notice.list</field>
+    <field name="model">estate.demand.notice</field>
+    <field name="arch" type="xml">
+      <list string="Demand Notices"
+            decoration-danger="status=='escalated' or status=='evicted'"
+            decoration-warning="status=='issued'"
+            decoration-success="status=='resolved'"
+            decoration-muted="status in ('withdrawn','draft')">
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="tenant_id"/>
+        <field name="notice_type"/>
+        <field name="arrears_amount"/>
+        <field name="issue_date"/>
+        <field name="response_deadline"/>
+        <field name="status" widget="badge"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_demand_notice_form" model="ir.ui.view">
+    <field name="name">estate.demand.notice.form</field>
+    <field name="model">estate.demand.notice</field>
+    <field name="arch" type="xml">
+      <form string="Demand Notice">
+        <header>
+          <button name="action_issue" type="object" string="Issue Notice"
+                  invisible="status != 'draft'" class="oe_highlight"/>
+          <button name="action_mark_resolved" type="object" string="Mark Resolved"
+                  invisible="status != 'issued'"/>
+          <button name="action_escalate" type="object" string="Escalate to BPRT/Court"
+                  invisible="status not in ('issued','responded')"/>
+          <button name="action_execute_eviction" type="object" string="Execute Eviction"
+                  invisible="status != 'escalated'"/>
+          <button name="action_withdraw" type="object" string="Withdraw"
+                  invisible="status in ('resolved','evicted','withdrawn')"/>
+          <field name="status" widget="statusbar"
+                 statusbar_visible="draft,issued,resolved,escalated"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="lease_id"/>
+              <field name="property_id" readonly="1"/>
+              <field name="tenant_id" readonly="1"/>
+              <field name="notice_type"/>
+            </group>
+            <group>
+              <field name="arrears_amount"/>
+              <field name="months_arrears"/>
+              <field name="issue_date"/>
+              <field name="response_deadline" readonly="1"/>
+              <field name="served_by"/>
+              <field name="witness_name"/>
+            </group>
+          </group>
+          <group string="BPRT / Court">
+            <field name="legal_ref"/>
+          </group>
+          <field name="notes"/>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_demand_notice_action" model="ir.actions.act_window">
+    <field name="name">Demand Notices</field>
+    <field name="res_model">estate.demand.notice</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ═══ KRA RETURN ═══ -->
+  <record id="estate_kra_return_list" model="ir.ui.view">
+    <field name="name">estate.kra.return.list</field>
+    <field name="model">estate.kra.return</field>
+    <field name="arch" type="xml">
+      <list string="KRA Rental Income Returns"
+            decoration-danger="status=='draft' and due_date &lt; current_date"
+            decoration-warning="status in ('draft','ready')"
+            decoration-success="status=='paid'">
+        <field name="name"/>
+        <field name="landlord_id"/>
+        <field name="kra_pin"/>
+        <field name="period_month"/>
+        <field name="period_year"/>
+        <field name="gross_income"/>
+        <field name="tax_rate" string="Rate %"/>
+        <field name="tax_due" sum="Total Tax"/>
+        <field name="due_date"/>
+        <field name="status" widget="badge"/>
+        <button name="action_populate_from_invoices" type="object"
+                string="Auto-Populate" icon="fa-download"
+                invisible="status != 'draft'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_kra_return_form" model="ir.ui.view">
+    <field name="name">estate.kra.return.form</field>
+    <field name="model">estate.kra.return</field>
+    <field name="arch" type="xml">
+      <form string="KRA MRI Return">
+        <header>
+          <button name="action_populate_from_invoices" type="object"
+                  string="Auto-Populate from Invoices" invisible="status != 'draft'"/>
+          <button name="action_mark_filed" type="object" string="Mark as Filed"
+                  invisible="status != 'ready'" class="oe_highlight"/>
+          <button name="action_mark_paid" type="object" string="Mark Tax Paid"
+                  invisible="status != 'filed'"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,ready,filed,paid"/>
+        </header>
+        <sheet>
+          <group>
+            <group string="Landlord">
+              <field name="landlord_id"/>
+              <field name="kra_pin"/>
+              <field name="filing_date" readonly="1"/>
+              <field name="payment_ref"/>
+            </group>
+            <group string="Period">
+              <field name="period_month"/>
+              <field name="period_year"/>
+              <field name="due_date" readonly="1"/>
+            </group>
+          </group>
+          <group string="Tax Summary">
+            <field name="gross_income" readonly="1"/>
+            <field name="wht_collected" readonly="1"/>
+            <field name="tax_rate" readonly="1"/>
+            <field name="tax_due" readonly="1"/>
+          </group>
+          <notebook>
+            <page string="Rental Income Lines">
+              <field name="line_ids">
+                <list editable="bottom">
+                  <field name="property_id"/>
+                  <field name="lease_id"/>
+                  <field name="property_type"/>
+                  <field name="gross_rent" sum="Gross"/>
+                  <field name="wht_deducted" sum="WHT"/>
+                  <field name="net_rent" sum="Net" readonly="1"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_kra_return_action" model="ir.actions.act_window">
+    <field name="name">KRA MRI Returns</field>
+    <field name="res_model">estate.kra.return</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ═══ TENANT SCREENING ═══ -->
+  <record id="estate_screening_list" model="ir.ui.view">
+    <field name="name">estate.tenant.screening.list</field>
+    <field name="model">estate.tenant.screening</field>
+    <field name="arch" type="xml">
+      <list string="Tenant Applications"
+            decoration-success="recommendation=='approve'"
+            decoration-warning="recommendation=='review'"
+            decoration-danger="recommendation=='reject'"
+            decoration-muted="status in ('rejected','converted')">
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="applicant_id"/>
+        <field name="employment_type"/>
+        <field name="monthly_income"/>
+        <field name="income_multiplier" string="Income Ratio" widget="float" digits="[4,1]"/>
+        <field name="score" widget="progressbar"/>
+        <field name="recommendation" widget="badge"/>
+        <field name="status" widget="badge"/>
+        <button name="action_approve" type="object" string="Approve"
+                icon="fa-check" invisible="status != 'screening'"/>
+        <button name="action_convert_to_lease" type="object" string="Create Lease"
+                icon="fa-file" invisible="status != 'approved'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_screening_form" model="ir.ui.view">
+    <field name="name">estate.tenant.screening.form</field>
+    <field name="model">estate.tenant.screening</field>
+    <field name="arch" type="xml">
+      <form string="Tenant Screening Application">
+        <header>
+          <button name="action_approve" type="object" string="Approve"
+                  invisible="status not in ('new','screening')" class="oe_highlight"/>
+          <button name="action_reject" type="object" string="Reject"
+                  invisible="status not in ('new','screening')"/>
+          <button name="action_convert_to_lease" type="object"
+                  string="Convert to Lease" invisible="status != 'approved'"/>
+          <field name="status" widget="statusbar"
+                 statusbar_visible="new,screening,approved,converted"/>
+        </header>
+        <sheet>
+          <div class="alert alert-success" invisible="recommendation != 'approve'">
+            Score: <field name="score"/> / 100 — Recommended: APPROVE
+          </div>
+          <div class="alert alert-warning" invisible="recommendation != 'review'">
+            Score: <field name="score"/> / 100 — Needs Review
+          </div>
+          <div class="alert alert-danger" invisible="recommendation != 'reject'">
+            Score: <field name="score"/> / 100 — REJECT
+          </div>
+          <group>
+            <group string="Application">
+              <field name="property_id"/>
+              <field name="unit_id"/>
+              <field name="applicant_id"/>
+              <field name="desired_date"/>
+            </group>
+            <group string="Employment">
+              <field name="employment_type"/>
+              <field name="employer_name"/>
+              <field name="monthly_income"/>
+              <field name="income_multiplier" readonly="1"/>
+              <field name="hr_contact"/>
+              <field name="employer_verified"/>
+            </group>
+          </group>
+          <group string="Documents Received">
+            <field name="has_id"/>
+            <field name="has_payslips"/>
+            <field name="has_intro_letter"/>
+            <field name="has_ref_letter"/>
+            <field name="has_kra_pin"/>
+            <field name="kra_pin"/>
+          </group>
+          <group string="Previous Tenancy">
+            <field name="previous_landlord"/>
+            <field name="prev_landlord_phone"/>
+            <field name="prev_landlord_ref"/>
+          </group>
+          <field name="notes"/>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_screening_action" model="ir.actions.act_window">
+    <field name="name">Tenant Applications</field>
+    <field name="res_model">estate.tenant.screening</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+</odoo>

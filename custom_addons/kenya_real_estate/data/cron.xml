@@ -68,4 +68,22 @@
         <field name="interval_type">days</field>
         <field name="active">True</field>
     </record>
+    <record id="cron_demand_notice_alerts" model="ir.cron">
+        <field name="name">Real Estate: Overdue Demand Notice Alerts</field>
+        <field name="model_id" ref="model_estate_demand_notice"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_overdue_notice_alerts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+    <record id="cron_kra_filing_reminders" model="ir.cron">
+        <field name="name">Real Estate: KRA MRI Filing Reminders</field>
+        <field name="model_id" ref="model_estate_kra_return"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_kra_filing_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
 </odoo>
