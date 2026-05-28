@@ -1,13 +1,8 @@
-# Full Setup Guide — OdooERP Kenya
+# Setup Guide — OdooERP Kenya
 
 ## Prerequisites
-| Tool | Version | Install |
-|---|---|---|
-| Docker | 24+ | [docs.docker.com](https://docs.docker.com/get-docker/) |
-| Docker Compose | v2 | Included with Docker Desktop |
-| Git | Any | `apt install git` |
-
----
+- Docker Desktop 4.x+
+- Git
 
 ## 1. Clone & Configure
 
@@ -15,86 +10,53 @@
 git clone https://github.com/NyoikePaul/OdooERP.git
 cd OdooERP
 cp .env.example .env
-nano .env   # Fill in your credentials
 ```
 
----
+Edit `.env`:
+```env
+MPESA_CONSUMER_KEY=your_daraja_consumer_key
+MPESA_CONSUMER_SECRET=your_daraja_consumer_secret
+MPESA_SHORTCODE=174379
+MPESA_PASSKEY=your_lipa_na_mpesa_passkey
+MPESA_SANDBOX=true
+```
 
-## 2. Development Setup (Local)
+## 2. Start
 
 ```bash
-make up       # Start Odoo + PostgreSQL
-make logs     # Watch logs
+docker compose up -d
 ```
 
-Open: **http://localhost:8069**
-- Create database
-- Install modules: `kenya_mpesa_acquirer`, `kenya_real_estate`
-
----
-
-## 3. M-Pesa Configuration
-
-### Get Daraja credentials
-1. Register at [developer.safaricom.co.ke](https://developer.safaricom.co.ke)
-2. Create an app → copy Consumer Key + Secret
-3. Get your Passkey from Safaricom Business portal
-
-### Configure in OdooFill in all fields. Enable **Sandbox** for testing.
-
-### Test STK Push (sandbox)
-Use Safaricom test phone: `254708374149`
-Test amount: any value
-
----
-
-## 4. Production Deployment
+## 3. Install Modules
 
 ```bash
-# 1. Set your domain in .env
-MPESA_CALLBACK_URL=https://yourdomain.com/payment/mpesa/callback
-
-# 2. Update nginx/odoo.conf — replace YOUR_DOMAIN
-sed -i 's/YOUR_DOMAIN/yourdomain.com/g' nginx/odoo.conf
-
-# 3. Get SSL certificate
-docker run --rm -v /etc/letsencrypt:/etc/letsencrypt \
-  certbot/certbot certonly --standalone -d yourdomain.com
-
-# 4. Launch production stack
-make prod-up
-
-# 5. Verify
-curl https://yourdomain.com/web/health
+docker compose run --rm web odoo \
+  -d odoo_kenya \
+  -i mpesa_connector,mpesa_integration,kenya_mpesa_acquirer,kenya_real_estate \
+  --stop-after-init --no-http
 ```
 
----
-
-## 5. KRA eTIMS Setup
-
-1. Register at [eTIMS Developer Portal](https://etims.kra.go.ke)
-2. Add your KRA PIN and device serial to `.env`
-3. Install the eTIMS module from Odoo KE LTD
-
----
-
-## 6. Backup & Restore
+## 4. Set Admin Password
 
 ```bash
-# Backup
-make backup    # Creates backup_YYYYMMDD_HHMMSS.sql
-
-# Restore
-docker compose exec -T db psql -U odoo odoo < backup_file.sql
+docker compose exec db psql -U odoo -d odoo_kenya -c \
+  "UPDATE res_users SET password = 'your_password' WHERE login = 'admin';"
 ```
 
----
+## 5. Access
 
-## Troubleshooting
+Open **http://localhost:8069** → Database: `odoo_kenya` → `admin / your_password`
 
-| Issue | Fix |
-|---|---|
-| M-Pesa callback not received | Check callback URL is HTTPS and publicly accessible |
-| STK Push times out | Check Daraja credentials; verify phone format `2547XXXXXXXX` |
-| Module install fails | Run `docker compose logs web` and check for missing dependencies |
-| Database connection error | Ensure `.env` DB credentials match docker-compose.yml |
+## Production
+
+```bash
+# Set DOMAIN and LETSENCRYPT_EMAIL in .env
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+## Backup / Restore
+
+```bash
+bash scripts/backup.sh odoo_kenya    # backup
+bash scripts/restore.sh backup.sql.gz odoo_kenya  # restore
+```
