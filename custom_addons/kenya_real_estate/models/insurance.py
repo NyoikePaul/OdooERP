@@ -10,11 +10,11 @@ class EstateInsurance(models.Model):
     _description = 'Property Insurance Policy'
     _inherit     = ['mail.thread', 'mail.activity.mixin']
     _order       = 'expiry_date'
-    _rec_name    = 'policy_number'
 
+    name           = fields.Char("Policy Ref", readonly=True, default='New', copy=False)
     property_id    = fields.Many2one('estate.property', string="Property",
                                      required=True, ondelete='cascade', tracking=True)
-    insurer        = fields.Char("Insurance Company", required=True)
+    insurer        = fields.Char("Insurer", required=True)
     policy_number  = fields.Char("Policy Number", required=True, tracking=True)
     policy_type    = fields.Selection([
         ('fire',          'Fire & Perils'),
@@ -22,25 +22,34 @@ class EstateInsurance(models.Model):
         ('liability',     'Public Liability'),
         ('contents',      'Contents'),
         ('flood',         'Flood Cover'),
-    ], string="Policy Type", required=True, default='comprehensive')
+        ('earthquake',    'Earthquake'),
+    ], required=True, default='comprehensive', tracking=True)
     currency_id    = fields.Many2one('res.currency',
                                      default=lambda s: s.env.ref('base.KES'))
-    premium        = fields.Monetary("Annual Premium (KES)", currency_field='currency_id')
+    premium        = fields.Monetary("Annual Premium (KES)", currency_field='currency_id',
+                                     tracking=True)
     sum_insured    = fields.Monetary("Sum Insured (KES)", currency_field='currency_id')
-    start_date     = fields.Date("Policy Start", required=True)
-    expiry_date    = fields.Date("Policy Expiry", required=True, tracking=True)
+    start_date     = fields.Date("Start Date", required=True)
+    expiry_date    = fields.Date("Expiry Date", required=True, tracking=True)
+    days_to_expiry = fields.Integer(compute='_compute_status', store=True)
     is_expired     = fields.Boolean(compute='_compute_status', store=True)
     expiring_soon  = fields.Boolean(compute='_compute_status', store=True)
-    days_to_expiry = fields.Integer(compute='_compute_status', store=True)
     active         = fields.Boolean(default=True)
     notes          = fields.Text("Notes")
+
+    _sql_constraints = [
+        ('policy_number_unique', 'UNIQUE(policy_number)',
+         'Policy number must be unique.'),
+        ('premium_positive', 'CHECK(premium >= 0)',
+         'Premium cannot be negative.'),
+    ]
 
     @api.depends('expiry_date')
     def _compute_status(self):
         today = fields.Date.today()
         for rec in self:
             if rec.expiry_date:
-                delta = (rec.expiry_date - today).days
+                delta              = (rec.expiry_date - today).days
                 rec.days_to_expiry = delta
                 rec.is_expired     = delta < 0
                 rec.expiring_soon  = 0 <= delta <= 30
@@ -49,11 +58,17 @@ class EstateInsurance(models.Model):
                 rec.is_expired     = False
                 rec.expiring_soon  = False
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for v in vals_list:
+            if v.get('name', 'New') == 'New':
+                v['name'] = self.env['ir.sequence'].next_by_code('estate.insurance') or 'New'
+        return super().create(vals_list)
+
     @api.model
     def _cron_insurance_reminders(self):
-        """Alert on insurance expiring within 30 days."""
-        today   = fields.Date.today()
-        target  = today + relativedelta(days=30)
+        today  = fields.Date.today()
+        target = today + relativedelta(days=30)
         records = self.search([
             ('expiry_date', '<=', target),
             ('expiry_date', '>=', today),
@@ -61,10 +76,10 @@ class EstateInsurance(models.Model):
         ])
         for ins in records:
             ins.message_post(
-                body=_(f"🔔 Insurance Reminder: Policy {ins.policy_number} "
-                       f"({ins.insurer}) expires on {ins.expiry_date} "
-                       f"({ins.days_to_expiry} days). Please renew."),
+                body=_(f"Insurance Reminder: Policy {ins.policy_number} "
+                       f"({ins.insurer}) expires {ins.expiry_date} "
+                       f"in {ins.days_to_expiry} days. Please renew."),
                 partner_ids=[ins.property_id.landlord_id.id],
                 subtype_xmlid='mail.mt_note',
             )
-        _logger.info("Sent insurance reminders for %d policies.", len(records))
+        _logger.info("Insurance reminders sent for %d policies.", len(records))
