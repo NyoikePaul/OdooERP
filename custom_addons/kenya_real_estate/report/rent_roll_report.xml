@@ -82,3 +82,51 @@
     </t>
   </template>
 </odoo>
+  <!-- Arrears Report -->
+  <record id="action_report_arrears" model="ir.actions.report">
+    <field name="name">Rent Arrears Aging</field>
+    <field name="model">estate.lease</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">kenya_real_estate.report_arrears</field>
+    <field name="report_file">kenya_real_estate.report_arrears</field>
+    <field name="binding_model_id" ref="model_estate_lease"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <template id="report_arrears">
+    <t t-call="web.html_container">
+      <t t-call="web.external_layout">
+        <div class="page">
+          <div class="text-center mb-4">
+            <h2 style="color:#dc3545;">RENT ARREARS AGING REPORT</h2>
+            <p class="text-muted">As at <span t-field="date"/></p>
+          </div>
+          <table class="table table-sm table-bordered" style="font-size:11px;">
+            <thead style="background:#dc3545;color:white;">
+              <tr>
+                <th>Lease</th><th>Property</th><th>Tenant</th><th>Phone</th>
+                <th class="text-end">Monthly Rent</th><th class="text-end">Outstanding</th>
+                <th class="text-center">Months</th><th>Lease End</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="docs" t-as="lease">
+                <t t-if="lease.total_outstanding &gt; 0">
+                  <tr t-att-style="'background:#ffe0e0;' if lease.months_outstanding &gt; 2 else 'background:#fff3cd;' if lease.months_outstanding &gt; 0 else ''">
+                    <td><t t-esc="lease.name"/></td>
+                    <td><t t-esc="lease.property_id.name"/></td>
+                    <td><t t-esc="lease.tenant_id.name"/></td>
+                    <td><t t-esc="lease.tenant_id.phone or '—'"/></td>
+                    <td class="text-end"><t t-esc="'{:,.0f}'.format(lease.monthly_rent)"/></td>
+                    <td class="text-end" style="font-weight:bold;color:red;"><t t-esc="'{:,.0f}'.format(lease.total_outstanding)"/></td>
+                    <td class="text-center"><t t-esc="lease.months_outstanding"/></td>
+                    <td t-att-style="'color:orange;' if lease.days_to_expiry &lt; 30 else ''"><t t-esc="lease.date_end"/></td>
+                  </tr>
+                </t>
+              </t>
+            </tbody>
+          </table>
+        </div>
+      </t>
+    </t>
+  </template>
