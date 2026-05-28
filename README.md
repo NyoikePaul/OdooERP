@@ -136,7 +136,8 @@ OdooERP Kenya
 
 ---
 ##   Container 
-<img width="1354" height="724" alt="image" src="https://github.com/user-attachments/assets/530c94d1-d25f-452e-a9ed-3eeeb272f753" />
+<img width="1366" height="724" alt="image" src="https://github.com/user-attachments/assets/37b82ea1-0daa-41c0-a8b6-b3acaa4f1bca" />
+
 
 ## License
 
