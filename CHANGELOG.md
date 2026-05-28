@@ -1,5 +1,28 @@
 # Changelog
 
+## [4.0.0] - 2026-05-28
+
+### Added
+- `estate.insurance` — Property insurance policy tracking, 30-day renewal alert cron
+- `estate.property.valuation` — Valuation history (comparable, income, DCF, bank)
+- `estate.lease.template` — Lease templates for quick tenant onboarding
+- `estate.tenant.broadcast.wizard` — Broadcast messages to all/building/county/arrears tenants
+- PDF Rent Roll report (binds to estate.property, KPI summary + totals)
+- PDF Arrears Aging report (binds to estate.lease, color-coded severity)
+- GitHub issue templates (bug report, feature request)
+- GitHub PR template
+- `scripts/setup.sh`, `backup.sh`, `restore.sh`
+
+### Fixed
+- Removed `logs/` and `addons/` from git tracking
+- Fixed broken README Quick Start code block
+- Shell 12.8% reduced by cleaning scripts/ directory
+
+### Changed
+- Manifest bumped to v18.0.4.0.0
+- `.gitignore` hardened
+- Menu expanded to 12 items + 5 configuration sub-items
+
 ## [Unreleased]
 ### Added
 - M-Pesa Daraja STK Push integration
