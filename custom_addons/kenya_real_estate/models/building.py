@@ -58,7 +58,7 @@ class EstateUnit(models.Model):
     _name        = 'estate.unit'
     _description = 'Property Unit / Apartment'
     _inherit     = ['mail.thread']
-  order       = 'building_id, floor, name'
+    _order       = 'building_id, floor, name'
 
     name         = fields.Char("Unit No.", required=True, tracking=True)
     ref          = fields.Char("Unit Ref", readonly=True, copy=False, default='New')
@@ -66,7 +66,7 @@ class EstateUnit(models.Model):
     property_id  = fields.Many2one('estate.property', string="Standalone Property", ondelete='set null')
     floor        = fields.Integer("Floor")
     unit_type    = fields.Selection([
-        ('bedsitter'Bedsitter'),('studio','Studio'),
+        ('bedsitter','Bedsitter'),('studio','Studio'),
         ('1br','1 Bedroom'),('2br','2 Bedroom'),('3br','3 Bedroom'),
         ('4br+','4+ Bedroom'),('penthouse','Penthouse'),
         ('office','Office Suite'),('shop','Shop/Retail'),
@@ -74,7 +74,7 @@ class EstateUnit(models.Model):
     size_sqft    = fields.Float("Size (sq ft)")
     currency_id  = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
     monthly_rent = fields.Monetary("Monthly Rent (KES)", currency_field='currency_id')
-    status       = fields.lection([
+    status       = fields.Selection([
         ('vacant','Vacant'),('leased','Leased'),
         ('maintenance','Under Maintenance'),('reserved','Reserved'),
     ], default='vacant', tracking=True, index=True)
@@ -84,7 +84,7 @@ class EstateUnit(models.Model):
 
     _sql_constraints = [('ref_unique','UNIQUE(ref)','Unit reference must be unique.')]
 
-    @api.model_create_mult
+    @api.model_create_multi
     def create(self, vals_list):
         for v in vals_list:
             if v.get('ref','New') == 'New':
