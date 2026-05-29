@@ -139,6 +139,11 @@ OdooERP Kenya
 <img width="1366" height="724" alt="image" src="https://github.com/user-attachments/assets/37b82ea1-0daa-41c0-a8b6-b3acaa4f1bca" />
 
 
+##  Reverse proxy
+<img width="1366" height="731" alt="image" src="https://github.com/user-attachments/assets/33b43e17-29a9-42e9-a3c5-6c1cc810b5ba" />
+
+
+
 ## License
 
 [LGPL-3.0](LICENSE) — matches Odoo Community Edition.
