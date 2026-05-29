@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_broadcast_wizard" model="ir.ui.view">
+    <field name="name">estate.broadcast.wizard.form</field>
+    <field name="model">estate.broadcast.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Broadcast to Tenants">
+        <group>
+          <field name="scope"/>
+          <field name="building_id" invisible="scope != 'building'"/>
+          <field name="county"      invisible="scope != 'county'"/>
+          <field name="tenant_count" readonly="1" string="Recipients"/>
+          <field name="subject"/>
+        </group>
+        <field name="body" widget="html"/>
+        <footer>
+          <button name="action_broadcast" type="object" string="Send Broadcast" class="btn-primary oe_highlight"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+  <record id="action_broadcast_wizard" model="ir.actions.act_window">
+    <field name="name">Broadcast to Tenants</field>
+    <field name="res_model">estate.broadcast.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

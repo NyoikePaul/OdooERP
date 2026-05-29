@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_rent_invoice_wizard" model="ir.ui.view">
+    <field name="name">estate.rent.invoice.wizard.form</field>
+    <field name="model">estate.rent.invoice.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Generate Rent Invoices">
+        <group>
+          <field name="invoice_date"/>
+          <field name="due_days"/>
+          <field name="include_service_charge"/>
+          <field name="notes"/>
+        </group>
+        <field name="lease_ids" widget="many2many_tags"/>
+        <footer>
+          <button name="action_generate" type="object" string="Generate Invoices" class="btn-primary oe_highlight"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+  <record id="action_rent_invoice_wizard" model="ir.actions.act_window">
+    <field name="name">Generate Rent Invoices</field>
+    <field name="res_model">estate.rent.invoice.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>
