@@ -1,84 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-  <!-- ── LIST VIEW ── -->
-  <record id="estate_property_view_list" model="ir.ui.view">
-    <field name="name">estate.property.list</field>
-    <field name="model">estate.property</field>
-    <field name="arch" type="xml">
-      <list string="Properties"
-            decoration-success="status=='available'"
-            decoration-info="status=='leased'"
-            decoration-warning="status=='maintenance'"
-            decoration-muted="status=='sold'">
-        <field name="ref"/>
-        <field name="name"/>
-        <field name="property_type_id"/>
-        <field name="property_type"/>
-        <field name="location"/>
-        <field name="county"/>
-        <field name="current_tenant_id"/>
-        <field name="monthly_rent"/>
-        <field name="status" widget="badge"
-               decoration-success="status=='available'"
-               decoration-info="status=='leased'"
-               decoration-warning="status=='maintenance'"
-               decoration-danger="status=='for_sale'"/>
-        <field name="lease_count"/>
-        <field name="maintenance_count"/>
-      </list>
-    </field>
-  </record>
-
-  <!-- ── KANBAN VIEW ── -->
+  <!-- KANBAN -->
   <record id="estate_property_view_kanban" model="ir.ui.view">
     <field name="name">estate.property.kanban</field>
     <field name="model">estate.property</field>
     <field name="arch" type="xml">
-      <kanban class="o_kanban_mobile" sample="1"
-              default_group_by="status">
-        <field name="name"/>
-        <field name="ref"/>
-        <field name="status"/>
-        <field name="monthly_rent"/>
-        <field name="county"/>
-        <field name="property_type"/>
-        <field name="image_128"/>
-        <field name="current_tenant_id"/>
-        <field name="lease_count"/>
+      <kanban class="o_kanban_mobile" default_group_by="status">
+        <field name="name"/><field name="ref"/><field name="status"/>
+        <field name="monthly_rent"/><field name="county"/>
+        <field name="current_tenant_id"/><field name="image_128"/>
         <templates>
           <t t-name="card">
-            <div class="o_kanban_image_wrapper">
-              <field name="image_128" widget="image" class="o_kanban_image"/>
-            </div>
-            <div class="oe_kanban_details">
+            <div class="oe_kanban_card">
+              <field name="image_128" widget="image" class="float-end"/>
               <strong><field name="name"/></strong>
-              <div><field name="ref"/> · <field name="county"/></div>
-              <div><field name="property_type"/> · <field name="property_type_id"/></div>
-              <div class="o_kanban_tags_section">
-                <field name="tag_ids" widget="many2many_tags"
-                       options="{}"/>
-              </div>
-              <div>
-                <span class="fw-bold text-success">
-                  KES <field name="monthly_rent"/>/mo
-                </span>
-              </div>
-              <div t-if="record.current_tenant_id.value">
-                Tenant: <field name="current_tenant_id"/>
-              </div>
-              <div class="o_kanban_footer mt-2">
-                <field name="status" widget="label_selection"
-                       options="{'classes': {
-                         'available':   'success',
-                         'leased':      'info',
-                         'maintenance': 'warning',
-                         'sold':        'muted'
-                       }}"/>
-                <span class="float-end">
-                  <i class="fa fa-home me-1" title="Leases"/> <field name="lease_count"/>
-                </span>
-              </div>
+              <div><t t-esc="record.ref.value"/></div>
+              <div>KES <t t-esc="record.monthly_rent.value"/></div>
+              <div><field name="county"/></div>
+              <div invisible="not current_tenant_id"><field name="current_tenant_id"/></div>
             </div>
           </t>
         </templates>
@@ -86,83 +25,117 @@
     </field>
   </record>
 
-  <!-- ── FORM VIEW ── -->
+  <!-- LIST -->
+  <record id="estate_property_view_list" model="ir.ui.view">
+    <field name="name">estate.property.list</field>
+    <field name="model">estate.property</field>
+    <field name="arch" type="xml">
+      <list string="Properties"
+            decoration-success="status=='available'"
+            decoration-info="status=='leased'"
+            decoration-warning="status=='for_sale'"
+            decoration-muted="status=='maintenance'">
+        <field name="ref"/>
+        <field name="name"/>
+        <field name="property_type_id"/>
+        <field name="property_type"/>
+        <field name="county"/>
+        <field name="current_tenant_id" string="Tenant"/>
+        <field name="monthly_rent" sum="Total Rent"/>
+        <field name="total_arrears" sum="Total Arrears" optional="show"/>
+        <field name="landlord_payout" optional="hide"/>
+        <field name="lease_count" optional="show"/>
+        <field name="maintenance_count" optional="show"/>
+        <field name="status" widget="badge"
+               decoration-success="status=='available'"
+               decoration-info="status=='leased'"
+               decoration-warning="status=='for_sale'"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- FORM -->
   <record id="estate_property_view_form" model="ir.ui.view">
     <field name="name">estate.property.form</field>
     <field name="model">estate.property</field>
     <field name="arch" type="xml">
       <form string="Property">
         <header>
-          <button name="action_set_for_sale" string="List for Sale"
-                  type="object" invisible="status != 'available'"/>
-          <button name="action_set_available" string="Mark Available"
-                  type="object" invisible="status not in ('for_sale','maintenance')"
-                  class="btn-warning"/>
+          <button name="action_set_available" type="object" string="Set Available"
+                  invisible="status == 'available'"/>
+          <button name="action_set_for_sale"  type="object" string="List for Sale"
+                  invisible="status in ('for_sale','sold')"/>
           <field name="status" widget="statusbar"
                  statusbar_visible="available,leased,for_sale,sold"/>
         </header>
         <sheet>
+          <field name="image_1920" widget="image" class="oe_avatar"/>
           <div class="oe_button_box" name="button_box">
             <button name="action_open_leases" type="object"
                     class="oe_stat_button" icon="fa-home">
               <field name="lease_count" widget="statinfo" string="Leases"/>
+            </button>
+            <button name="action_open_offers" type="object"
+                    class="oe_stat_button" icon="fa-handshake-o">
+              <field name="offer_count" widget="statinfo" string="Offers"/>
             </button>
             <button name="action_open_maintenance" type="object"
                     class="oe_stat_button" icon="fa-wrench">
               <field name="maintenance_count" widget="statinfo" string="Maintenance"/>
             </button>
           </div>
-          <field name="image_1920" widget="image" class="oe_avatar"/>
           <div class="oe_title">
-            <h1><field name="name" placeholder="Property Name"/></h1>
-            <h4><field name="ref" readonly="1"/></h4>
+            <h1><field name="name" placeholder="Property Name..."/></h1>
+            <h4 class="text-muted"><field name="ref" readonly="1"/></h4>
           </div>
           <group>
             <group string="Classification">
               <field name="property_type_id"/>
               <field name="property_type"/>
               <field name="furnished"/>
-              <field name="tag_ids" widget="many2many_tags"
-                     options="{}"/>
+              <field name="tag_ids" widget="many2many_tags"/>
             </group>
             <group string="Ownership">
               <field name="landlord_id"/>
+              <field name="landlord_kra_pin"/>
               <field name="agent_id"/>
+              <field name="management_fee"/>
               <field name="active"/>
             </group>
           </group>
           <group>
             <group string="Location">
               <field name="street"/>
-              <field name="location"/>
-              <field name="constituency"/>
+              <field name="estate"/>
               <field name="county"/>
-              <field name="latitude"/>
-              <field name="longitude"/>
+              <field name="constituency"/>
+              <field name="postal_code"/>
             </group>
             <group string="Physical Details">
               <field name="size_sqft"/>
               <field name="bedrooms"/>
               <field name="bathrooms"/>
               <field name="floor"/>
-              <field name="total_floors"/>
               <field name="year_built"/>
               <field name="parking_spaces"/>
-              <field name="garden"/>
-              <field name="garden_area_sqft" invisible="not garden"/>
+              <field name="has_generator"/>
+              <field name="has_borehole"/>
             </group>
           </group>
           <group string="Financials">
             <group>
               <field name="monthly_rent"/>
               <field name="sale_price"/>
-              <field name="annual_revenue"/>
-              
+              <field name="acquisition_cost"/>
+              <field name="annual_insurance"/>
             </group>
-            <group>
-              <field name="total_revenue"/>
-              <field name="occupancy_days"/>
-              <field name="current_tenant_id" readonly="1"/>
+            <group string="KPIs (Computed)">
+              <field name="annual_revenue"   readonly="1"/>
+              <field name="gross_yield"      readonly="1" widget="percentage"/>
+              <field name="cap_rate"         readonly="1" widget="percentage"/>
+              <field name="landlord_payout"  readonly="1"/>
+              <field name="total_arrears"    readonly="1"/>
+              <field name="vacancy_loss"     readonly="1"/>
             </group>
           </group>
           <notebook>
@@ -177,42 +150,29 @@
                   <field name="date_start"/>
                   <field name="date_end"/>
                   <field name="monthly_rent"/>
-                  <field name="days_to_expiry"/>
+                  <field name="total_outstanding"/>
                   <field name="status" widget="badge"/>
-                </list>
-              </field>
-            </page>
-            <page string="Maintenance">
-              <field name="maintenance_ids">
-                <list>
-                  <field name="ref"/>
-                  <field name="name"/>
-                  <field name="category"/>
-                  <field name="priority" widget="priority"/>
-                  <field name="status" widget="badge"/>
-                  <field name="assigned_to"/>
-                  <field name="actual_cost"/>
                 </list>
               </field>
             </page>
             <page string="Insurance">
               <field name="insurance_ids">
-                <list>
+                <list editable="bottom">
                   <field name="policy_number"/>
                   <field name="insurer"/>
                   <field name="policy_type"/>
                   <field name="premium"/>
                   <field name="expiry_date"/>
-                  <field name="days_to_expiry"/>
+                  <field name="days_to_expiry" readonly="1"/>
                 </list>
               </field>
             </page>
-            <page string="Valuation History">
+            <page string="Valuations">
               <field name="valuation_ids">
-                <list>
+                <list editable="bottom">
                   <field name="valuation_date"/>
                   <field name="valuation_value"/>
-                  <field name="valuation_method"/>
+                  <field name="method"/>
                   <field name="valued_by"/>
                 </list>
               </field>
@@ -227,31 +187,27 @@
     </field>
   </record>
 
-  <!-- ── SEARCH VIEW ── -->
+  <!-- SEARCH -->
   <record id="estate_property_view_search" model="ir.ui.view">
     <field name="name">estate.property.search</field>
     <field name="model">estate.property</field>
     <field name="arch" type="xml">
       <search string="Search Properties">
-        <field name="name"/>
-        <field name="ref"/>
-        <field name="county"/>
+        <field name="name"/><field name="ref"/>
         <field name="landlord_id"/>
-        <field name="current_tenant_id"/>
+        <field name="current_tenant_id" string="Tenant"/>
         <separator/>
-        <filter string="Available"    name="available"    domain="[('status','=','available')]"/>
-        <filter string="Leased"       name="leased"       domain="[('status','=','leased')]"/>
-        <filter string="For Sale"     name="for_sale"     domain="[('status','=','for_sale')]"/>
-        <filter string="Maintenance"  name="maintenance"  domain="[('status','=','maintenance')]"/>
-        <separator/>
-        <filter string="Residential"  name="residential"  domain="[('property_type','=','residential')]"/>
-        <filter string="Commercial"   name="commercial"   domain="[('property_type','=','commercial')]"/>
+        <filter string="Available"   name="available"   domain="[('status','=','available')]"/>
+        <filter string="Leased"      name="leased"      domain="[('status','=','leased')]"/>
+        <filter string="For Sale"    name="for_sale"    domain="[('status','=','for_sale')]"/>
+        <filter string="Has Arrears" name="has_arrears" domain="[('total_arrears','>',0)]"/>
+        <filter string="Residential" name="residential" domain="[('property_type','=','residential')]"/>
+        <filter string="Commercial"  name="commercial"  domain="[('property_type','=','commercial')]"/>
         <separator/>
         <group expand="0" string="Group By">
-          <filter string="Status"   name="grp_status"  context="{'group_by':'status'}"/>
-          <filter string="County"   name="grp_county"  context="{'group_by':'county'}"/>
-          <filter string="Type"     name="grp_type"    context="{'group_by':'property_type'}"/>
-          <filter string="Category" name="grp_cat"     context="{'group_by':'property_type_id'}"/>
+          <filter string="Status"   name="grp_status"   context="{'group_by':'status'}"/>
+          <filter string="County"   name="grp_county"   context="{'group_by':'county'}"/>
+          <filter string="Type"     name="grp_type"     context="{'group_by':'property_type'}"/>
           <filter string="Landlord" name="grp_landlord" context="{'group_by':'landlord_id'}"/>
         </group>
       </search>
@@ -261,9 +217,8 @@
   <record id="estate_property_action" model="ir.actions.act_window">
     <field name="name">Properties</field>
     <field name="res_model">estate.property</field>
-    <field name="view_mode">kanban,list,form</field>
+    <field name="view_mode">list,kanban,form</field>
     <field name="search_view_id" ref="estate_property_view_search"/>
-    <field name="context">{'search_default_available': 1}</field>
+    <field name="context">{'search_default_available':1}</field>
   </record>
-
 </odoo>
