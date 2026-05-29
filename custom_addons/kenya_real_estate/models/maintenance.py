@@ -5,7 +5,7 @@ _logger = logging.getLogger(__name__)
 
 class EstateMaintenanceRequest(models.Model):
     _name        = 'estate.maintenance.request'
-    _description = 'Maint Request'
+    _description = 'Maintenance Request'
     _inherit     = ['mail.thread', 'mail.activity.mixin']
     _order       = 'priority desc, date_reported desc'
 
@@ -13,7 +13,7 @@ class EstateMaintenanceRequest(models.Model):
     ref          = fields.Char("Request Ref", readonly=True, copy=False, default='New')
     property_id  = fields.Many2one('estate.property', required=True, index=True, ondelete='restrict')
     unit_id      = fields.Many2one('estate.unit', string="Unit")
-    lease_id     = fields.Many2one('estate.lease', strig="Reported by Lease")
+    lease_id     = fields.Many2one('estate.lease', string="Reported by Lease")
     reported_by  = fields.Many2one('res.partner', string="Reported By")
     assigned_to  = fields.Many2one('res.users',   string="Assigned To")
 
@@ -24,7 +24,7 @@ class EstateMaintenanceRequest(models.Model):
         ('hvac','HVAC/AC'),('roof','Roof'),('other','Other'),
     ], required=True, default='other')
 
-    priority     = fSelection([('0','Normal'),('1','Medium'),('2','High'),('3','Critical')],
+    priority     = fields.Selection([('0','Normal'),('1','Medium'),('2','High'),('3','Critical')],
                                      default='0', tracking=True)
     status       = fields.Selection([
         ('new','New'),('in_progress','In Progress'),
@@ -32,7 +32,7 @@ class EstateMaintenanceRequest(models.Model):
     ], default='new', tracking=True)
 
     currency_id    = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
-    estimated_cost = fields.Monetary("Estimated Cost (KES)", curre_field='currency_id')
+    estimated_cost = fields.Monetary("Estimated Cost (KES)", currency_field='currency_id')
     actual_cost    = fields.Monetary("Actual Cost (KES)",    currency_field='currency_id')
     description    = fields.Text("Description")
     date_reported  = fields.Date("Date Reported", default=fields.Date.today, required=True)
@@ -44,7 +44,7 @@ class EstateMaintenanceRequest(models.Model):
     def action_start(self):
         self.write({'status':'in_progress'})
 
-    defction_done(self):
+    def action_done(self):
         self.write({'status':'done','date_resolved':fields.Date.today()})
 
     @api.model_create_multi

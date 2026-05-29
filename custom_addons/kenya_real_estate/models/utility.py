@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 
 
 class EstateUtilityMeter(models.Model):
-    _name        = 'estate.utity.meter'
+    _name        = 'estate.utility.meter'
     _description = 'Utility Meter'
     _order       = 'property_id, utility_type'
 
@@ -26,14 +26,14 @@ class EstateUtilityReading(models.Model):
     _order       = 'reading_date desc'
 
     meter_id     = fields.Many2one('estate.utility.meter', ondelete='cascade', required=True)
-    lease_id= fields.Many2one('estate.lease')
+    lease_id     = fields.Many2one('estate.lease')
     reading_date = fields.Date("Date", default=fields.Date.today, required=True)
     previous     = fields.Float("Previous Reading")
     current      = fields.Float("Current Reading", required=True)
     consumed     = fields.Float("Units Consumed", compute='_compute', store=True)
     currency_id  = fields.Many2one(related='meter_id.currency_id')
     amount       = fields.Monetary("Amount (KES)", currency_field='currency_id', compute='_compute', store=True)
-    invoiced     s.Boolean("Invoiced", default=False)
+    invoiced     = fields.Boolean("Invoiced", default=False)
     invoice_id   = fields.Many2one('account.move')
 
     @api.depends('previous','current','meter_id.tariff_rate')
@@ -47,7 +47,7 @@ class EstateUtilityReading(models.Model):
         self.ensure_one()
         if not self.lease_id:
             raise UserError(_("Link a lease before invoicing."))
-        v = self.env['account.move'].create({
+        inv = self.env['account.move'].create({
             'move_type':'out_invoice','partner_id':self.lease_id.tenant_id.id,
             'lease_id':self.lease_id.id,'invoice_date':self.reading_date,
             'invoice_line_ids':[(0,0,{
@@ -56,4 +56,4 @@ class EstateUtilityReading(models.Model):
             })]
         })
         self.write({'invoiced':True,'invoice_id':inv.id})
-     return {'type':'ir.actions.act_window','res_model':'account.move','res_id':inv.id,'view_mode':'form'}
+        return {'type':'ir.actions.act_window','res_model':'account.move','res_id':inv.id,'view_mode':'form'}

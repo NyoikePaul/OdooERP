@@ -9,7 +9,7 @@ class EstateCommission(models.Model):
     _order       = 'create_date desc'
 
     name         = fields.Char("Commission Ref", readonly=True, copy=False, default='New')
-    agent_id     = fields.Many2one('res.users',   string="At", required=True)
+    agent_id     = fields.Many2one('res.users',   string="Agent", required=True)
     property_id  = fields.Many2one('estate.property')
     lease_id     = fields.Many2one('estate.lease')
     comm_type    = fields.Selection([
@@ -18,13 +18,13 @@ class EstateCommission(models.Model):
     ], required=True, default='letting')
     basis        = fields.Selection([('fixed','Fixed'),('percent','Percentage')], default='percent')
     rate         = fields.Float("Rate (%)", default=8.33)
-    currency_id  = fiMany2one('res.currency', default=lambda s: s.env.ref('base.KES'))
+    currency_id  = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
     base_amount  = fields.Monetary("Base Amount", currency_field='currency_id')
     commission   = fields.Monetary("Commission (KES)", currency_field='currency_id',
                                     compute='_compute_commission', store=True)
     status       = fields.Selection([('draft','Draft'),('approved','Approved'),('paid','Paid')], default='draft', tracking=True)
     invoice_id   = fields.Many2one('account.move', string="Invoice")
-    otes        = fields.Text()
+    notes        = fields.Text()
 
     @api.depends('basis','rate','base_amount')
     def _compute_commission(self):
@@ -38,7 +38,7 @@ class EstateCommission(models.Model):
         self.ensure_one()
         inv = self.env['account.move'].create({
             'move_type':'in_invoice','partner_id':self.agent_id.partner_id.id,
-            'invoine_ids':[(0,0,{
+            'invoice_line_ids':[(0,0,{
                 'name':f"Commission — {self.comm_type} — {self.property_id.name}",
                 'quantity':1,'price_unit':self.commission,
             })]

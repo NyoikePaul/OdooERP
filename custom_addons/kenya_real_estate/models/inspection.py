@@ -7,7 +7,7 @@ class EstateInspection(models.Model):
     _inherit     = ['mail.thread', 'mail.activity.mixin']
     _order       = 'date desc'
 
-    name         = fields.Char("Report Ref", readonly=True, cFalse, default='New')
+    name         = fields.Char("Report Ref", readonly=True, copy=False, default='New')
     property_id  = fields.Many2one('estate.property', required=True, ondelete='restrict')
     unit_id      = fields.Many2one('estate.unit')
     lease_id     = fields.Many2one('estate.lease')
@@ -16,13 +16,14 @@ class EstateInspection(models.Model):
         ('routine','Routine'),('emergency','Emergency'),
     ], required=True, default='routine', tracking=True)
     date         = fields.Date("Date", default=fields.Date.today, required=True)
-    insper_id = fields.Many2one('res.users', string="Inspector")
+    inspector_id = fields.Many2one('res.users', string="Inspector")
     tenant_id    = fields.Many2one('res.partner', string="Tenant Present")
     overall      = fields.Selection([('excellent','Excellent'),('good','Good'),
                                       ('fair','Fair'),('poor','Poor')], default='good')
     item_ids     = fields.One2many('estate.inspection.item', 'inspection_id', string="Checklist")
     signed_tenant   = fields.Boolean("Signed by Tenant")
-    signed_landlord = fields.Boolean("Signed by Landlord")   currency_id  = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
+    signed_landlord = fields.Boolean("Signed by Landlord")
+    currency_id  = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
     deduction    = fields.Monetary("Total Deduction (KES)", currency_field='currency_id')
     notes        = fields.Text("Notes")
 
@@ -32,7 +33,7 @@ class EstateInspection(models.Model):
             ('Walls & Ceilings','Condition, cracks, paint'),
             ('Floors','Tiles, carpet, condition'),
             ('Windows & Doors','Locks, glass, hinges'),
-            ('Kitchen','Sink, cabinetiances'),
+            ('Kitchen','Sink, cabinets, appliances'),
             ('Bathrooms','Plumbing, fixtures, tiles'),
             ('Electrical','Sockets, switches, lights'),
             ('Plumbing','Water pressure, drainage'),
@@ -59,7 +60,7 @@ class EstateInspectionItem(models.Model):
     _description = 'Inspection Checklist Item'
     _order   = 'sequence, room'
 
-    inspection_id = fields.Many2one('estate.ition', ondelete='cascade', required=True)
+    inspection_id = fields.Many2one('estate.inspection', ondelete='cascade', required=True)
     sequence      = fields.Integer(default=10)
     room          = fields.Char("Area", required=True)
     description   = fields.Text("Observations")
@@ -68,4 +69,4 @@ class EstateInspectionItem(models.Model):
         ('fair','⚠️ Fair'),('poor','❌ Poor'),('na','N/A'),
     ], default='good')
     currency_id   = fields.Many2one(related='inspection_id.currency_id')
-    deduction     = fields.Monetary("Deduction (KES)", currenield='currency_id')
+    deduction     = fields.Monetary("Deduction (KES)", currency_field='currency_id')

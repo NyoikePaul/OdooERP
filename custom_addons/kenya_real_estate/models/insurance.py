@@ -17,14 +17,14 @@ class EstateInsurance(models.Model):
     policy_type   = fields.Selection([
         ('fire','Fire & Perils'),('comprehensive','Comprehensive'),
         ('liability','Public Liability'),('contents','Contents'),
-    ], required=True, default='consive')
+    ], required=True, default='comprehensive')
     currency_id   = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
     premium       = fields.Monetary("Annual Premium", currency_field='currency_id')
     sum_insured   = fields.Monetary("Sum Insured",    currency_field='currency_id')
     start_date    = fields.Date("Start Date", required=True)
     expiry_date   = fields.Date("Expiry Date", required=True, tracking=True)
     days_to_expiry= fields.Integer(compute='_compute_status', store=True)
-    is_expired    = fields.Boolcompute='_compute_status', store=True)
+    is_expired    = fields.Boolean(compute='_compute_status', store=True)
     expiring_soon = fields.Boolean(compute='_compute_status', store=True)
     active        = fields.Boolean(default=True)
     notes         = fields.Text()
@@ -37,7 +37,7 @@ class EstateInsurance(models.Model):
         for r in self:
             if r.expiry_date:
                 delta = (r.expiry_date - today).days
-           r.days_to_expiry = delta
+                r.days_to_expiry = delta
                 r.is_expired     = delta < 0
                 r.expiring_soon  = 0 <= delta <= 30
             else:
@@ -59,5 +59,5 @@ class EstateInsurance(models.Model):
     def create(self, vals_list):
         for v in vals_list:
             if v.get('name','New')=='New':
-                v['name'] = self.env['ir.sequence'].next_by_code('estate.insura') or 'New'
+                v['name'] = self.env['ir.sequence'].next_by_code('estate.insurance') or 'New'
         return super().create(vals_list)
