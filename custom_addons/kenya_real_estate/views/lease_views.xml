@@ -6,21 +6,23 @@
     <field name="model">estate.lease</field>
     <field name="arch" type="xml">
       <list string="Leases"
-            decoration-success="status=='active' and not is_expiring_soon and months_outstanding==0"
-            decoration-warning="is_expiring_soon or months_outstanding==1"
-            decoration-danger="months_outstanding &gt; 1"
+            decoration-success="status=='active' and months_arrears==0 and not is_expiring_soon"
+            decoration-warning="is_expiring_soon or months_arrears==1"
+            decoration-danger="months_arrears &gt; 1"
             decoration-muted="status in ('expired','cancelled','surrendered')">
         <field name="name"/>
         <field name="property_id"/>
-        <field name="unit_id"/>
+        <field name="unit_id" optional="show"/>
         <field name="tenant_id"/>
         <field name="date_start"/>
         <field name="date_end"/>
         <field name="duration_months"/>
-        <field name="monthly_rent"/>
-        <field name="total_outstanding"/>
-        <field name="months_outstanding"/>
+        <field name="monthly_rent" sum="Total Rent"/>
+        <field name="total_outstanding" sum="Total Arrears"/>
+        <field name="months_arrears"/>
         <field name="days_to_expiry"/>
+        <field name="wht_amount" optional="hide"/>
+        <field name="landlord_payout" optional="hide"/>
         <field name="is_expiring_soon" invisible="1"/>
         <field name="status" widget="badge"
                decoration-success="status=='active'"
@@ -37,61 +39,45 @@
     <field name="arch" type="xml">
       <form string="Lease / Tenancy Agreement">
         <header>
-          <button name="action_activate"            type="object" string="Activate"
-                  invisible="status != 'draft'" class="oe_highlight"/>
-          <button name="action_generate_rent_invoice" type="object"
-                  string="Generate Invoice" invisible="status != 'active'"/>
-          <button name="action_renew"               type="object" string="Renew"
-                  invisible="status not in ('active','expired')"/>
-          <button name="action_apply_escalation"    type="object"
-                  string="Apply Escalation" invisible="status != 'active'"/>
-          <button name="action_send_reminder"       type="object"
-                  string="Send Reminder"
-                  invisible="status != 'active' or total_outstanding == 0"/>
-          <button name="action_surrender"           type="object"
-                  string="Surrender Lease"
-                  invisible="status != 'active'"/>
-          <button name="action_cancel"              type="object" string="Cancel"
-                  invisible="status in ('cancelled','expired','surrendered')"/>
-          <field name="status" widget="statusbar"
-                 statusbar_visible="draft,active,expired"/>
+          <button name="action_activate"           type="object" string="Activate"          invisible="status != 'draft'" class="oe_highlight"/>
+          <button name="action_generate_invoice"   type="object" string="Generate Invoice"  invisible="status != 'active'"/>
+          <button name="action_renew"              type="object" string="Renew"             invisible="status not in ('active','expired')"/>
+          <button name="action_apply_escalation"   type="object" string="Apply Escalation"  invisible="status != 'active'"/>
+          <button name="action_send_reminder"      type="object" string="Send Reminder"     invisible="status != 'active' or total_outstanding == 0"/>
+          <button name="action_surrender"          type="object" string="Surrender"         invisible="status != 'active'"/>
+          <button name="action_cancel"             type="object" string="Cancel"            invisible="status in ('cancelled','expired','surrendered')"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,active,expired"/>
         </header>
         <sheet>
           <div class="oe_button_box" name="button_box">
-            <button name="action_open_invoices" type="object"
-                    class="oe_stat_button" icon="fa-money">
+            <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-money">
               <field name="payment_count" widget="statinfo" string="Invoices"/>
             </button>
+            <button name="%(action_broadcast_wizard)d" type="action" class="oe_stat_button" icon="fa-bullhorn" string="Notify"/>
+          </div>
+          <div class="alert alert-warning" invisible="not is_expiring_soon">
+            Lease expires in <field name="days_to_expiry"/> days!
+          </div>
+          <div class="alert alert-danger" invisible="months_arrears == 0">
+            ARREARS: <field name="months_arrears"/> month(s) — KES <field name="total_outstanding"/>
           </div>
           <div class="oe_title">
             <h1><field name="name" readonly="1"/></h1>
           </div>
-          <div class="alert alert-warning" role="alert"
-               invisible="not is_expiring_soon">
-            ⚠️ Lease expires in <field name="days_to_expiry"/> days!
-          </div>
-          <div class="alert alert-danger" role="alert"
-               invisible="months_outstanding == 0">
-            🚨 ARREARS: <field name="months_outstanding"/> month(s) outstanding —
-            KES <field name="total_outstanding"/>
-          </div>
           <group>
             <group string="Lease Details">
               <field name="property_id"/>
-              <field name="unit_id"
-                     domain="[('building_id.unit_ids','!=',False)]"/>
+              <field name="unit_id"/>
               <field name="tenant_id"/>
               <field name="parent_lease_id" readonly="1"/>
             </group>
             <group string="Term">
               <field name="date_start"/>
               <field name="date_end"/>
-              <field name="duration_months" readonly="1"/>
+              <field name="duration_months"   readonly="1"/>
               <field name="total_lease_value" readonly="1"/>
-              <field name="days_to_expiry" readonly="1"/>
               <field name="notice_period"/>
               <field name="notice_given"/>
-              <field name="notice_date" invisible="not notice_given"/>
             </group>
           </group>
           <group>
@@ -100,12 +86,12 @@
               <field name="service_charge"/>
               <field name="deposit"/>
               <field name="deposit_paid"/>
-              <field name="deposit_mpesa" invisible="not deposit_paid"/>
+              <field name="deposit_receipt" invisible="not deposit_paid"/>
             </group>
             <group string="KRA Tax">
               <field name="apply_wht"/>
-              <field name="wht_rate" readonly="1" invisible="not apply_wht"/>
-              <field name="wht_amount" readonly="1" invisible="not apply_wht"/>
+              <field name="wht_rate"        readonly="1" invisible="not apply_wht"/>
+              <field name="wht_amount"      readonly="1" invisible="not apply_wht"/>
               <field name="landlord_payout" readonly="1"/>
             </group>
           </group>
@@ -114,21 +100,15 @@
               <field name="escalation_rate"/>
               <field name="next_review_date"/>
               <field name="auto_escalate"/>
+            </group>
+            <group string="Late Payment">
               <field name="penalty_rate"/>
               <field name="grace_days"/>
-            </group>
-            <group string="Arrears Summary">
-              <field name="total_invoiced" readonly="1"/>
-              <field name="total_paid" readonly="1"/>
+              <separator string="Arrears Summary"/>
+              <field name="total_paid"        readonly="1"/>
               <field name="total_outstanding" readonly="1"/>
-              <field name="months_outstanding" readonly="1"/>
+              <field name="months_arrears"    readonly="1"/>
             </group>
-          </group>
-          <group string="Special Clauses">
-            <field name="break_clause"/>
-            <field name="break_clause_months" invisible="not break_clause"/>
-            <field name="subletting_allowed"/>
-            <field name="subletting_ref" invisible="not subletting_allowed"/>
           </group>
           <notebook>
             <page string="Invoices">
@@ -146,19 +126,16 @@
                 </list>
               </field>
             </page>
-            <page string="Renewals">
-              <field name="renewal_ids" readonly="1">
-                <list>
-                  <field name="name"/>
-                  <field name="date_start"/>
-                  <field name="date_end"/>
-                  <field name="monthly_rent"/>
-                  <field name="status" widget="badge"/>
-                </list>
-              </field>
-            </page>
             <page string="Escalation History">
               <field name="escalation_history" readonly="1"/>
+            </page>
+            <page string="Special Clauses">
+              <group>
+                <field name="break_clause"/>
+                <field name="break_after_months" invisible="not break_clause"/>
+                <field name="subletting_allowed"/>
+                <field name="subletting_approved" invisible="not subletting_allowed"/>
+              </group>
             </page>
             <page string="Notes">
               <field name="notes"/>
@@ -170,7 +147,6 @@
     </field>
   </record>
 
-  <!-- ACTION -->
   <record id="estate_lease_action" model="ir.actions.act_window">
     <field name="name">Leases</field>
     <field name="res_model">estate.lease</field>
