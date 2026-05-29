@@ -1,215 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <!-- Property Types -->
+  <record id="type_apartment" model="estate.property.type"><field name="name">Apartment</field><field name="sequence">1</field></record>
+  <record id="type_villa"     model="estate.property.type"><field name="name">Villa</field><field name="sequence">2</field></record>
+  <record id="type_office"    model="estate.property.type"><field name="name">Commercial Office</field><field name="sequence">3</field></record>
+  <record id="type_maisonette" model="estate.property.type"><field name="name">Maisonette</field><field name="sequence">4</field></record>
+  <record id="type_bedsitter" model="estate.property.type"><field name="name">Bedsitter</field><field name="sequence">5</field></record>
 
-  <!-- ── Property Types ── -->
-  <record id="type_apartment" model="estate.property.type">
-    <field name="name">Apartment</field><field name="sequence">1</field>
-  </record>
-  <record id="type_villa" model="estate.property.type">
-    <field name="name">Villa</field><field name="sequence">2</field>
-  </record>
-  <record id="type_office" model="estate.property.type">
-    <field name="name">Commercial Office</field><field name="sequence">3</field>
-  </record>
-  <record id="type_maisonette" model="estate.property.type">
-    <field name="name">Maisonette</field><field name="sequence">4</field>
-  </record>
+  <!-- Amenities -->
+  <record id="amenity_parking"   model="estate.amenity"><field name="name">Parking</field><field name="category">utility</field></record>
+  <record id="amenity_generator" model="estate.amenity"><field name="name">Backup Generator</field><field name="category">utility</field></record>
+  <record id="amenity_borehole"  model="estate.amenity"><field name="name">Borehole Water</field><field name="category">utility</field></record>
+  <record id="amenity_security"  model="estate.amenity"><field name="name">24hr Security</field><field name="category">security</field></record>
+  <record id="amenity_cctv"      model="estate.amenity"><field name="name">CCTV</field><field name="category">security</field></record>
+  <record id="amenity_pool"      model="estate.amenity"><field name="name">Swimming Pool</field><field name="category">leisure</field></record>
+  <record id="amenity_gym"       model="estate.amenity"><field name="name">Gym</field><field name="category">leisure</field></record>
+  <record id="amenity_fibre"     model="estate.amenity"><field name="name">Fibre Internet</field><field name="category">utility</field></record>
 
-  <!-- ── Amenities ── -->
-  <record id="amenity_parking" model="estate.amenity">
-    <field name="name">Parking</field><field name="category">utility</field>
-  </record>
-  <record id="amenity_generator" model="estate.amenity">
-    <field name="name">Backup Generator</field><field name="category">utility</field>
-  </record>
-  <record id="amenity_borehole" model="estate.amenity">
-    <field name="name">Borehole Water</field><field name="category">utility</field>
-  </record>
-  <record id="amenity_security" model="estate.amenity">
-    <field name="name">24hr Security</field><field name="category">security</field>
-  </record>
-  <record id="amenity_cctv" model="estate.amenity">
-    <field name="name">CCTV</field><field name="category">security</field>
-  </record>
-  <record id="amenity_pool" model="estate.amenity">
-    <field name="name">Swimming Pool</field><field name="category">leisure</field>
-  </record>
-  <record id="amenity_gym" model="estate.amenity">
-    <field name="name">Gym</field><field name="category">leisure</field>
-  </record>
-  <record id="amenity_fibre" model="estate.amenity">
-    <field name="name">Fibre Internet</field><field name="category">utility</field>
-  </record>
+  <!-- Tags -->
+  <record id="tag_furnished"   model="estate.property.tag"><field name="name">Furnished</field><field name="color">10</field></record>
+  <record id="tag_gated"       model="estate.property.tag"><field name="name">Gated Community</field><field name="color">2</field></record>
+  <record id="tag_newly_built" model="estate.property.tag"><field name="name">Newly Built</field><field name="color">1</field></record>
+  <record id="tag_sea_view"    model="estate.property.tag"><field name="name">Sea View</field><field name="color">4</field></record>
+  <record id="tag_pet_friendly" model="estate.property.tag"><field name="name">Pet Friendly</field><field name="color">3</field></record>
 
-  <!-- ── Tags ── -->
-  <record id="tag_furnished" model="estate.property.tag">
-    <field name="name">Furnished</field><field name="color">10</field>
-  </record>
-  <record id="tag_pet_friendly" model="estate.property.tag">
-    <field name="name">Pet Friendly</field><field name="color">3</field>
-  </record>
-  <record id="tag_sea_view" model="estate.property.tag">
-    <field name="name">Sea View</field><field name="color">4</field>
-  </record>
-  <record id="tag_gated" model="estate.property.tag">
-    <field name="name">Gated Community</field><field name="color">2</field>
-  </record>
-  <record id="tag_newly_built" model="estate.property.tag">
-    <field name="name">Newly Built</field><field name="color">1</field>
-  </record>
-
-  <!-- ── Partners ── -->
+  <!-- Partners -->
   <record id="partner_landlord_1" model="res.partner">
-    <field name="name">Kamau Properties Ltd</field>
-    <field name="company_type">company</field>
-    <field name="city">Nairobi</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 722 100 200</field>
-    <field name="email">info@kamauproperties.co.ke</field>
+    <field name="name">Kamau Properties Ltd</field><field name="company_type">company</field>
+    <field name="city">Nairobi</field><field name="country_id" ref="base.ke"/>
+    <field name="phone">+254722100200</field><field name="email">info@kamauproperties.co.ke</field>
   </record>
   <record id="partner_landlord_2" model="res.partner">
-    <field name="name">Mombasa Coastal Estates</field>
-    <field name="company_type">company</field>
-    <field name="city">Mombasa</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 711 300 400</field>
+    <field name="name">Coastal Estates Ltd</field><field name="company_type">company</field>
+    <field name="city">Mombasa</field><field name="country_id" ref="base.ke"/>
+    <field name="phone">+254711300400</field>
   </record>
   <record id="partner_tenant_1" model="res.partner">
-    <field name="name">Wanjiru Mwangi</field>
-    <field name="city">Nairobi</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 712 345 678</field>
+    <field name="name">Wanjiru Mwangi</field><field name="city">Nairobi</field>
+    <field name="country_id" ref="base.ke"/><field name="phone">+254712345678</field>
     <field name="email">wanjiru.mwangi@gmail.com</field>
   </record>
   <record id="partner_tenant_2" model="res.partner">
-    <field name="name">Odhiambo and Associates Ltd</field>
-    <field name="company_type">company</field>
-    <field name="city">Nairobi</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 733 456 789</field>
-    <field name="email">info@odhiamboassociates.co.ke</field>
+    <field name="name">Odhiambo and Associates Ltd</field><field name="company_type">company</field>
+    <field name="city">Nairobi</field><field name="country_id" ref="base.ke"/>
+    <field name="phone">+254733456789</field>
   </record>
   <record id="partner_tenant_3" model="res.partner">
-    <field name="name">Aisha Hassan</field>
-    <field name="city">Mombasa</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 721 987 654</field>
+    <field name="name">Aisha Hassan</field><field name="city">Mombasa</field>
+    <field name="country_id" ref="base.ke"/><field name="phone">+254721987654</field>
   </record>
-  <record id="partner_buyer_1" model="res.partner">
-    <field name="name">James Kariuki</field>
-    <field name="city">Nairobi</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 700 111 222</field>
-    <field name="email">james.kariuki@outlook.com</field>
-  </record>
-  <record id="partner_buyer_2" model="res.partner">
-    <field name="name">Grace Njeri</field>
-    <field name="city">Nairobi</field>
-    <field name="country_id" ref="base.ke"/>
-    <field name="phone">+254 700 333 444</field>
+  <record id="partner_prospect_1" model="res.partner">
+    <field name="name">James Kariuki</field><field name="city">Nairobi</field>
+    <field name="country_id" ref="base.ke"/><field name="phone">+254700111222</field>
   </record>
 
-  <!-- ── BUILDING 1 — Kilimani Heights ── -->
+  <!-- Building 1 — Kilimani Heights -->
   <record id="building_kilimani" model="estate.building">
     <field name="name">Kilimani Heights</field>
     <field name="landlord_id" ref="partner_landlord_1"/>
     <field name="street">Argwings Kodhek Road</field>
-    <field name="county">Nairobi</field>
-    <field name="year_built">2019</field>
-    <field name="total_floors">8</field>
+    <field name="county">nairobi</field>
+    <field name="year_built">2019</field><field name="total_floors">8</field>
+    <field name="has_generator">True</field><field name="has_borehole">True</field>
   </record>
-
-  <!-- Units in Kilimani Heights -->
   <record id="unit_kh_1a" model="estate.unit">
-    <field name="name">1A</field>
-    <field name="building_id" ref="building_kilimani"/>
-    <field name="floor">1</field>
-    <field name="unit_type">2br</field>
-    <field name="size_sqft">950</field>
-    <field name="monthly_rent">65000</field>
-    <field name="status">leased</field>
-    <field name="tenant_id" ref="partner_tenant_1"/>
+    <field name="name">1A</field><field name="building_id" ref="building_kilimani"/>
+    <field name="floor">1</field><field name="unit_type">2br</field>
+    <field name="size_sqft">950</field><field name="monthly_rent">65000</field>
+    <field name="status">leased</field><field name="tenant_id" ref="partner_tenant_1"/>
   </record>
   <record id="unit_kh_2b" model="estate.unit">
-    <field name="name">2B</field>
-    <field name="building_id" ref="building_kilimani"/>
-    <field name="floor">2</field>
-    <field name="unit_type">3br</field>
-    <field name="size_sqft">1200</field>
-    <field name="monthly_rent">85000</field>
+    <field name="name">2B</field><field name="building_id" ref="building_kilimani"/>
+    <field name="floor">2</field><field name="unit_type">3br</field>
+    <field name="size_sqft">1200</field><field name="monthly_rent">85000</field>
     <field name="status">vacant</field>
   </record>
-  <record id="unit_kh_3c" model="estate.unit">
-    <field name="name">3C</field>
-    <field name="building_id" ref="building_kilimani"/>
-    <field name="floor">3</field>
-    <field name="unit_type">studio</field>
-    <field name="size_sqft">450</field>
-    <field name="monthly_rent">35000</field>
-    <field name="status">leased</field>
-    <field name="tenant_id" ref="partner_tenant_3"/>
-  </record>
   <record id="unit_kh_ph" model="estate.unit">
-    <field name="name">PH1 — Penthouse</field>
-    <field name="building_id" ref="building_kilimani"/>
-    <field name="floor">8</field>
-    <field name="unit_type">penthouse</field>
-    <field name="size_sqft">2800</field>
-    <field name="monthly_rent">250000</field>
+    <field name="name">PH1 — Penthouse</field><field name="building_id" ref="building_kilimani"/>
+    <field name="floor">8</field><field name="unit_type">penthouse</field>
+    <field name="size_sqft">2800</field><field name="monthly_rent">250000</field>
     <field name="status">vacant</field>
   </record>
 
-  <!-- ── BUILDING 2 — Westlands Business Park ── -->
+  <!-- Building 2 — Westlands Business Park -->
   <record id="building_westlands" model="estate.building">
     <field name="name">Westlands Business Park</field>
     <field name="landlord_id" ref="partner_landlord_1"/>
     <field name="street">Waiyaki Way</field>
-    <field name="county">Nairobi</field>
-    <field name="year_built">2021</field>
-    <field name="total_floors">10</field>
+    <field name="county">nairobi</field>
+    <field name="year_built">2021</field><field name="total_floors">10</field>
+    <field name="has_lift">True</field><field name="has_generator">True</field>
   </record>
   <record id="unit_wb_3a" model="estate.unit">
-    <field name="name">3A — Office Suite</field>
-    <field name="building_id" ref="building_westlands"/>
-    <field name="floor">3</field>
-    <field name="unit_type">office</field>
-    <field name="size_sqft">2500</field>
-    <field name="monthly_rent">150000</field>
-    <field name="status">leased</field>
-    <field name="tenant_id" ref="partner_tenant_2"/>
-  </record>
-  <record id="unit_wb_5b" model="estate.unit">
-    <field name="name">5B — Office Suite</field>
-    <field name="building_id" ref="building_westlands"/>
-    <field name="floor">5</field>
-    <field name="unit_type">office</field>
-    <field name="size_sqft">1800</field>
-    <field name="monthly_rent">120000</field>
-    <field name="status">vacant</field>
+    <field name="name">3A — Office Suite</field><field name="building_id" ref="building_westlands"/>
+    <field name="floor">3</field><field name="unit_type">office</field>
+    <field name="size_sqft">2500</field><field name="monthly_rent">150000</field>
+    <field name="status">leased</field><field name="tenant_id" ref="partner_tenant_2"/>
   </record>
 
-  <!-- ── Standalone Properties ── -->
+  <!-- Standalone Properties -->
   <record id="property_nyali" model="estate.property">
     <field name="name">Nyali Beach Villa</field>
     <field name="property_type_id" ref="type_villa"/>
     <field name="property_type">residential</field>
     <field name="status">available</field>
     <field name="landlord_id" ref="partner_landlord_2"/>
-    <field name="monthly_rent">200000</field>
-    <field name="sale_price">45000000</field>
-    <field name="location">Nyali, Links Road</field>
-    <field name="street">Links Road</field>
-    <field name="county">Mombasa</field>
-    <field name="bedrooms">4</field>
-    <field name="bathrooms">3</field>
-    <field name="size_sqft">3000</field>
-    <field name="year_built">2020</field>
-    <field name="furnished">fully</field>
-    <field name="parking_spaces">3</field>
-    <field name="garden">True</field>
-    <field name="garden_area_sqft">800</field>
-    <field name="amenity_ids" eval="[(4, ref('amenity_pool')), (4, ref('amenity_security')), (4, ref('amenity_borehole')), (4, ref('amenity_generator'))]"/>
-    <field name="tag_ids" eval="[(4, ref('tag_sea_view')), (4, ref('tag_furnished')), (4, ref('tag_gated'))]"/>
+    <field name="monthly_rent">200000</field><field name="sale_price">45000000</field>
+    <field name="estate">Nyali</field><field name="street">Links Road</field>
+    <field name="county">mombasa</field>
+    <field name="bedrooms">4</field><field name="bathrooms">3</field>
+    <field name="size_sqft">3000</field><field name="year_built">2020</field>
+    <field name="furnished">fully</field><field name="parking_spaces">3</field>
+    <field name="garden">True</field><field name="has_generator">True</field>
+    <field name="amenity_ids" eval="[(4,ref('amenity_pool')),(4,ref('amenity_security')),(4,ref('amenity_borehole'))]"/>
+    <field name="tag_ids" eval="[(4,ref('tag_sea_view')),(4,ref('tag_furnished')),(4,ref('tag_gated'))]"/>
   </record>
 
   <record id="property_karen" model="estate.property">
@@ -218,236 +122,89 @@
     <field name="property_type">residential</field>
     <field name="status">for_sale</field>
     <field name="landlord_id" ref="partner_landlord_1"/>
-    <field name="monthly_rent">120000</field>
-    <field name="sale_price">35000000</field>
-    <field name="location">Karen, Hardy</field>
-    <field name="street">Hardy Estate</field>
-    <field name="county">Nairobi</field>
-    <field name="bedrooms">4</field>
-    <field name="bathrooms">3</field>
-    <field name="size_sqft">2800</field>
-    <field name="year_built">2018</field>
-    <field name="furnished">unfurnished</field>
-    <field name="parking_spaces">2</field>
-    <field name="garden">True</field>
-    <field name="amenity_ids" eval="[(4, ref('amenity_security')), (4, ref('amenity_gym')), (4, ref('amenity_borehole'))]"/>
-    <field name="tag_ids" eval="[(4, ref('tag_pet_friendly')), (4, ref('tag_gated'))]"/>
+    <field name="monthly_rent">120000</field><field name="sale_price">35000000</field>
+    <field name="estate">Karen Hardy</field><field name="street">Hardy Estate</field>
+    <field name="county">nairobi</field>
+    <field name="bedrooms">4</field><field name="bathrooms">3</field>
+    <field name="size_sqft">2800</field><field name="year_built">2018</field>
+    <field name="garden">True</field><field name="parking_spaces">2</field>
+    <field name="amenity_ids" eval="[(4,ref('amenity_security')),(4,ref('amenity_gym'))]"/>
+    <field name="tag_ids" eval="[(4,ref('tag_pet_friendly')),(4,ref('tag_gated'))]"/>
   </record>
 
-  <!-- ── Leases ── -->
-  <record id="lease_unit_1a" model="estate.lease">
+  <!-- Leases -->
+  <record id="lease_kh_1a" model="estate.lease">
     <field name="property_id" ref="property_nyali"/>
     <field name="unit_id" ref="unit_kh_1a"/>
     <field name="tenant_id" ref="partner_tenant_1"/>
-    <field name="date_start">2026-01-01</field>
-    <field name="date_end">2026-12-31</field>
+    <field name="date_start">2026-01-01</field><field name="date_end">2026-12-31</field>
     <field name="monthly_rent">65000</field>
-    <field name="deposit">130000</field>
-    <field name="deposit_paid">True</field>
+    <field name="deposit">130000</field><field name="deposit_paid">True</field>
     <field name="status">active</field>
     <field name="penalty_rate">5.0</field>
     <field name="escalation_rate">10.0</field>
     <field name="service_charge">3000</field>
   </record>
 
-  <record id="lease_unit_3a" model="estate.lease">
+  <record id="lease_wb_3a" model="estate.lease">
     <field name="property_id" ref="property_karen"/>
     <field name="unit_id" ref="unit_wb_3a"/>
     <field name="tenant_id" ref="partner_tenant_2"/>
-    <field name="date_start">2025-06-01</field>
-    <field name="date_end">2026-05-31</field>
+    <field name="date_start">2025-06-01</field><field name="date_end">2026-05-31</field>
     <field name="monthly_rent">150000</field>
-    <field name="deposit">300000</field>
-    <field name="deposit_paid">True</field>
+    <field name="deposit">300000</field><field name="deposit_paid">True</field>
     <field name="status">active</field>
     <field name="penalty_rate">10.0</field>
     <field name="escalation_rate">8.0</field>
     <field name="notice_period">60</field>
   </record>
 
-  <!-- ── Security Deposits ── -->
-  <record id="deposit_1a" model="estate.deposit">
-    <field name="lease_id" ref="lease_unit_1a"/>
-    <field name="deposit_amount">130000</field>
-    <field name="received_date">2026-01-01</field>
-    <field name="received_via">mpesa</field>
-    <field name="mpesa_receipt">RGQ12KES01</field>
-    <field name="status">held</field>
-  </record>
-
-  <record id="deposit_3a" model="estate.deposit">
-    <field name="lease_id" ref="lease_unit_3a"/>
-    <field name="deposit_amount">300000</field>
-    <field name="received_date">2025-06-01</field>
-    <field name="received_via">bank</field>
-    <field name="status">held</field>
-  </record>
-
-  <!-- ── Offers / Enquiries ── -->
+  <!-- Offers -->
   <record id="offer_nyali_1" model="estate.offer">
     <field name="property_id" ref="property_nyali"/>
-    <field name="partner_id" ref="partner_buyer_1"/>
+    <field name="partner_id" ref="partner_prospect_1"/>
     <field name="offer_type">offer</field>
     <field name="offer_amount">42000000</field>
-    <field name="deadline">2026-06-15</field>
     <field name="status">new</field>
-    <field name="notes">Buyer requesting 3-month payment plan. Pre-approved for mortgage.</field>
+    <field name="notes">Cash buyer. Can close in 30 days.</field>
   </record>
 
-  <record id="offer_nyali_2" model="estate.offer">
-    <field name="property_id" ref="property_nyali"/>
-    <field name="partner_id" ref="partner_buyer_2"/>
-    <field name="offer_type">viewing</field>
-    <field name="offer_amount">200000</field>
-    <field name="deadline">2026-06-10</field>
-    <field name="status">viewing</field>
-    <field name="notes">Interested in renting. Viewing scheduled for June 10.</field>
-  </record>
-
-  <record id="offer_karen_1" model="estate.offer">
-    <field name="property_id" ref="property_karen"/>
-    <field name="partner_id" ref="partner_buyer_1"/>
-    <field name="offer_type">offer</field>
-    <field name="offer_amount">33000000</field>
-    <field name="deadline">2026-06-20</field>
-    <field name="status">new</field>
-    <field name="notes">Cash buyer. Willing to close in 30 days.</field>
-  </record>
-
-  <!-- ── Inspections ── -->
-  <record id="inspection_movein_1a" model="estate.inspection">
-    <field name="property_id" ref="property_nyali"/>
-    <field name="lease_id" ref="lease_unit_1a"/>
-    <field name="inspection_type">move_in</field>
-    <field name="date">2026-01-01</field>
-    <field name="overall_condition">good</field>
-    <field name="signed_tenant">True</field>
-    <field name="signed_landlord">True</field>
-    <field name="notes">Property handed over in good condition. All keys issued.</field>
-  </record>
-
-  <record id="inspection_routine_wb" model="estate.inspection">
-    <field name="property_id" ref="property_karen"/>
-    <field name="lease_id" ref="lease_unit_3a"/>
-    <field name="inspection_type">routine</field>
-    <field name="date">2026-03-15</field>
-    <field name="overall_condition">fair</field>
-    <field name="signed_tenant">True</field>
-    <field name="signed_landlord">False</field>
-    <field name="deduction_amount">0</field>
-    <field name="notes">Minor wear on kitchen tiles. Tenant advised to report any leaks.</field>
-  </record>
-
-  <!-- ── Commissions ── -->
-  <record id="commission_lease_1a" model="estate.commission">
-    <field name="agent_id" ref="base.user_admin"/>
-    <field name="property_id" ref="property_nyali"/>
-    <field name="lease_id" ref="lease_unit_1a"/>
-    <field name="commission_type">letting</field>
-    <field name="basis">percent</field>
-    <field name="rate">8.33</field>
-    <field name="base_amount">65000</field>
-    <field name="status">approved</field>
-  </record>
-
-  <record id="commission_lease_3a" model="estate.commission">
-    <field name="agent_id" ref="base.user_admin"/>
-    <field name="property_id" ref="property_karen"/>
-    <field name="lease_id" ref="lease_unit_3a"/>
-    <field name="commission_type">letting</field>
-    <field name="basis">percent</field>
-    <field name="rate">8.33</field>
-    <field name="base_amount">150000</field>
-    <field name="status">paid</field>
-  </record>
-
-  <!-- ── Utility Meters ── -->
-  <record id="meter_water_1a" model="estate.utility.meter">
-    <field name="property_id" ref="property_nyali"/>
-    <field name="utility_type">water</field>
-    <field name="meter_number">NBI-W-001234</field>
-    <field name="tariff_rate">70</field>
-  </record>
-
-  <record id="meter_elec_1a" model="estate.utility.meter">
-    <field name="property_id" ref="property_nyali"/>
-    <field name="utility_type">electricity</field>
-    <field name="meter_number">KPLC-002345</field>
-    <field name="tariff_rate">22</field>
-  </record>
-
-  <record id="meter_water_wb" model="estate.utility.meter">
-    <field name="property_id" ref="property_karen"/>
-    <field name="utility_type">water</field>
-    <field name="meter_number">NBI-W-005678</field>
-    <field name="tariff_rate">70</field>
-  </record>
-
-  <!-- ── Utility Readings ── -->
-  <record id="reading_water_apr" model="estate.utility.reading">
-    <field name="meter_id" ref="meter_water_1a"/>
-    <field name="lease_id" ref="lease_unit_1a"/>
-    <field name="reading_date">2026-04-30</field>
-    <field name="previous">1240</field>
-    <field name="current">1268</field>
-    <field name="invoiced">True</field>
-  </record>
-
-  <record id="reading_water_may" model="estate.utility.reading">
-    <field name="meter_id" ref="meter_water_1a"/>
-    <field name="lease_id" ref="lease_unit_1a"/>
-    <field name="reading_date">2026-05-31</field>
-    <field name="previous">1268</field>
-    <field name="current">1301</field>
-    <field name="invoiced">False</field>
-  </record>
-
-  <record id="reading_elec_may" model="estate.utility.reading">
-    <field name="meter_id" ref="meter_elec_1a"/>
-    <field name="lease_id" ref="lease_unit_1a"/>
-    <field name="reading_date">2026-05-31</field>
-    <field name="previous">4520</field>
-    <field name="current">4683</field>
-    <field name="invoiced">False</field>
-  </record>
-
-  <!-- ── Maintenance ── -->
-  <record id="maintenance_1" model="estate.maintenance.request">
+  <!-- Maintenance -->
+  <record id="maint_1" model="estate.maintenance.request">
     <field name="name">Kitchen sink pipe leaking</field>
     <field name="property_id" ref="property_nyali"/>
-    <field name="lease_id" ref="lease_unit_1a"/>
+    <field name="unit_id" ref="unit_kh_1a"/>
+    <field name="lease_id" ref="lease_kh_1a"/>
     <field name="reported_by" ref="partner_tenant_1"/>
-    <field name="category">plumbing</field>
-    <field name="priority">1</field>
-    <field name="status">in_progress</field>
-    <field name="estimated_cost">5000</field>
+    <field name="category">plumbing</field><field name="priority">1</field>
+    <field name="status">in_progress</field><field name="estimated_cost">5000</field>
     <field name="date_reported">2026-05-15</field>
-    <field name="description">Kitchen sink drain pipe leaking. Water pooling under cabinet.</field>
   </record>
-
-  <record id="maintenance_2" model="estate.maintenance.request">
-    <field name="name">Office 3B power socket not working</field>
-    <field name="property_id" ref="property_karen"/>
-    <field name="lease_id" ref="lease_unit_3a"/>
-    <field name="reported_by" ref="partner_tenant_2"/>
-    <field name="category">electrical</field>
-    <field name="priority">0</field>
-    <field name="status">new</field>
-    <field name="estimated_cost">3500</field>
-    <field name="date_reported">2026-05-20</field>
-  </record>
-
-  <record id="maintenance_3" model="estate.maintenance.request">
+  <record id="maint_2" model="estate.maintenance.request">
     <field name="name">Gate motor replacement</field>
     <field name="property_id" ref="property_nyali"/>
-    <field name="category">security</field>
-    <field name="priority">2</field>
+    <field name="category">security</field><field name="priority">2</field>
     <field name="status">done</field>
-    <field name="estimated_cost">45000</field>
-    <field name="actual_cost">42000</field>
-    <field name="date_reported">2026-04-10</field>
-    <field name="date_resolved">2026-04-15</field>
-    <field name="description">Main gate motor burnt out. Replaced with FAAC motor.</field>
+    <field name="estimated_cost">45000</field><field name="actual_cost">42000</field>
+    <field name="date_reported">2026-04-10</field><field name="date_resolved">2026-04-15</field>
   </record>
 
+  <!-- Deposit -->
+  <record id="deposit_kh_1a" model="estate.deposit">
+    <field name="lease_id" ref="lease_kh_1a"/>
+    <field name="amount">130000</field>
+    <field name="received_date">2026-01-01</field>
+    <field name="method">mpesa</field>
+    <field name="receipt_ref">RGQ12KES01</field>
+    <field name="status">held</field>
+  </record>
+
+  <!-- KRA Return -->
+  <record id="kra_return_1" model="estate.kra.return">
+    <field name="landlord_id" ref="partner_landlord_1"/>
+    <field name="kra_pin">A001234567B</field>
+    <field name="period_month">05</field>
+    <field name="period_year">2026</field>
+    <field name="status">draft</field>
+  </record>
 </odoo>
