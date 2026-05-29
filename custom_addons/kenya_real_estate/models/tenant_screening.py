@@ -1,126 +1,79 @@
-"""
-Tenant Screening — Kenya
-Critical because Kenya has no formal credit bureau for most individuals.
-Landlords rely on: employment letters, 3-month bank statements,
-references from previous landlords, employer verification.
-"""
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
 class EstateTenantScreening(models.Model):
     _name        = 'estate.tenant.screening'
-    _description = 'Tenant Screening / Application'
+    _description = 'Tenant Screening Application'
     _inherit     = ['mail.thread', 'mail.activity.mixin']
     _order       = 'create_date desc'
 
-    name         = fields.Char("Application Ref", readonly=True, default='New')
-    property_id  = fields.Many2one('estate.property', string="Property", required=True)
-    unit_id      = fields.Many2one('estate.unit', string="Unit")
-    applicant_id = fields.Many2one('res.partner', string="Applicant", required=True, tracking=True)
-    desired_date = fields.Date("Desired Move-In Date")
-
-    # Employment / Income Verification
-    employer_name     = fields.Char("Employer / Business Name")
-    employment_type   = fields.Selection([
-        ('employed',    'Formally Employed'),
-        ('self',        'Self Employed'),
-        ('business',    'Business Owner'),
-        ('student',     'Student'),
-        ('retired',     'Retired'),
+    name           = fields.Char("Application Ref", readonly=True, copy=False, default='New')
+    property_id    = fields.Many2one('estate.property', required=True)
+    unit_id        = fields.Many2one('estate.unit')
+    applicant_id   = fields.Many2one('res.partner', required=True, tracking=True)
+    desired_date   = fields.Date("Desired Move-In")
+    currency_id    = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
+    employment_type = fields.Selection([
+        ('employed','Employed'),('self','Self-Employed'),
+        ('business','Business Owner'),('student','Student'),('retired','Retired'),
     ], default='employed')
-    monthly_income    = fields.Monetary("Monthly Net Income (KES)", currency_field='currency_id')
-    currency_id       = fields.Many2one('res.currency',
-                                        default=lambda s: s.env.ref('base.KES'))
-    income_multiplier = fields.Float("Income/Rent Ratio", compute='_compute_ratio', store=True)
-    hr_contact        = fields.Char("HR Contact / Phone")
-    employer_verified = fields.Boolean("Employer Verified", tracking=True)
-
-    # Documents Received
-    has_id            = fields.Boolean("National ID / Passport")
-    has_payslips      = fields.Boolean("3-Month Payslips / Bank Statements")
-    has_ref_letter    = fields.Boolean("Previous Landlord Reference")
-    has_intro_letter  = fields.Boolean("Introduction Letter (Employer)")
-    has_kra_pin       = fields.Boolean("KRA PIN")
-    kra_pin           = fields.Char("KRA PIN Number")
-
-    # Scoring
-    score            = fields.Integer("Screening Score", compute='_compute_score', store=True)
-    recommendation   = fields.Selection([
-        ('approve',  'Approve'),
-        ('review',   'Needs Review'),
-        ('reject',   'Reject'),
-    ], compute='_compute_score', store=True)
-
-    previous_landlord = fields.Char("Previous Landlord Name")
-    prev_landlord_phone = fields.Char("Previous Landlord Phone")
-    prev_landlord_ref  = fields.Selection([
-        ('excellent', 'Excellent Tenant'),
-        ('good',      'Good Tenant'),
-        ('fair',      'Had Some Issues'),
-        ('poor',      'Would Not Recommend'),
-        ('unknown',   'Not Verified'),
+    employer       = fields.Char("Employer / Business")
+    monthly_income = fields.Monetary("Monthly Net Income", currency_field='currency_id')
+    income_ratio   = fields.Float("Income/Rent Ratio", compute='_compute_score', store=True)
+    hr_contact     = fields.Char("HR Contact")
+    employer_verified = fields.Boolean("Employer Verified")
+    has_id         = fields.Boolean("National ID / Passport")
+    has_payslips   = fields.Boolean("3-Month Bank Statements")
+    has_ref_letter = fields.Boolean("Previous Landlord Reference")
+    has_intro      = fields.Boolean("Employer Introduction Letter")
+    has_kra_pin    = fields.Boolean("KRA PIN")
+    kra_pin        = fields.Char("KRA PIN Number")
+    prev_landlord  = fields.Char("Previous Landlord Name")
+    prev_phone     = fields.Char("Previous Landlord Phone")
+    prev_ref       = fields.Selection([
+        ('excellent','Excellent'),('good','Good'),('fair','Fair'),
+        ('poor','Poor'),('unknown','Not Verified'),
     ], default='unknown')
-
-    status = fields.Selection([
-        ('new',       'New Application'),
-        ('screening', 'Under Review'),
-        ('approved',  'Approved'),
-        ('rejected',  'Rejected'),
-        ('converted', 'Converted to Lease'),
+    score          = fields.Integer("Screening Score /100", compute='_compute_score', store=True)
+    recommendation = fields.Selection([('approve','Approve'),('review','Review'),('reject','Reject')],
+                                       compute='_compute_score', store=True)
+    status         = fields.Selection([
+        ('new','New'),('screening','Under Review'),
+        ('approved','Approved'),('rejected','Rejected'),('converted','Converted'),
     ], default='new', tracking=True)
+    notes          = fields.Text()
 
-    notes = fields.Text("Notes")
-
-    @api.depends('monthly_income', 'property_id.monthly_rent')
-    def _compute_ratio(self):
-        for rec in self:
-            rent = rec.property_id.monthly_rent
-            rec.income_multiplier = (rec.monthly_income / rent) if rent else 0
-
-    @api.depends('has_id', 'has_payslips', 'has_ref_letter', 'has_intro_letter',
-                 'has_kra_pin', 'employer_verified', 'income_multiplier',
-                 'prev_landlord_ref')
+    @api.depends('monthly_income','property_id.monthly_rent',
+                 'has_id','has_payslips','has_ref_letter','has_intro','has_kra_pin',
+                 'employer_verified','prev_ref')
     def _compute_score(self):
-        for rec in self:
-            score = 0
-            if rec.has_id:            score += 20
-            if rec.has_payslips:      score += 20
-            if rec.has_ref_letter:    score += 15
-            if rec.has_intro_letter:  score += 10
-            if rec.has_kra_pin:       score += 5
-            if rec.employer_verified: score += 10
-            # Income ratio: should be at least 3x rent
-            if rec.income_multiplier >= 4:   score += 20
-            elif rec.income_multiplier >= 3: score += 15
-            elif rec.income_multiplier >= 2: score += 5
-            # Previous landlord reference
-            ref_score = {'excellent': 15, 'good': 10, 'fair': 5, 'poor': -20, 'unknown': 0}
-            score += ref_score.get(rec.prev_landlord_ref, 0)
-            score = max(0, min(100, score))
-            rec.score = score
-            if score >= 70:   rec.recommendation = 'approve'
-            elif score >= 50: rec.recommendation = 'review'
-            else:             rec.recommendation = 'reject'
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        for v in vals_list:
-            if v.get('name', 'New') == 'New':
-                v['name'] = self.env['ir.sequence'].next_by_code('estate.tenant.screening') or 'New'
-        return super().create(vals_list)
+        ref_scores = {'excellent':15,'good':10,'fair':5,'poor':-20,'unknown':0}
+        for r in self:
+            rent = r.property_id.monthly_rent or 1
+            ratio = r.monthly_income / rent
+            r.income_ratio = ratio
+            s  = 0
+            s += 20 if r.has_id else 0
+            s += 20 if r.has_payslips else 0
+            s += 15 if r.has_ref_letter else 0
+            s += 10 if r.has_intro else 0
+            s += 5  if r.has_kra_pin else 0
+            s += 10 if r.employer_verified else 0
+            s += (20 if ratio >= 4 else 15 if ratio >= 3 else 5 if ratio >= 2 else 0)
+            s += ref_scores.get(r.prev_ref, 0)
+            s  = max(0, min(100, s))
+            r.score          = s
+            r.recommendation = ('approve' if s>=70 else 'review' if s>=50 else 'reject')
 
     def action_approve(self):
-        self.write({'status': 'approved'})
-        self.message_post(body=_(f"Application approved. Score: {self.score}/100. "
-                                 f"Income ratio: {self.income_multiplier:.1f}x rent."))
+        self.write({'status':'approved'})
+        self.message_post(body=_(f"Approved. Score: {self.score}/100. Income ratio: {self.income_ratio:.1f}x"))
 
     def action_reject(self):
-        self.write({'status': 'rejected'})
-        self.message_post(body=_(f"Application rejected. Score: {self.score}/100."))
+        self.write({'status':'rejected'})
 
-    def action_convert_to_lease(self):
-        """Create draft lease from approved application."""
+    def action_convert(self):
         self.ensure_one()
         if self.status != 'approved':
             raise UserError(_("Approve the application first."))
@@ -130,10 +83,12 @@ class EstateTenantScreening(models.Model):
             'tenant_id':   self.applicant_id.id,
             'date_start':  self.desired_date or fields.Date.today(),
         })
-        self.write({'status': 'converted'})
-        return {
-            'type':      'ir.actions.act_window',
-            'res_model': 'estate.lease',
-            'res_id':    lease.id,
-            'view_mode': 'form',
-        }
+        self.write({'status':'converted'})
+        return {'type':'ir.actions.act_window','res_model':'estate.lease','res_id':lease.id,'view_mode':'form'}
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for v in vals_list:
+            if v.get('name','New')=='New':
+                v['name'] = self.env['ir.sequence'].next_by_code('estate.tenant.screening') or 'New'
+        return super().create(vals_list)
