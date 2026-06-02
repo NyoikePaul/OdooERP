@@ -136,7 +136,8 @@ OdooERP Kenya
 
 ---
 ##   Container 
-<img width="1366" height="724" alt="image" src="https://github.com/user-attachments/assets/37b82ea1-0daa-41c0-a8b6-b3acaa4f1bca" />
+<img width="1366" height="657" alt="image" src="https://github.com/user-attachments/assets/2743015a-a353-4104-aac3-b7fd31cddd8f" />
+
 
 
 ##  Reverse proxy
