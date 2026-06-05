@@ -136,6 +136,13 @@ OdooERP Kenya
 
 ---
 ## Real Estate Module
+
+<img width="1366" height="592" alt="image" src="https://github.com/user-attachments/assets/4699985c-14d0-4b7b-b8e9-cb3c361a26a0" />
+
+<img width="1366" height="590" alt="image" src="https://github.com/user-attachments/assets/3d4c1679-f63b-4df5-84d9-f9cd0e93b71b" />
+
+
+
 <img width="1366" height="590" alt="image" src="https://github.com/user-attachments/assets/fa2932a8-91c9-48ea-ab46-215865ffe0fe" />
 
 
