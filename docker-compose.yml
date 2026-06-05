@@ -4,20 +4,19 @@ services:
     container_name: odooerp-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-odoo}
-      POSTGRES_USER: ${POSTGRES_USER:-odoo}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo_secure_2026
+      POSTGRES_DB: postgres
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-odoo}"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
       timeout: 5s
       retries: 10
 
   web:
     image: odoo:18.0
-    # Install Python deps on startup if present
     container_name: odooerp-web
     restart: unless-stopped
     depends_on:
@@ -26,18 +25,11 @@ services:
     ports:
       - "8069:8069"
       - "8072:8072"
-    environment:
-      - HOST=db
-      - USER=${ODOO_DB_USER}
-      - PASSWORD=${ODOO_DB_PASSWORD}
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=${ODOO_DB_USER}
-      - DB_PASSWORD=${ODOO_DB_PASSWORD}
-    command: --db_host=db --db_user=${ODOO_DB_USER} --db_password=${ODOO_DB_PASSWORD} -d odoo_kenya
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
+      - ./custom_addons:/mnt/custom-addons
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
 
 volumes:
   odoo-db-data:
