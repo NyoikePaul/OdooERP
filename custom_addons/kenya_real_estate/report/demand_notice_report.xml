@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_report_demand_notice" model="ir.actions.report">
+    <field name="name">Demand Notice</field>
+    <field name="model">estate.demand.notice</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">kenya_real_estate.report_demand_notice</field>
+    <field name="binding_model_id" ref="model_estate_demand_notice"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <template id="report_demand_notice">
+    <t t-call="web.html_container">
+      <t t-call="web.external_layout">
+        <div class="page">
+          <t t-foreach="docs" t-as="notice">
+            <div class="text-center mb-4">
+              <h2 style="color:#dc3545;">FORMAL DEMAND NOTICE</h2>
+              <p class="text-muted">Issued under the Landlord and Tenant (Shops, Hotels and Catering Establishments) Act — Cap 301, Laws of Kenya</p>
+              <p><strong>Ref: <t t-esc="notice.name"/></strong> | Date: <strong><t t-esc="notice.issue_date"/></strong></p>
+            </div>
+            <hr/>
+            <p>TO: <strong><t t-esc="notice.tenant_id.name"/></strong></p>
+            <p>Address: <t t-esc="notice.tenant_id.street or ''"/>, <t t-esc="notice.tenant_id.city or ''"/></p>
+            <br/>
+            <p>FROM: <strong><t t-esc="notice.property_id.landlord_id.name"/></strong></p>
+            <p>Property: <strong><t t-esc="notice.property_id.name"/></strong></p>
+            <br/>
+            <h4>NOTICE OF DEMAND</h4>
+            <p>
+              TAKE NOTICE that you are hereby required to pay the sum of
+              <strong>Kenya Shillings <t t-esc="'{:,.0f}'.format(notice.arrears_amount)"/> (KES <t t-esc="'{:,.0f}'.format(notice.arrears_amount)"/>)</strong>
+              being rent arrears of <t t-esc="notice.months_arrears"/> month(s) for the premises described above,
+              within <strong><t t-esc="notice.deadline - notice.issue_date"/> days</strong> from the date of this notice
+              (<strong>on or before <t t-esc="notice.deadline"/></strong>).
+            </p>
+            <br/>
+            <p>
+              Should you fail to pay the above-mentioned sum within the stipulated period, we shall
+              <t t-if="notice.property_id.property_type == 'commercial'">
+                be compelled to file a complaint before the <strong>Business Premises Rent Tribunal (BPRT)</strong>
+              </t>
+              <t t-else="">
+                take legal action against you including filing of a suit in the
+                <strong>Magistrates Court</strong>
+              </t>
+              for recovery of the arrears and eviction, at your cost.
+            </p>
+            <br/>
+            <p>
+              You are further reminded that continued non-payment of rent constitutes grounds for
+              termination of your tenancy as per the Distress for Rent Act (Cap 293, Laws of Kenya).
+            </p>
+            <br/>
+            <table class="table table-bordered table-sm" style="max-width:400px">
+              <tr><th>Lease Ref</th><td><t t-esc="notice.lease_id.name"/></td></tr>
+              <tr><th>Monthly Rent</th><td>KES <t t-esc="'{:,.0f}'.format(notice.lease_id.monthly_rent)"/></td></tr>
+              <tr><th>Months Arrears</th><td><t t-esc="notice.months_arrears"/></td></tr>
+              <tr><th>Amount Due</th><td><strong>KES <t t-esc="'{:,.0f}'.format(notice.arrears_amount)"/></strong></td></tr>
+              <tr><th>Pay Deadline</th><td><strong><t t-esc="notice.deadline"/></strong></td></tr>
+            </table>
+            <br/>
+            <p>M-Pesa Paybill: <strong>[Your Paybill Number]</strong> | Account: <t t-esc="notice.lease_id.name"/></p>
+            <br/>
+            <div class="row mt-5">
+              <div class="col-6">
+                <p>________________________</p>
+                <p>Landlord/Agent Signature</p>
+                <p>Name: <t t-esc="notice.property_id.landlord_id.name"/></p>
+                <p>Date: <t t-esc="notice.issue_date"/></p>
+              </div>
+              <div class="col-6">
+                <p>________________________</p>
+                <p>Witness Signature</p>
+                <p>Name: <t t-esc="notice.witness or 'N/A'"/></p>
+                <p>Date: <t t-esc="notice.issue_date"/></p>
+              </div>
+            </div>
+            <br/>
+            <p class="text-muted" style="font-size:9px">
+              This notice is issued in accordance with the Landlord and Tenant Act Cap 301 and the
+              Distress for Rent Act Cap 293, Laws of Kenya. Any queries, contact the issuing party above.
+            </p>
+          </t>
+        </div>
+      </t>
+    </t>
+  </template>
+</odoo>

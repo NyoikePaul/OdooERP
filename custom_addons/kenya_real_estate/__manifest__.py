@@ -29,6 +29,7 @@ caretaker management, and M-Pesa rent collection.
         'views/maintenance_views.xml',
         'views/operations_views.xml',
         'views/kenya_views.xml',
+        'report/demand_notice_report.xml',
         'report/tenancy_agreement.xml',
         'report/rent_roll.xml',
         'views/menu_views.xml',
