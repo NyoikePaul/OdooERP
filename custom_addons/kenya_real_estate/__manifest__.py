@@ -32,6 +32,7 @@ caretaker management, and M-Pesa rent collection.
         'report/demand_notice_report.xml',
         'report/tenancy_agreement.xml',
         'report/rent_roll.xml',
+        'views/dashboard_views.xml',
         'views/menu_views.xml',
     ],
     'demo':        ['demo/demo.xml'],

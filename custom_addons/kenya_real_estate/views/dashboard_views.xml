@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Property Dashboard Action -->
+  <record id="estate_property_dashboard_action" model="ir.actions.act_window">
+    <field name="name">Property Dashboard</field>
+    <field name="res_model">estate.property</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="context">{
+      'search_default_leased': 1,
+      'group_by': 'county'
+    }</field>
+  </record>
+
+  <!-- Lease KPI List — shows arrears prominently -->
+  <record id="estate_lease_arrears_action" model="ir.actions.act_window">
+    <field name="name">Rent Arrears</field>
+    <field name="res_model">estate.lease</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('status','=','active'),('months_arrears','>',0)]</field>
+    <field name="context">{'search_default_leased': 1}</field>
+  </record>
+
+  <!-- Expiring Leases Action -->
+  <record id="estate_lease_expiring_action" model="ir.actions.act_window">
+    <field name="name">Expiring Leases (30 days)</field>
+    <field name="res_model">estate.lease</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('status','=','active'),('is_expiring_soon','=',True)]</field>
+  </record>
+
+  <!-- Add shortcut menus -->
+  <menuitem id="menu_arrears" name="Rent Arrears"
+            parent="menu_re_root"
+            action="estate_lease_arrears_action" sequence="8"/>
+  <menuitem id="menu_expiring" name="Expiring Leases"
+            parent="menu_re_root"
+            action="estate_lease_expiring_action" sequence="9"/>
+</odoo>
