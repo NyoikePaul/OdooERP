@@ -1,21 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <!-- FORM VIEW -->
+
+  <record id="mpesa_transaction_view_list" model="ir.ui.view">
+    <field name="name">mpesa.transaction.list</field>
+    <field name="model">mpesa.transaction</field>
+    <field name="arch" type="xml">
+      <list string="M-Pesa Transactions"
+            decoration-success="status=='success' and reconciled"
+            decoration-warning="status=='success' and not reconciled"
+            decoration-danger="status in ('failed','timeout')"
+            decoration-muted="status in ('cancelled','reversed')">
+        <field name="name"/>
+        <field name="transaction_date"/>
+        <field name="transaction_type"/>
+        <field name="mpesa_receipt"/>
+        <field name="phone"/>
+        <field name="partner_id"/>
+        <field name="amount" sum="Total"/>
+        <field name="reconciled" widget="boolean_toggle"/>
+        <field name="invoice_id" optional="show"/>
+        <field name="status" widget="badge"/>
+        <button name="action_reconcile" type="object"
+                string="Reconcile" icon="fa-link"
+                invisible="reconciled or status != 'success'"/>
+      </list>
+    </field>
+  </record>
+
   <record id="mpesa_transaction_view_form" model="ir.ui.view">
     <field name="name">mpesa.transaction.form</field>
     <field name="model">mpesa.transaction</field>
     <field name="arch" type="xml">
       <form string="M-Pesa Transaction">
         <header>
-          <button name="action_query_status" type="object" string="Query Status"
-                  invisible="status not in ('pending',)" class="oe_highlight"/>
-          <button name="action_reconcile"    type="object" string="Reconcile to Invoice"
-                  invisible="reconciled or status != 'success'"/>
-          <button name="action_reverse"      type="object" string="Reverse Transaction"
-                  invisible="status != 'success' or reconciled"/>
-          <button name="action_mark_failed"  type="object" string="Mark Failed"
+          <button name="action_query_status" type="object"
+                  string="Query Status" class="oe_highlight"
                   invisible="status != 'pending'"/>
-          <field name="status" widget="statusbar" statusbar_visible="pending,success,reconciled"/>
+          <button name="action_reconcile" type="object"
+                  string="Reconcile to Invoice"
+                  invisible="reconciled or status != 'success'"/>
+          <button name="action_reverse" type="object"
+                  string="Reverse"
+                  invisible="status != 'success' or reconciled"/>
+          <field name="status" widget="statusbar"
+                 statusbar_visible="pending,success,failed"/>
         </header>
         <sheet>
           <div class="oe_button_box" name="button_box">
@@ -28,10 +56,7 @@
             </button>
           </div>
           <div class="alert alert-success" invisible="not reconciled">
-            Reconciled to <field name="invoice_id" readonly="1"/> on <field name="reconciled_at" readonly="1"/>
-          </div>
-          <div class="alert alert-warning" invisible="status != 'pending'">
-            Transaction pending — awaiting M-Pesa confirmation.
+            Reconciled to <field name="invoice_id" readonly="1"/>
           </div>
           <div class="oe_title">
             <h1><field name="name" readonly="1"/></h1>
@@ -41,104 +66,44 @@
               <field name="transaction_type"/>
               <field name="mpesa_receipt"/>
               <field name="checkout_request_id"/>
-              <field name="daraja_txn_id"/>
               <field name="transaction_date"/>
+              <field name="result_code"/>
+              <field name="result_desc"/>
             </group>
-            <group string="Payment Details">
+            <group string="Payment">
               <field name="phone"/>
               <field name="partner_id"/>
               <field name="amount"/>
               <field name="account_ref"/>
-              <field name="result_code"/>
-              <field name="result_desc"/>
+              <field name="lease_id"/>
             </group>
           </group>
           <group string="Reconciliation">
             <field name="reconciled"/>
+            <field name="reconciled_at" readonly="1"/>
             <field name="invoice_id"/>
-            <field name="lease_id"/>
-            <field name="payment_id"/>
             <field name="days_outstanding" readonly="1"/>
           </group>
-          <notebook>
-            <page string="Raw Callback Data">
-              <field name="callback_data" readonly="1"/>
-            </page>
-          </notebook>
         </sheet>
         <chatter/>
       </form>
     </field>
   </record>
 
-  <!-- LIST VIEW -->
-  <record id="mpesa_transaction_view_list" model="ir.ui.view">
-    <field name="name">mpesa.transaction.list</field>
-    <field name="model">mpesa.transaction</field>
-    <field name="arch" type="xml">
-      <list string="M-Pesa Transactions"
-            decoration-success="status=='success' and reconciled"
-            decoration-warning="status=='success' and not reconciled"
-            decoration-danger="status in ('failed','timeout','reversed')"
-            decoration-muted="status=='cancelled'">
-        <field name="name"/>
-        <field name="transaction_date"/>
-        <field name="transaction_type"/>
-        <field name="mpesa_receipt"/>
-        <field name="phone"/>
-        <field name="partner_id"/>
-        <field name="account_ref"/>
-        <field name="amount" sum="Total"/>
-        <field name="days_outstanding" optional="show"/>
-        <field name="reconciled" widget="boolean_toggle"/>
-        <field name="invoice_id" optional="show"/>
-        <field name="status" widget="badge"
-               decoration-success="status=='success'"
-               decoration-warning="status=='pending'"
-               decoration-danger="status in ('failed','timeout')"/>
-        <button name="action_reconcile" type="object" string="Reconcile"
-                icon="fa-link" invisible="reconciled or status != 'success'"/>
-      </list>
-    </field>
-  </record>
-
-  <!-- KANBAN -->
-  <record id="mpesa_transaction_view_kanban" model="ir.ui.view">
-    <field name="name">mpesa.transaction.kanban</field>
-    <field name="model">mpesa.transaction</field>
-    <field name="arch" type="xml">
-      <kanban default_group_by="status" class="o_kanban_small_column">
-        <field name="name"/><field name="amount"/><field name="partner_id"/>
-        <field name="status"/><field name="reconciled"/><field name="transaction_date"/>
-        <templates>
-          <t t-name="card">
-            <div class="oe_kanban_card">
-              <strong><field name="name"/></strong>
-              <div>KES <field name="amount"/></div>
-              <div><field name="partner_id"/></div>
-              <div class="text-muted"><field name="transaction_date" widget="datetime"/></div>
-            </div>
-          </t>
-        </templates>
-      </kanban>
-    </field>
-  </record>
-
-  <!-- SEARCH -->
   <record id="mpesa_transaction_view_search" model="ir.ui.view">
     <field name="name">mpesa.transaction.search</field>
     <field name="model">mpesa.transaction</field>
     <field name="arch" type="xml">
       <search>
-        <field name="name"/><field name="mpesa_receipt"/>
-        <field name="phone"/><field name="partner_id"/>
-        <separator/>
-        <filter string="Pending"        name="pending"    domain="[('status','=','pending')]"/>
-        <filter string="Success"        name="success"    domain="[('status','=','success')]"/>
-        <filter string="Unreconciled"   name="unrecon"    domain="[('reconciled','=',False),('status','=','success')]"/>
-        <filter string="Today"          name="today"      domain="[('transaction_date','>=',datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+        <field name="name"/>
+        <field name="mpesa_receipt"/>
+        <field name="phone"/>
+        <field name="partner_id"/>
+        <filter string="Pending"      name="pending"  domain="[('status','=','pending')]"/>
+        <filter string="Success"      name="success"  domain="[('status','=','success')]"/>
+        <filter string="Unreconciled" name="unrecon"  domain="[('reconciled','=',False),('status','=','success')]"/>
         <group string="Group By">
-          <filter string="Status"  name="grp_status" context="{'group_by':'status'}"/>
+          <filter string="Status"  name="grp_status"  context="{'group_by':'status'}"/>
           <filter string="Partner" name="grp_partner" context="{'group_by':'partner_id'}"/>
           <filter string="Date"    name="grp_date"    context="{'group_by':'transaction_date:month'}"/>
         </group>
@@ -149,14 +114,11 @@
   <record id="mpesa_transaction_action" model="ir.actions.act_window">
     <field name="name">M-Pesa Transactions</field>
     <field name="res_model">mpesa.transaction</field>
-    <field name="view_mode">list,kanban,form</field>
+    <field name="view_mode">list,form</field>
     <field name="search_view_id" ref="mpesa_transaction_view_search"/>
   </record>
-</odoo>
 
-  <!-- MENU -->
-  <menuitem id="menu_mpesa_root" name="M-Pesa" sequence="55"
-            groups="base.group_user"/>
+  <menuitem id="menu_mpesa_root" name="M-Pesa" sequence="55"/>
   <menuitem id="menu_mpesa_transactions" name="Transactions"
             parent="menu_mpesa_root"
             action="mpesa_transaction_action" sequence="1"/>
