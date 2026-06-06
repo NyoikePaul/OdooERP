@@ -160,3 +160,5 @@
   <menuitem id="menu_mpesa_transactions" name="Transactions"
             parent="menu_mpesa_root"
             action="mpesa_transaction_action" sequence="1"/>
+
+</odoo>
