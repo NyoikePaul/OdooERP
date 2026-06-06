@@ -52,6 +52,32 @@ class EstateProperty(models.Model):
     landlord_kra_pin = fields.Char("Landlord KRA PIN")
 
     # ── Location ─────────────────────────────────────────
+
+    nairobi_area     = fields.Selection([
+        # Nairobi Upmarket
+        ('karen','Karen'),('runda','Runda'),('muthaiga','Muthaiga'),
+        ('lavington','Lavington'),('kilimani','Kilimani'),('kileleshwa','Kileleshwa'),
+        ('westlands','Westlands'),('spring_valley','Spring Valley'),
+        ('ridgeways','Ridgeways'),('gigiri','Gigiri/UN Area'),
+        # Nairobi Middle
+        ('south_b','South B'),('south_c','South C'),('ngumo','Ngumo'),
+        ('langata','Lang'ata'),('rongai','Rongai'),('ruaka','Ruaka'),
+        ('ruiru','Ruiru'),('thika_rd','Thika Road'),
+        # Nairobi Eastlands
+        ('buruburu','Buruburu'),('donholm','Donholm'),('umoja','Umoja'),
+        ('embakasi','Embakasi'),('pipeline','Pipeline'),
+        # Nairobi CBD/Commercial
+        ('cbd','Nairobi CBD'),('upper_hill','Upper Hill'),('riverside','Riverside'),
+        ('parklands','Parklands'),('ngara','Ngara'),
+        # Mombasa
+        ('nyali','Nyali'),('bamburi','Bamburi'),('shanzu','Shanzu'),
+        ('diani','Diani'),('mombasa_cbd','Mombasa CBD'),
+        # Other towns
+        ('kisumu_cbd','Kisumu CBD'),('nakuru_cbd','Nakuru CBD'),
+        ('eldoret','Eldoret'),('thika','Thika'),('machakos','Machakos'),
+        ('other_area','Other'),
+    ], string="Area/Estate")
+    
     street           = fields.Char("Street Address")
     estate           = fields.Char("Estate / Area")
     constituency     = fields.Char("Constituency")
@@ -214,6 +240,28 @@ class EstateProperty(models.Model):
     def action_open_leases(self):       self.ensure_one(); return self._open_related('estate.lease','property_id','Leases')
     def action_open_offers(self):       self.ensure_one(); return self._open_related('estate.offer','property_id','Offers')
     def action_open_maintenance(self):  self.ensure_one(); return self._open_related('estate.maintenance.request','property_id','Maintenance')
+
+    @api.constrains('landlord_kra_pin')
+    def _validate_kra_pin(self):
+        import re
+        for r in self:
+            if r.landlord_kra_pin:
+                if not re.match(r'^[A-Z]\d{9}[A-Z]$', r.landlord_kra_pin.upper()):
+                    raise ValidationError(
+                        _("Invalid KRA PIN format: %s. "
+                          "Expected format: A000000000B") % r.landlord_kra_pin)
+
+    @api.constrains('monthly_rent')
+    def _check_kra_mri_threshold(self):
+        """Warn if rent exceeds KRA MRI threshold (KES 288,000/mo)."""
+        for r in self:
+            if r.monthly_rent > 288000:
+                r.message_post(
+                    body=_("Note: Monthly rent KES %.0f exceeds KRA MRI threshold "
+                           "(KES 288,000). Normal income tax rates apply "
+                           "(not 7.5%% flat rate).") % r.monthly_rent)
+
+
     def action_set_available(self):     self.write({'status':'available'})
     def action_open_invoices(self):
         self.ensure_one()
