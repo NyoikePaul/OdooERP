@@ -8,7 +8,7 @@ class MpesaReconcileWizard(models.TransientModel):
 
     transaction_id = fields.Many2one('mpesa.transaction', string="Transaction",
                                      required=True, readonly=True)
-    receipt_number = fields.Char(related='transaction_id.receipt_number', readonly=True)
+    receipt_number = fields.Char('Receipt Number')
     amount         = fields.Monetary("Amount (KES)", currency_field='currency_id')
     currency_id    = fields.Many2one('res.currency',
                                      default=lambda s: s.env.ref('base.KES'))
