@@ -115,6 +115,8 @@ class EstateProperty(models.Model):
     lease_count       = fields.Integer(compute='_compute_counts', store=True)
     offer_count       = fields.Integer(compute='_compute_counts', store=True)
     maintenance_count = fields.Integer(compute='_compute_counts', store=True)
+    invoice_count = fields.Integer(compute='_compute_counts', store=True)
+    total_revenue_ytd = fields.Monetary(compute='_compute_counts', currency_field='currency_id', store=True)
 
     active_lease_id   = fields.Many2one('estate.lease',   compute='_compute_active_lease', string="Active Lease",     store=True)
     current_tenant_id = fields.Many2one('res.partner',    compute='_compute_active_lease', string="Current Tenant",   store=True)
@@ -137,6 +139,11 @@ class EstateProperty(models.Model):
             r.lease_count       = len(r.lease_ids)
             r.offer_count       = len(r.offer_ids)
             r.maintenance_count = len(r.maintenance_ids)
+            invs = self.env['account.move'].search([
+                ('lease_id.property_id','=',r.id),('move_type','=','out_invoice')])
+            r.invoice_count = len(invs)
+            r.total_revenue_ytd = sum(
+                invs.filtered(lambda i: i.payment_state=='paid').mapped('amount_total'))
 
     @api.depends('lease_ids.status', 'lease_ids.tenant_id')
     def _compute_active_lease(self):
@@ -208,6 +215,26 @@ class EstateProperty(models.Model):
     def action_open_offers(self):       self.ensure_one(); return self._open_related('estate.offer','property_id','Offers')
     def action_open_maintenance(self):  self.ensure_one(); return self._open_related('estate.maintenance.request','property_id','Maintenance')
     def action_set_available(self):     self.write({'status':'available'})
+    def action_open_invoices(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window", "name": "Invoices",
+            "res_model": "account.move", "view_mode": "list,form",
+            "domain": [("lease_id.property_id", "=", self.id),
+                       ("move_type", "=", "out_invoice")],
+        }
+
+    def action_open_mpesa(self):
+        self.ensure_one()
+        tenant = self.current_tenant_id
+        if not tenant:
+            return
+        return {
+            "type": "ir.actions.act_window", "name": "M-Pesa Payments",
+            "res_model": "mpesa.transaction", "view_mode": "list,form",
+            "domain": [("partner_id", "=", tenant.id)],
+        }
+
     def action_set_for_sale(self):      self.write({'status':'for_sale'})
 
     # ═══ CRUD ════════════════════════════════════════════

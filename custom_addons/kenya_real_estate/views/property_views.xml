@@ -83,6 +83,17 @@
                     class="oe_stat_button" icon="fa-wrench">
               <field name="maintenance_count" widget="statinfo" string="Maintenance"/>
             </button>
+            <button name="action_open_invoices" type="object"
+                    class="oe_stat_button" icon="fa-money">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+            <button name="action_open_mpesa" type="object"
+                    class="oe_stat_button" icon="fa-mobile"
+                    invisible="not current_tenant_id">
+              <div class="o_stat_info">
+                <span class="o_stat_text">M-Pesa</span>
+              </div>
+            </button>
           </div>
           <div class="oe_title">
             <h1><field name="name" placeholder="Property Name..."/></h1>

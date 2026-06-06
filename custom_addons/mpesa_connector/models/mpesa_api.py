@@ -1,326 +1,329 @@
-import base64
-import logging
-import time
-import re
+"""
+M-Pesa Daraja 2.0 — Enterprise Kenya Payment Connector
+Handles: STK Push, C2B, B2C, Reversal, Balance, Transaction Status
+"""
 import requests
+import base64
+import json
+import re
+import logging
 from datetime import datetime
 from functools import wraps
-from odoo import models, api
-from odoo.exceptions import UserError
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
-DARAJA_SANDBOX = "https://sandbox.safaricom.co.ke"
-DARAJA_LIVE    = "https://api.safaricom.co.ke"
+DARAJA_BASE = {
+    'sandbox': 'https://sandbox.safaricom.co.ke',
+    'production': 'https://api.safaricom.co.ke',
+}
 
-# Token cache: {(consumer_key, sandbox): (token, expiry_timestamp)}
-_TOKEN_CACHE = {}
 
-
-def _retry(max_attempts=3, delay=1.5):
-    """Retry decorator with exponential backoff."""
-    def decorator(fn):
-        @wraps(fn)
+def daraja_retry(max_retries=3):
+    """Retry decorator for Daraja API calls."""
+    def decorator(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
-            last_exc = None
-            for attempt in range(1, max_attempts + 1):
+            last_error = None
+            for attempt in range(1, max_retries + 1):
                 try:
-                    return fn(*args, **kwargs)
-                except (requests.Timeout, requests.ConnectionError) as e:
-                    last_exc = e
-                    wait = delay * (2 ** (attempt - 1))
-                    _logger.warning(
-                        "Daraja call failed (attempt %d/%d), retrying in %.1fs: %s",
-                        attempt, max_attempts, wait, e
-                    )
-                    time.sleep(wait)
-                except Exception:
-                    raise
-            raise UserError(f"Daraja API unreachable after {max_attempts} attempts: {last_exc}")
+                    return func(*args, **kwargs)
+                except requests.exceptions.Timeout as e:
+                    last_error = e
+                    _logger.warning("Daraja timeout attempt %d/%d: %s", attempt, max_retries, e)
+                except requests.exceptions.ConnectionError as e:
+                    last_error = e
+                    _logger.warning("Daraja connection error attempt %d/%d: %s", attempt, max_retries, e)
+            raise UserError(_("Daraja API unavailable after %d attempts: %s") % (max_retries, last_error))
         return wrapper
     return decorator
 
 
-class MpesaAPIMixin(models.AbstractModel):
-    _name        = "mpesa.api.mixin"
-    _description = "M-Pesa Daraja 2.0 Full API Mixin"
+def normalize_phone(phone):
+    """Normalize phone to 2547XXXXXXXX format."""
+    if not phone:
+        raise ValidationError(_("Phone number is required."))
+    phone = re.sub(r'\D', '', str(phone))
+    if phone.startswith('0') and len(phone) == 10:
+        phone = '254' + phone[1:]
+    elif phone.startswith('7') and len(phone) == 9:
+        phone = '254' + phone
+    elif phone.startswith('+254'):
+        phone = phone[1:]
+    if not re.match(r'^2547\d{8}$', phone) and not re.match(r'^2541\d{8}$', phone):
+        raise ValidationError(_("Invalid Kenya phone number: %s. Use 07XXXXXXXX or 2547XXXXXXXX format.") % phone)
+    return phone
 
-    # ── Helpers ──────────────────────────────────────
 
-    def _daraja_url(self, sandbox=False):
-        return DARAJA_SANDBOX if sandbox else DARAJA_LIVE
+class MpesaConnector(models.AbstractModel):
+    _name = 'mpesa.connector'
+    _description = 'M-Pesa Daraja 2.0 API Connector'
 
-    @staticmethod
-    def _format_phone(phone):
-        """Normalize phone to Daraja format: 2547XXXXXXXX."""
-        phone = re.sub(r'\D', '', str(phone))
-        if phone.startswith('0'):
-            phone = '254' + phone[1:]
-        elif phone.startswith('+'):
-            phone = phone[1:]
-        if not phone.startswith('254'):
-            phone = '254' + phone
-        if len(phone) != 12:
-            raise UserError(f"Invalid Kenyan phone number: {phone}")
-        return phone
+    def _get_daraja_config(self):
+        """Get active M-Pesa configuration from payment provider."""
+        provider = self.env['payment.provider'].search(
+            [('code', '=', 'mpesa'), ('state', 'in', ('enabled', 'test'))], limit=1)
+        if not provider:
+            raise UserError(_("No active M-Pesa payment provider configured. "
+                               "Go to Invoicing > Configuration > Payment Providers."))
+        return provider
 
-    @staticmethod
-    def _timestamp():
-        return datetime.now().strftime("%Y%m%d%H%M%S")
+    def _get_base_url(self, provider):
+        env = 'production' if provider.state == 'enabled' else 'sandbox'
+        return DARAJA_BASE[env]
 
-    @staticmethod
-    def _stk_password(shortcode, passkey, timestamp):
+    @daraja_retry(3)
+    def _get_access_token(self, provider):
+        """Get OAuth2 access token with 55-minute cache."""
+        cache_key = f'mpesa_token_{provider.id}'
+        cached = self.env['ir.config_parameter'].sudo().get_param(cache_key)
+        expiry_key = f'mpesa_token_expiry_{provider.id}'
+        expiry = self.env['ir.config_parameter'].sudo().get_param(expiry_key)
+
+        now = datetime.now().timestamp()
+        if cached and expiry and float(expiry) > now:
+            return cached
+
+        base_url = self._get_base_url(provider)
+        consumer_key = provider.mpesa_consumer_key
+        consumer_secret = provider.mpesa_consumer_secret
+
+        if not consumer_key or not consumer_secret:
+            raise UserError(_("M-Pesa Consumer Key and Secret are required."))
+
+        credentials = base64.b64encode(
+            f"{consumer_key}:{consumer_secret}".encode()).decode()
+
+        resp = requests.get(
+            f"{base_url}/oauth/v1/generate?grant_type=client_credentials",
+            headers={'Authorization': f'Basic {credentials}'},
+            timeout=30
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        token = data.get('access_token')
+        if not token:
+            raise UserError(_("Failed to get access token: %s") % data)
+
+        # Cache for 55 minutes (token valid 60 min)
+        self.env['ir.config_parameter'].sudo().set_param(cache_key, token)
+        self.env['ir.config_parameter'].sudo().set_param(
+            expiry_key, str(now + 3300))
+
+        _logger.info("M-Pesa access token refreshed for provider %s", provider.name)
+        return token
+
+    def _get_headers(self, provider):
+        token = self._get_access_token(provider)
+        return {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+        }
+
+    def _generate_password(self, shortcode, passkey, timestamp):
+        """Generate LipaNaMpesa online password."""
         raw = f"{shortcode}{passkey}{timestamp}"
         return base64.b64encode(raw.encode()).decode()
 
-    # ── Authentication ────────────────────────────────
+    @daraja_retry(3)
+    def stk_push(self, phone, amount, account_ref, description, callback_url=None):
+        """Initiate STK Push (Lipa na M-Pesa Online)."""
+        provider = self._get_daraja_config()
+        phone = normalize_phone(phone)
+        base_url = self._get_base_url(provider)
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        shortcode = provider.mpesa_shortcode
+        passkey = provider.mpesa_passkey
 
-    @_retry(max_attempts=3)
-    def _get_access_token(self, consumer_key, consumer_secret, sandbox=False):
-        """Get OAuth2 access token with 55-minute cache."""
-        cache_key = (consumer_key, sandbox)
-        cached = _TOKEN_CACHE.get(cache_key)
-        if cached:
-            token, expiry = cached
-            if time.time() < expiry:
-                _logger.debug("Using cached Daraja token")
-                return token
-
-        creds = base64.b64encode(
-            f"{consumer_key}:{consumer_secret}".encode()
-        ).decode()
-
-        r = requests.get(
-            f"{self._daraja_url(sandbox)}/oauth/v1/generate"
-            "?grant_type=client_credentials",
-            headers={"Authorization": f"Basic {creds}"},
-            timeout=10,
-        )
-        r.raise_for_status()
-        data  = r.json()
-        token = data.get("access_token")
-        if not token:
-            raise UserError("Daraja returned no access token")
-
-        expires_in = int(data.get("expires_in", 3600))
-        _TOKEN_CACHE[cache_key] = (token, time.time() + expires_in - 300)
-        _logger.info("New Daraja token obtained (expires in %ds)", expires_in)
-        return token
-
-    # ── STK Push ─────────────────────────────────────
-
-    @_retry(max_attempts=2)
-    def _stk_push(self, token, shortcode, passkey, phone,
-                  amount, callback_url, account_ref,
-                  transaction_type="CustomerPayBillOnline", sandbox=False):
-        """Initiate Lipa Na M-Pesa Online (STK Push)."""
-        phone = self._format_phone(phone)
-        ts    = self._timestamp()
-        pwd   = self._stk_password(shortcode, passkey, ts)
+        password = self._generate_password(shortcode, passkey, timestamp)
+        callback = callback_url or provider.mpesa_callback_url or \
+            f"{self.env['ir.config_parameter'].sudo().get_param('web.base.url')}/mpesa/stk/callback"
 
         payload = {
-            "BusinessShortCode": shortcode,
-            "Password":          pwd,
-            "Timestamp":         ts,
-            "TransactionType":   transaction_type,
-            "Amount":            int(amount),
-            "PartyA":            phone,
-            "PartyB":            shortcode,
-            "PhoneNumber":       phone,
-            "CallBackURL":       callback_url,
-            "AccountReference":  account_ref[:12],
-            "TransactionDesc":   f"Pay {account_ref}"[:13],
+            'BusinessShortCode': shortcode,
+            'Password': password,
+            'Timestamp': timestamp,
+            'TransactionType': 'CustomerPayBillOnline',
+            'Amount': int(amount),
+            'PartyA': phone,
+            'PartyB': shortcode,
+            'PhoneNumber': phone,
+            'CallBackURL': callback,
+            'AccountReference': str(account_ref)[:12],
+            'TransactionDesc': str(description)[:13],
         }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/stkpush/v1/processrequest",
+
+        resp = requests.post(
+            f"{base_url}/mpesa/stkpush/v1/processrequest",
             json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
+            headers=self._get_headers(provider),
+            timeout=30
         )
-        r.raise_for_status()
-        result = r.json()
-        if result.get("ResponseCode") not in ("0", 0):
+        data = resp.json()
+        _logger.info("STK Push response: %s", data)
+
+        if data.get('ResponseCode') != '0':
             raise UserError(
-                f"STK Push rejected: {result.get('ResponseDescription', 'Unknown error')}"
-            )
-        return result
+                _("STK Push failed: %s") % data.get('errorMessage', data.get('ResponseDescription', str(data))))
 
-    # ── STK Query ────────────────────────────────────
+        return {
+            'merchant_request_id': data.get('MerchantRequestID'),
+            'checkout_request_id': data.get('CheckoutRequestID'),
+            'response_code': data.get('ResponseCode'),
+            'customer_message': data.get('CustomerMessage'),
+        }
 
-    @_retry(max_attempts=2)
-    def _stk_query(self, token, shortcode, passkey, checkout_request_id, sandbox=False):
-        """Query STK Push transaction status."""
-        ts  = self._timestamp()
-        pwd = self._stk_password(shortcode, passkey, ts)
+    @daraja_retry(3)
+    def stk_query(self, checkout_request_id):
+        """Query STK Push status."""
+        provider = self._get_daraja_config()
+        base_url = self._get_base_url(provider)
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        shortcode = provider.mpesa_shortcode
+        password = self._generate_password(shortcode, provider.mpesa_passkey, timestamp)
 
         payload = {
-            "BusinessShortCode":  shortcode,
-            "Password":           pwd,
-            "Timestamp":          ts,
-            "CheckoutRequestID":  checkout_request_id,
+            'BusinessShortCode': shortcode,
+            'Password': password,
+            'Timestamp': timestamp,
+            'CheckoutRequestID': checkout_request_id,
         }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/stkpushquery/v1/query",
+        resp = requests.post(
+            f"{base_url}/mpesa/stkpushquery/v1/query",
             json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
+            headers=self._get_headers(provider),
+            timeout=30
         )
-        r.raise_for_status()
-        return r.json()
+        return resp.json()
 
-    # ── C2B ──────────────────────────────────────────
+    @daraja_retry(3)
+    def register_c2b_urls(self, confirmation_url=None, validation_url=None):
+        """Register C2B callback URLs."""
+        provider = self._get_daraja_config()
+        base_url = self._get_base_url(provider)
+        base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
 
-    @_retry(max_attempts=2)
-    def _c2b_register_urls(self, token, shortcode,
-                           confirmation_url, validation_url,
-                           response_type="Completed", sandbox=False):
-        """Register C2B callback URLs for paybill/till."""
         payload = {
-            "ShortCode":        shortcode,
-            "ResponseType":     response_type,
-            "ConfirmationURL":  confirmation_url,
-            "ValidationURL":    validation_url,
+            'ShortCode': provider.mpesa_shortcode,
+            'ResponseType': 'Completed',
+            'ConfirmationURL': confirmation_url or f"{base}/mpesa/c2b/confirmation",
+            'ValidationURL': validation_url or f"{base}/mpesa/c2b/validation",
         }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/c2b/v1/registerurl",
+        resp = requests.post(
+            f"{base_url}/mpesa/c2b/v1/registerurl",
             json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
+            headers=self._get_headers(provider),
+            timeout=30
         )
-        r.raise_for_status()
-        return r.json()
+        data = resp.json()
+        _logger.info("C2B URL registration: %s", data)
+        return data
 
-    @_retry(max_attempts=2)
-    def _c2b_simulate(self, token, shortcode, phone,
-                      amount, bill_ref, sandbox=True):
-        """Simulate C2B payment (sandbox only)."""
-        if not sandbox:
-            raise UserError("C2B simulation only available in sandbox mode.")
-        phone = self._format_phone(phone)
+    @daraja_retry(3)
+    def b2c_payment(self, phone, amount, occasion, remarks):
+        """Send B2C payment (e.g. refunds, landlord payouts)."""
+        provider = self._get_daraja_config()
+        phone = normalize_phone(phone)
+        base_url = self._get_base_url(provider)
+        base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
         payload = {
-            "ShortCode":   shortcode,
-            "CommandID":   "CustomerPayBillOnline",
-            "Amount":      int(amount),
-            "Msisdn":      phone,
-            "BillRefNumber": bill_ref,
+            'InitiatorName': provider.mpesa_initiator_name or 'testapi',
+            'SecurityCredential': provider.mpesa_security_credential or '',
+            'CommandID': 'BusinessPayment',
+            'Amount': int(amount),
+            'PartyA': provider.mpesa_shortcode,
+            'PartyB': phone,
+            'Remarks': str(remarks)[:100],
+            'QueueTimeOutURL': f"{base}/mpesa/b2c/timeout",
+            'ResultURL': f"{base}/mpesa/b2c/result",
+            'Occasion': str(occasion)[:100],
         }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/c2b/v1/simulate",
+        resp = requests.post(
+            f"{base_url}/mpesa/b2c/v1/paymentrequest",
             json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
+            headers=self._get_headers(provider),
+            timeout=30
         )
-        r.raise_for_status()
-        return r.json()
+        return resp.json()
 
-    # ── B2C ──────────────────────────────────────────
-
-    @_retry(max_attempts=2)
-    def _b2c_payment(self, token, initiator_name, security_credential,
-                     shortcode, phone, amount, occasion,
-                     remarks="Payment", command_id="BusinessPayment",
-                     result_url=None, timeout_url=None, sandbox=False):
-        """B2C — pay vendor, employee salary, or customer refund."""
-        phone = self._format_phone(phone)
-        payload = {
-            "InitiatorName":      initiator_name,
-            "SecurityCredential": security_credential,
-            "CommandID":          command_id,
-            "Amount":             int(amount),
-            "PartyA":             shortcode,
-            "PartyB":             phone,
-            "Remarks":            remarks[:100],
-            "QueueTimeOutURL":    timeout_url or "",
-            "ResultURL":          result_url or "",
-            "Occasion":           occasion[:100],
-        }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/b2c/v3/paymentrequest",
-            json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=20,
-        )
-        r.raise_for_status()
-        return r.json()
-
-    # ── Transaction Status ────────────────────────────
-
-    @_retry(max_attempts=2)
-    def _transaction_status(self, token, initiator, security_credential,
-                            transaction_id, shortcode,
-                            result_url=None, timeout_url=None, sandbox=False):
-        """Query transaction status by Mpesa TransactionID."""
-        payload = {
-            "Initiator":          initiator,
-            "SecurityCredential": security_credential,
-            "CommandID":          "TransactionStatusQuery",
-            "TransactionID":      transaction_id,
-            "PartyA":             shortcode,
-            "IdentifierType":     "4",
-            "ResultURL":          result_url or "",
-            "QueueTimeOutURL":    timeout_url or "",
-            "Remarks":            "Status query",
-            "Occasion":           "Status",
-        }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/transactionstatus/v1/query",
-            json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
-        )
-        r.raise_for_status()
-        return r.json()
-
-    # ── Reversal ─────────────────────────────────────
-
-    @_retry(max_attempts=2)
-    def _reversal(self, token, initiator, security_credential,
-                  transaction_id, amount, shortcode,
-                  result_url=None, timeout_url=None, sandbox=False):
-        """Reverse an M-Pesa transaction."""
-        payload = {
-            "Initiator":              initiator,
-            "SecurityCredential":     security_credential,
-            "CommandID":              "TransactionReversal",
-            "TransactionID":          transaction_id,
-            "Amount":                 int(amount),
-            "ReceiverParty":          shortcode,
-            "ReceiverIdentifierType": "4",
-            "ResultURL":              result_url or "",
-            "QueueTimeOutURL":        timeout_url or "",
-            "Remarks":                "Reversal",
-            "Occasion":               "Reversal",
-        }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/reversal/v1/request",
-            json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
-        )
-        r.raise_for_status()
-        return r.json()
-
-    # ── Account Balance ───────────────────────────────
-
-    @_retry(max_attempts=2)
-    def _account_balance(self, token, initiator, security_credential,
-                         shortcode, result_url=None, timeout_url=None, sandbox=False):
+    @daraja_retry(3)
+    def account_balance(self):
         """Query M-Pesa account balance."""
+        provider = self._get_daraja_config()
+        base_url = self._get_base_url(provider)
+        base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
         payload = {
-            "Initiator":          initiator,
-            "SecurityCredential": security_credential,
-            "CommandID":          "AccountBalance",
-            "PartyA":             shortcode,
-            "IdentifierType":     "4",
-            "Remarks":            "Balance query",
-            "QueueTimeOutURL":    timeout_url or "",
-            "ResultURL":          result_url or "",
+            'Initiator': provider.mpesa_initiator_name or 'testapi',
+            'SecurityCredential': provider.mpesa_security_credential or '',
+            'CommandID': 'AccountBalance',
+            'PartyA': provider.mpesa_shortcode,
+            'IdentifierType': '4',
+            'Remarks': 'Balance Query',
+            'QueueTimeOutURL': f"{base}/mpesa/balance/timeout",
+            'ResultURL': f"{base}/mpesa/balance/result",
         }
-        r = requests.post(
-            f"{self._daraja_url(sandbox)}/mpesa/accountbalance/v1/query",
+        resp = requests.post(
+            f"{base_url}/mpesa/accountbalance/v1/query",
             json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=15,
+            headers=self._get_headers(provider),
+            timeout=30
         )
-        r.raise_for_status()
-        return r.json()
+        return resp.json()
+
+    @daraja_retry(3)
+    def transaction_status(self, transaction_id):
+        """Query transaction status."""
+        provider = self._get_daraja_config()
+        base_url = self._get_base_url(provider)
+        base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        payload = {
+            'Initiator': provider.mpesa_initiator_name or 'testapi',
+            'SecurityCredential': provider.mpesa_security_credential or '',
+            'CommandID': 'TransactionStatusQuery',
+            'TransactionID': transaction_id,
+            'PartyA': provider.mpesa_shortcode,
+            'IdentifierType': '4',
+            'ResultURL': f"{base}/mpesa/status/result",
+            'QueueTimeOutURL': f"{base}/mpesa/status/timeout",
+            'Remarks': 'Status Query',
+            'Occasion': '',
+        }
+        resp = requests.post(
+            f"{base_url}/mpesa/transactionstatus/v1/query",
+            json=payload,
+            headers=self._get_headers(provider),
+            timeout=30
+        )
+        return resp.json()
+
+    @daraja_retry(3)
+    def reversal(self, transaction_id, amount, remarks):
+        """Reverse an M-Pesa transaction."""
+        provider = self._get_daraja_config()
+        base_url = self._get_base_url(provider)
+        base = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        payload = {
+            'Initiator': provider.mpesa_initiator_name or 'testapi',
+            'SecurityCredential': provider.mpesa_security_credential or '',
+            'CommandID': 'TransactionReversal',
+            'TransactionID': transaction_id,
+            'Amount': int(amount),
+            'ReceiverParty': provider.mpesa_shortcode,
+            'RecieverIdentifierType': '4',
+            'ResultURL': f"{base}/mpesa/reversal/result",
+            'QueueTimeOutURL': f"{base}/mpesa/reversal/timeout",
+            'Remarks': str(remarks)[:100],
+            'Occasion': '',
+        }
+        resp = requests.post(
+            f"{base_url}/mpesa/reversal/v1/request",
+            json=payload,
+            headers=self._get_headers(provider),
+            timeout=30
+        )
+        return resp.json()

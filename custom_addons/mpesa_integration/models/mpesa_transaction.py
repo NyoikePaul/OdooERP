@@ -6,174 +6,195 @@ _logger = logging.getLogger(__name__)
 
 
 class MpesaTransaction(models.Model):
-    _name        = 'mpesa.transaction'
-    _description = 'M-Pesa Transaction Log'
-    _order       = 'create_date desc'
-    _rec_name    = 'receipt_number'
-    _inherit     = ['mail.thread']
+    _name = 'mpesa.transaction'
+    _description = 'M-Pesa Transaction'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'create_date desc'
+    _rec_name = 'name'
 
-    # ── Identity ──────────────────────────────────────
-    receipt_number  = fields.Char("M-Pesa Receipt",       readonly=True, index=True, tracking=True)
-    checkout_id     = fields.Char("Checkout Request ID",   readonly=True, index=True)
-    merchant_id     = fields.Char("Merchant Request ID",   readonly=True)
-    transaction_id  = fields.Char("Daraja Transaction ID", readonly=True, index=True)
-
-    # ── Transaction Details ───────────────────────────
+    name = fields.Char("Transaction Ref", readonly=True, copy=False, default='New', index=True)
     transaction_type = fields.Selection([
-        ('stk',    'STK Push (Customer)'),
-        ('c2b',    'C2B Paybill/Till'),
-        ('b2c',    'B2C (Business Payout)'),
-        ('reversal','Reversal'),
-    ], string="Type", default='stk', index=True)
+        ('stk_push',    'STK Push (Lipa na M-Pesa)'),
+        ('c2b_paybill', 'C2B Paybill/Till'),
+        ('b2c',         'B2C Business Payment'),
+        ('reversal',    'Reversal'),
+    ], required=True, default='c2b_paybill', tracking=True)
 
-    phone           = fields.Char("Phone Number")
-    partner_id      = fields.Many2one('res.partner', string="Partner", ondelete='set null')
-    amount          = fields.Monetary("Amount", currency_field='currency_id')
-    currency_id     = fields.Many2one('res.currency',
-                                      default=lambda s: s.env.ref('base.KES'))
-    result_code     = fields.Integer("Result Code")
-    result_desc     = fields.Char("Result Description")
+    # Transaction IDs
+    mpesa_receipt       = fields.Char("M-Pesa Receipt No.", index=True, tracking=True)
+    checkout_request_id = fields.Char("Checkout Request ID", index=True)
+    merchant_request_id = fields.Char("Merchant Request ID")
+    daraja_txn_id       = fields.Char("Daraja Transaction ID")
 
-    # ── Status ────────────────────────────────────────
+    # Party details
+    phone          = fields.Char("Phone Number", tracking=True)
+    partner_id     = fields.Many2one('res.partner', string="Partner/Tenant", tracking=True)
+    account_ref    = fields.Char("Account Reference")
+
+    # Financials
+    currency_id = fields.Many2one('res.currency', default=lambda s: s.env.ref('base.KES'))
+    amount      = fields.Monetary("Amount (KES)", currency_field='currency_id', tracking=True)
+
+    # Status
     status = fields.Selection([
         ('pending',   'Pending'),
         ('success',   'Success'),
         ('failed',    'Failed'),
         ('cancelled', 'Cancelled'),
         ('reversed',  'Reversed'),
-    ], default='pending', index=True, tracking=True)
+        ('timeout',   'Timeout'),
+    ], default='pending', tracking=True, index=True)
 
-    # ── Reconciliation ────────────────────────────────
-    invoice_id       = fields.Many2one('account.move',    string="Invoice",         ondelete='set null')
-    payment_id       = fields.Many2one('account.payment', string="Payment",         ondelete='set null')
-    reconciled       = fields.Boolean("Reconciled", default=False)
-    reconciled_date  = fields.Datetime("Reconciled At")
+    result_code = fields.Integer("Result Code")
+    result_desc = fields.Char("Result Description")
 
-    # ── Raw Data ──────────────────────────────────────
-    raw_payload      = fields.Text("Raw Callback Payload")
-    create_date      = fields.Datetime("Received At", readonly=True)
-    notes            = fields.Text("Notes")
+    # Reconciliation
+    reconciled      = fields.Boolean("Reconciled", tracking=True)
+    reconciled_at   = fields.Datetime("Reconciled At")
+    invoice_id      = fields.Many2one('account.move', string="Invoice", ondelete='set null')
+    payment_id      = fields.Many2one('account.payment', string="Payment", ondelete='set null')
+    lease_id        = fields.Many2one('estate.lease', string="Lease", ondelete='set null')
 
-    # ── Computed ──────────────────────────────────────
-    can_reconcile    = fields.Boolean(compute='_compute_can_reconcile')
-    can_reverse      = fields.Boolean(compute='_compute_can_reverse')
+    # Timestamps
+    transaction_date = fields.Datetime("Transaction Date", default=fields.Datetime.now)
+    callback_data    = fields.Text("Raw Callback Data")
 
-    @api.depends('status', 'reconciled', 'invoice_id')
-    def _compute_can_reconcile(self):
-        for rec in self:
-            rec.can_reconcile = (
-                rec.status == 'success'
-                and not rec.reconciled
-                and not rec.invoice_id
-            )
+    # Stats
+    days_outstanding = fields.Integer(compute='_compute_days', store=True)
 
-    @api.depends('status', 'receipt_number')
-    def _compute_can_reverse(self):
-        for rec in self:
-            rec.can_reverse = (
-                rec.status == 'success'
-                and bool(rec.receipt_number)
-            )
+    _sql_constraints = [
+        ('receipt_unique', 'UNIQUE(mpesa_receipt)',
+         'M-Pesa receipt number must be unique.'),
+    ]
 
-    # ── Name ──────────────────────────────────────────
-    def _compute_display_name(self):
-        for rec in self:
-            rec.display_name = rec.receipt_number or f'TXN-{rec.id}'
+    @api.depends('transaction_date', 'reconciled')
+    def _compute_days(self):
+        now = fields.Datetime.now()
+        for r in self:
+            if not r.reconciled and r.transaction_date:
+                r.days_outstanding = (now - r.transaction_date).days
+            else:
+                r.days_outstanding = 0
 
-    # ── Auto-link partner from phone ──────────────────
     @api.model_create_multi
     def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('phone') and not vals.get('partner_id'):
-                partner = self.env['res.partner'].search(
-                    [('phone', 'like', vals['phone'][-9:])], limit=1
-                )
-                if partner:
-                    vals['partner_id'] = partner.id
+        for v in vals_list:
+            if v.get('name', 'New') == 'New':
+                v['name'] = self.env['ir.sequence'].next_by_code('mpesa.transaction') or 'New'
         return super().create(vals_list)
 
-    # ── Actions ───────────────────────────────────────
-    def action_reconcile_invoice(self):
-        """Open wizard to link this transaction to an invoice."""
-        self.ensure_one()
-        if not self.can_reconcile:
-            raise UserError(_("This transaction cannot be reconciled."))
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Reconcile M-Pesa Transaction'),
-            'res_model': 'mpesa.reconcile.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_transaction_id': self.id,
-                'default_amount': self.amount,
-                'default_partner_id': self.partner_id.id,
-            }
-        }
-
-    def action_mark_reconciled(self, invoice_id=None, payment_id=None):
-        self.write({
-            'reconciled':      True,
-            'reconciled_date': fields.Datetime.now(),
-            'invoice_id':      invoice_id,
-            'payment_id':      payment_id,
-            'status':          'success',
-        })
-        self.message_post(body=_("Transaction reconciled manually."))
-
     def action_query_status(self):
-        """Query Daraja for current transaction status."""
+        """Query Daraja for transaction status."""
         self.ensure_one()
-        if not self.checkout_id:
-            raise UserError(_("No Checkout Request ID — cannot query status."))
-        provider = self.env['payment.provider'].search(
-            [('code', '=', 'mpesa')], limit=1
-        )
-        if not provider:
-            raise UserError(_("M-Pesa payment provider not configured."))
+        if not self.checkout_request_id and not self.daraja_txn_id:
+            raise UserError(_("No transaction ID to query."))
         try:
-            mixin = self.env['mpesa.api.mixin']
-            token = provider._mpesa_get_token()
-            result = mixin._stk_query(
-                token=token,
-                shortcode=provider.mpesa_shortcode,
-                passkey=provider.mpesa_passkey,
-                checkout_request_id=self.checkout_id,
-                sandbox=provider.mpesa_sandbox,
-            )
-            result_code = int(result.get('ResultCode', -1))
-            result_desc = result.get('ResultDesc', '')
-            if result_code == 0:
-                self.write({'status': 'success', 'result_desc': result_desc})
-                self.message_post(body=_("Status query: PAID ✅"))
+            connector = self.env['mpesa.connector']
+            if self.transaction_type == 'stk_push' and self.checkout_request_id:
+                result = connector.stk_query(self.checkout_request_id)
             else:
-                self.write({'result_desc': result_desc})
-                self.message_post(body=_(f"Status query: {result_desc}"))
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('M-Pesa Status'),
-                    'message': result_desc,
-                    'type': 'success' if result_code == 0 else 'warning',
-                }
-            }
+                result = connector.transaction_status(self.daraja_txn_id or self.mpesa_receipt)
+            self.message_post(body=_("Status query result: %s") % result)
+            if result.get('ResultCode') == 0:
+                self.write({'status': 'success'})
         except Exception as e:
-            raise UserError(str(e)) from e
+            raise UserError(_("Status query failed: %s") % e)
 
-    def action_cancel(self):
-        self.write({'status': 'cancelled'})
-        self.message_post(body=_("Transaction manually cancelled."))
+    def action_reconcile(self):
+        """Auto-match transaction to open invoice by amount and partner."""
+        self.ensure_one()
+        if self.reconciled:
+            raise UserError(_("Already reconciled."))
+        if not self.partner_id:
+            raise UserError(_("Set a partner before reconciling."))
 
-    # ── Scheduled: clean up stale pending transactions ─
+        domain = [
+            ('move_type', '=', 'out_invoice'),
+            ('payment_state', '!=', 'paid'),
+            ('partner_id', '=', self.partner_id.id),
+            ('amount_residual', '=', self.amount),
+        ]
+        invoice = self.env['account.move'].search(domain, limit=1)
+        if not invoice:
+            # Try fuzzy match within 10%
+            domain_fuzzy = [
+                ('move_type', '=', 'out_invoice'),
+                ('payment_state', '!=', 'paid'),
+                ('partner_id', '=', self.partner_id.id),
+                ('amount_residual', '>=', self.amount * 0.9),
+                ('amount_residual', '<=', self.amount * 1.1),
+            ]
+            invoice = self.env['account.move'].search(domain_fuzzy, limit=1)
+
+        if not invoice:
+            self.message_post(body=_(
+                "No matching invoice found for KES %.0f for %s." % (
+                    self.amount, self.partner_id.name)))
+            return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                    'params': {'title': _('No Match'), 'type': 'warning',
+                               'message': _('No open invoice found matching KES %.0f') % self.amount}}
+
+        self.write({
+            'reconciled': True,
+            'reconciled_at': fields.Datetime.now(),
+            'invoice_id': invoice.id,
+        })
+        invoice.message_post(body=_(
+            "Payment received via M-Pesa: %s — KES %.0f. Receipt: %s" % (
+                self.name, self.amount, self.mpesa_receipt or 'N/A')))
+        self.message_post(body=_(
+            "Reconciled to invoice %s (KES %.0f)" % (invoice.name, invoice.amount_residual)))
+
+        return {'type': 'ir.actions.act_window', 'res_model': 'account.move',
+                'res_id': invoice.id, 'view_mode': 'form'}
+
+    def action_reverse(self):
+        """Request M-Pesa reversal."""
+        self.ensure_one()
+        if not self.mpesa_receipt:
+            raise UserError(_("No M-Pesa receipt number to reverse."))
+        try:
+            connector = self.env['mpesa.connector']
+            result = connector.reversal(self.mpesa_receipt, self.amount,
+                                         f"Reversal of {self.name}")
+            self.write({'status': 'reversed'})
+            self.message_post(body=_("Reversal initiated: %s") % result)
+        except Exception as e:
+            raise UserError(_("Reversal failed: %s") % e)
+
+    def action_mark_failed(self):
+        self.write({'status': 'failed'})
+
+    @api.model
+    def _cron_auto_reconcile(self):
+        """Auto-reconcile unmatched successful transactions."""
+        unreconciled = self.search([
+            ('status', '=', 'success'),
+            ('reconciled', '=', False),
+            ('partner_id', '!=', False),
+        ])
+        for txn in unreconciled:
+            try:
+                txn.action_reconcile()
+            except Exception as e:
+                _logger.error("Auto-reconcile failed for %s: %s", txn.name, e)
+        _logger.info("Auto-reconciled %d M-Pesa transactions.", len(unreconciled))
+
     @api.model
     def _cron_cleanup_pending(self):
-        """Mark transactions pending >2 hours as failed."""
+        """Mark old pending transactions as timeout after 24 hours."""
         from datetime import timedelta
-        cutoff = fields.Datetime.now() - timedelta(hours=2)
-        stale = self.search([
+        cutoff = fields.Datetime.now() - timedelta(hours=24)
+        old_pending = self.search([
             ('status', '=', 'pending'),
-            ('create_date', '<', cutoff),
+            ('transaction_date', '<', cutoff),
         ])
-        stale.write({'status': 'failed', 'result_desc': 'Timed out'})
-        _logger.info("Cleaned up %d stale pending M-Pesa transactions", len(stale))
+        old_pending.write({'status': 'timeout'})
+        _logger.info("Marked %d transactions as timeout.", len(old_pending))
+
+    def action_open_invoice(self):
+        self.ensure_one()
+        if not self.invoice_id:
+            return
+        return {'type': 'ir.actions.act_window', 'res_model': 'account.move',
+                'res_id': self.invoice_id.id, 'view_mode': 'form'}
