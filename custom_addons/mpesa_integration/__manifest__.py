@@ -1,8 +1,21 @@
 {
     'name':        'M-Pesa Integration',
-    'version':     '18.0.2.0.0',
+    'version':     '18.0.3.0.0',
     'category':    'Accounting/Payment',
-    'summary':     'M-Pesa transaction log, auto-reconciliation, STK Push, B2C, reversal',
+    'summary':     'M-Pesa Daraja 2.0 — STK Push from invoices, auto-reconcile, C2B, B2C, reversal',
+    'description': """
+Kenya M-Pesa Integration — Enterprise rent collection.
+
+Features:
+- One-click STK Push from any invoice
+- Auto-reconciliation of incoming payments
+- C2B Paybill/Till transaction log
+- B2C business payments
+- Transaction reversal
+- Scheduled auto-reconcile cron
+- Smart buttons on invoices showing M-Pesa payment count
+- Payment receipt on reconciled transactions
+    """,
     'author':      'Paul Nyoike',
     'website':     'https://github.com/NyoikePaul/OdooERP',
     'license':     'LGPL-3',
@@ -10,6 +23,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
+        'views/invoice_mpesa_views.xml',
     ],
     'installable':  True,
     'application':  True,
