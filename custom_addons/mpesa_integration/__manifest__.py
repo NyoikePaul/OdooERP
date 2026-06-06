@@ -24,6 +24,7 @@ Features:
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/invoice_mpesa_views.xml',
+        'wizard/bulk_stk_wizard.xml',
     ],
     'installable':  True,
     'application':  True,

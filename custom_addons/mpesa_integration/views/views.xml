@@ -123,4 +123,7 @@
             parent="menu_mpesa_root"
             action="mpesa_transaction_action" sequence="1"/>
 
+  <menuitem id="menu_mpesa_bulk" name="Bulk Rent Collection"
+            parent="menu_mpesa_root"
+            action="action_bulk_stk_wizard" sequence="2"/>
 </odoo>

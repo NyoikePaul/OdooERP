@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_bulk_stk_wizard" model="ir.ui.view">
+    <field name="name">mpesa.bulk.stk.wizard.form</field>
+    <field name="model">mpesa.bulk.stk.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Bulk M-Pesa STK Push — Rent Collection">
+        <sheet>
+          <group>
+            <group>
+              <field name="invoice_domain"/>
+              <field name="description"/>
+              <field name="dry_run"/>
+            </group>
+            <group>
+              <field name="tenant_count" readonly="1"/>
+              <field name="total_amount" readonly="1" string="Total (KES)"/>
+            </group>
+          </group>
+          <field name="lease_ids" widget="many2many_tags"/>
+          <notebook>
+            <page string="Preview">
+              <field name="preview_ids" readonly="1">
+                <list>
+                  <field name="partner_id"/>
+                  <field name="phone"/>
+                  <field name="invoice_id"/>
+                  <field name="amount"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <footer>
+          <button name="action_preview"  type="object" string="Preview"   class="btn-secondary"/>
+          <button name="action_send_all" type="object" string="Send All STK Pushes" class="btn-success oe_highlight"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+  <record id="action_bulk_stk_wizard" model="ir.actions.act_window">
+    <field name="name">Bulk Rent Collection (M-Pesa)</field>
+    <field name="res_model">mpesa.bulk.stk.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>
