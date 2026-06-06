@@ -135,6 +135,11 @@ OdooERP Kenya
 └── estate.maintenance # Maintenance requests
 
 ---
+## M-Pesa
+
+<img width="1366" height="587" alt="image" src="https://github.com/user-attachments/assets/2f7a8275-768e-498a-bc46-2937c3b51397" />
+
+
 ## Real Estate Module
 <img width="1366" height="585" alt="image" src="https://github.com/user-attachments/assets/1c141000-6232-4e05-9b3b-bafff4dcb79c" />
 
