@@ -234,6 +234,54 @@ class EstateLease(models.Model):
             }
         }
 
+
+    def action_mpesa_stk_push(self):
+        """Send STK Push to tenant for outstanding rent."""
+        self.ensure_one()
+        if self.status != "active":
+            raise UserError(_("Lease must be active."))
+        if self.total_outstanding <= 0:
+            raise UserError(_("No outstanding amount on this lease."))
+        phone = self.tenant_id.mobile or self.tenant_id.phone
+        if not phone:
+            raise UserError(_(
+                "No phone number for %s. Add mobile in Contacts.") % self.tenant_id.name)
+        connector = self.env["mpesa.connector"]
+        result = connector.stk_push(
+            phone=phone,
+            amount=self.total_outstanding,
+            account_ref=(self.name or "RENT")[:12],
+            description=("Rent %s" % self.property_id.name[:8])[:13],
+        )
+        txn = self.env["mpesa.transaction"].create({
+            "transaction_type":   "stk_push",
+            "phone":              phone,
+            "partner_id":         self.tenant_id.id,
+            "amount":             self.total_outstanding,
+            "lease_id":           self.id,
+            "checkout_request_id": result.get("checkout_request_id"),
+            "merchant_request_id": result.get("merchant_request_id"),
+            "status":             "pending",
+        })
+        self.message_post(
+            body=_("STK Push sent to %s for KES %.0f. TXN: %s") % (
+                phone, self.total_outstanding, txn.name),
+            partner_ids=[self.tenant_id.id])
+        return {"type": "ir.actions.client", "tag": "display_notification",
+                "params": {"title": _("STK Push Sent"),
+                           "message": _("M-Pesa prompt sent to %s") % phone,
+                           "type": "success"}}
+
+    def action_open_mpesa_payments(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "M-Pesa Payments",
+            "res_model": "mpesa.transaction",
+            "view_mode": "list,form",
+            "domain": [("lease_id", "=", self.id)],
+        }
+
     def action_generate_invoice(self):
         self.ensure_one()
         if self.status != 'active':
