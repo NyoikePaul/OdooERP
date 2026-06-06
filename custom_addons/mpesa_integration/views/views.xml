@@ -153,3 +153,10 @@
     <field name="search_view_id" ref="mpesa_transaction_view_search"/>
   </record>
 </odoo>
+
+  <!-- MENU -->
+  <menuitem id="menu_mpesa_root" name="M-Pesa" sequence="55"
+            groups="base.group_user"/>
+  <menuitem id="menu_mpesa_transactions" name="Transactions"
+            parent="menu_mpesa_root"
+            action="mpesa_transaction_action" sequence="1"/>
