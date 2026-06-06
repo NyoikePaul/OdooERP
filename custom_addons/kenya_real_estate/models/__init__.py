@@ -17,3 +17,4 @@ from . import demand_notice
 from . import kra_return
 from . import tenant_screening
 from . import account_move
+from . import res_partner_kenya
