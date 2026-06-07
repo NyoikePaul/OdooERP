@@ -61,7 +61,7 @@ class EstateProperty(models.Model):
         ('ridgeways','Ridgeways'),('gigiri','Gigiri/UN Area'),
         # Nairobi Middle
         ('south_b','South B'),('south_c','South C'),('ngumo','Ngumo'),
-        ('langata','Lang'ata'),('rongai','Rongai'),('ruaka','Ruaka'),
+        ('langata','Langata'),('rongai','Rongai'),('ruaka','Ruaka'),
         ('ruiru','Ruiru'),('thika_rd','Thika Road'),
         # Nairobi Eastlands
         ('buruburu','Buruburu'),('donholm','Donholm'),('umoja','Umoja'),
