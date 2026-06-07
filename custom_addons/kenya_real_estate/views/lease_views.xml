@@ -43,7 +43,7 @@
           <button name="action_generate_invoice"   type="object" string="Generate Invoice"  invisible="status != 'active'"/>
           <button name="action_renew"              type="object" string="Renew"             invisible="status not in ('active','expired')"/>
           <button name="action_apply_escalation"   type="object" string="Apply Escalation"  invisible="status != 'active'"/>
-          <button name="action_mpesa_stk_push" type="object" string="Collect via M-Pesa" invisible="status != 'active' or total_outstanding == 0" class="btn-success"/>
+          <button name="action_mpesa_stk_push" type="object" string="Collect via M-Pesa" invisible="status not in ('active',) or total_outstanding == 0" class="btn-success"/>
           <button name="action_send_reminder"      type="object" string="Send Reminder"     invisible="status != 'active' or total_outstanding == 0"/>
           <button name="action_surrender"          type="object" string="Surrender"         invisible="status != 'active'"/>
           <button name="action_cancel"             type="object" string="Cancel"            invisible="status in ('cancelled','expired','surrendered')"/>
