@@ -54,11 +54,7 @@
             <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-money">
               <field name="payment_count" widget="statinfo" string="Invoices"/>
             </button>
-            <button name="action_open_mpesa_payments" type="object"
-                    class="oe_stat_button" icon="fa-mobile"
-                    invisible="mpesa_txn_count == 0">
-              <field name="mpesa_txn_count" widget="statinfo" string="M-Pesa"/>
-            </button>
+
             <button name="%(action_broadcast_wizard)d" type="action" class="oe_stat_button" icon="fa-bullhorn" string="Notify"/>
           </div>
           <div class="alert alert-warning" invisible="not is_expiring_soon">
