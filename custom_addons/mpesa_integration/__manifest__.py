@@ -22,9 +22,9 @@ Features:
     'depends':     ['base', 'account', 'mail', 'mpesa_connector'],
     'data': [
         'security/ir.model.access.csv',
+        'wizard/bulk_stk_wizard.xml',
         'views/views.xml',
         'views/invoice_mpesa_views.xml',
-        'wizard/bulk_stk_wizard.xml',
     ],
     'installable':  True,
     'application':  True,
