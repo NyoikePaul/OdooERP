@@ -2,9 +2,14 @@ from . import property_type
 from . import property
 from . import building
 from . import lease
+from . import lease_template
 from . import maintenance
+from . import work_order
 from . import inspection
 from . import offer
+from . import viewing
+from . import sale
+from . import acquisition
 from . import commission
 from . import deposit
 from . import utility
@@ -16,5 +21,7 @@ from . import service_charge
 from . import demand_notice
 from . import kra_return
 from . import tenant_screening
+from . import owner_statement
+from . import payment_aging
 from . import account_move
 from . import res_partner_kenya

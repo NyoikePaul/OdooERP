@@ -1,16 +1,35 @@
 {
     'name':        'Kenya Real Estate CRM',
-    'version':     '18.0.5.0.0',
+    'version':     '18.0.6.0.0',
     'category':    'Real Estate',
-    'summary':     'Enterprise property management for East Africa — M-Pesa, KRA WHT, MRI Returns, Generator Billing, Demand Notices',
+    'summary':     'Enterprise Real Estate for East Africa v6 — Sales, Viewings, Work Orders, Acquisition, Owner Statements, Aging, KRA, M-Pesa',
     'description': """
-Kenya Real Estate CRM — Built for East Africa.
-Solves KRA MRI compliance (April 2025), generator billing,
-service charge apportionment, tenant screening, demand notices,
-caretaker management, and M-Pesa rent collection.
+Kenya Real Estate CRM v6 — The most complete Odoo real estate module for East Africa.
+
+NEW in v6:
+- Property Sales workflow (Lead → Viewing → Reservation → Agreement → Transfer → Sold)
+- Viewing Scheduler with double-booking prevention
+- Work Orders for maintenance contractors (materials, labor, vendor bills)
+- Property Acquisition workflow (Due Diligence → Purchase → Registration)
+- Owner/Landlord Monthly Statements (auto-populated from invoices)
+- Payment Aging Analysis (0-30, 31-60, 61-90, 90+ days)
+- User Roles (Technician, Agent, Property Manager, Administrator)
+
+EXISTING:
+- Buildings + Units hierarchy
+- Full lease lifecycle with KRA WHT
+- M-Pesa STK Push from invoice + lease
+- Bulk rent collection wizard
+- KRA MRI tax returns (April 2025)
+- Generator billing
+- Service charge apportionment
+- Demand Notices (Cap 301)
+- Tenant Screening with scoring
+- Caretaker NHIF/NSSF management
+- PDF Rent Roll, Arrears, Tenancy Agreement, Demand Notice
+- 9 automated crons
     """,
     'author':      'Paul Nyoike',
-    'maintainer':  'Paul Nyoike',
     'website':     'https://github.com/NyoikePaul/OdooERP',
     'license':     'LGPL-3',
     'depends':     ['base', 'account', 'mail', 'mpesa_connector'],
@@ -29,11 +48,13 @@ caretaker management, and M-Pesa rent collection.
         'views/maintenance_views.xml',
         'views/operations_views.xml',
         'views/kenya_views.xml',
+        'views/insurance_valuation_views.xml',
+        'views/res_partner_kenya_views.xml',
+        'views/dashboard_views.xml',
+        'views/sales_acquisition_views.xml',
         'report/demand_notice_report.xml',
         'report/tenancy_agreement.xml',
         'report/rent_roll.xml',
-        'views/res_partner_kenya_views.xml',
-        'views/dashboard_views.xml',
         'views/menu_views.xml',
     ],
     'demo':        ['demo/demo.xml'],

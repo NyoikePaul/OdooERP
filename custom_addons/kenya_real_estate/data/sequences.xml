@@ -13,4 +13,39 @@
   <record id="seq_estate_kra"        model="ir.sequence"><field name="name">Estate KRA Return</field><field name="code">estate.kra.return</field><field name="prefix">KRA/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
   <record id="seq_estate_screening"  model="ir.sequence"><field name="name">Estate Screening</field><field name="code">estate.tenant.screening</field><field name="prefix">SCR/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
   <record id="seq_estate_svc_charge" model="ir.sequence"><field name="name">Estate Service Charge</field><field name="code">estate.service.charge</field><field name="prefix">SC/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+    <record id="seq_estate_property_sale" model="ir.sequence">
+        <field name="name">Estate Property Sale</field>
+        <field name="code">estate.property.sale</field>
+        <field name="prefix">SALE/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_viewing" model="ir.sequence">
+        <field name="name">Estate Viewing</field>
+        <field name="code">estate.viewing</field>
+        <field name="prefix">VIEW/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_work_order" model="ir.sequence">
+        <field name="name">Estate Work Order</field>
+        <field name="code">estate.work.order</field>
+        <field name="prefix">WO/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_acquisition" model="ir.sequence">
+        <field name="name">Estate Acquisition</field>
+        <field name="code">estate.acquisition</field>
+        <field name="prefix">ACQ/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_estate_owner_statement" model="ir.sequence">
+        <field name="name">Estate Owner Statement</field>
+        <field name="code">estate.owner.statement</field>
+        <field name="prefix">OS/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>
