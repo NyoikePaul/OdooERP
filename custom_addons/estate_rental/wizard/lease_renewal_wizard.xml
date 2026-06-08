@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_lease_renewal_wizard" model="ir.ui.view">
+    <field name="name">estate.lease.renewal.wizard.form</field>
+    <field name="model">estate.lease.renewal.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Renew Lease">
+        <group>
+          <group string="Lease">
+            <field name="lease_id" readonly="1"/>
+            <field name="property_id" readonly="1"/>
+            <field name="tenant_id"/>
+          </group>
+          <group string="New Term">
+            <field name="new_start"/>
+            <field name="new_end"/>
+            <field name="monthly_rent"/>
+            <field name="deposit"/>
+            <field name="escalation"/>
+          </group>
+        </group>
+        <field name="notes"/>
+        <footer>
+          <button name="action_renew" type="object" string="Renew Lease" class="btn-primary oe_highlight"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="seq_estate_commission" model="ir.sequence">
+    <field name="name">Estate Commission</field>
+    <field name="code">estate.commission</field>
+    <field name="prefix">COM/%(year)s/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+  </record>
+  <record id="seq_estate_screening" model="ir.sequence">
+    <field name="name">Estate Tenant Screening</field>
+    <field name="code">estate.tenant.screening</field>
+    <field name="prefix">SCR/%(year)s/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+  </record>
+</odoo>

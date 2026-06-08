@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Offer List -->
+  <record id="estate_offer_view_list" model="ir.ui.view">
+    <field name="name">estate.offer.list</field>
+    <field name="model">estate.offer</field>
+    <field name="arch" type="xml">
+      <list string="Offers" decoration-success="status=='accepted'" decoration-danger="status=='refused'">
+        <field name="create_date" string="Date"/>
+        <field name="property_id"/>
+        <field name="partner_id"/>
+        <field name="offer_type"/>
+        <field name="offer_amount"/>
+        <field name="deadline"/>
+        <field name="status" widget="badge"/>
+        <button name="action_accept" type="object" string="Accept" icon="fa-check" invisible="status != 'new'"/>
+        <button name="action_refuse" type="object" string="Refuse" icon="fa-times" invisible="status not in ('new','viewing')"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_offer_action" model="ir.actions.act_window">
+    <field name="name">Offers</field>
+    <field name="res_model">estate.offer</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Commission List -->
+  <record id="estate_commission_view_list" model="ir.ui.view">
+    <field name="name">estate.commission.list</field>
+    <field name="model">estate.commission</field>
+    <field name="arch" type="xml">
+      <list string="Commissions" decoration-success="status=='paid'" decoration-warning="status=='approved'">
+        <field name="name"/>
+        <field name="agent_id"/>
+        <field name="property_id"/>
+        <field name="comm_type"/>
+        <field name="commission" sum="Total"/>
+        <field name="status" widget="badge"/>
+        <button name="action_approve" type="object" string="Approve" icon="fa-check" invisible="status != 'draft'"/>
+        <button name="action_create_invoice" type="object" string="Invoice" icon="fa-file" invisible="status != 'approved'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_commission_action" model="ir.actions.act_window">
+    <field name="name">Commissions</field>
+    <field name="res_model">estate.commission</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- Screening List -->
+  <record id="estate_screening_view_list" model="ir.ui.view">
+    <field name="name">estate.tenant.screening.list</field>
+    <field name="model">estate.tenant.screening</field>
+    <field name="arch" type="xml">
+      <list string="Tenant Applications"
+            decoration-success="recommendation=='approve'"
+            decoration-warning="recommendation=='review'"
+            decoration-danger="recommendation=='reject'">
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="applicant_id"/>
+        <field name="employment_type"/>
+        <field name="monthly_income"/>
+        <field name="score" widget="progressbar"/>
+        <field name="recommendation" widget="badge"/>
+        <field name="status" widget="badge"/>
+        <button name="action_approve" type="object" string="Approve" icon="fa-check" invisible="status not in ('new','screening')"/>
+        <button name="action_convert" type="object" string="Create Lease" icon="fa-file" invisible="status != 'approved'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_screening_action" model="ir.actions.act_window">
+    <field name="name">Tenant Screening</field>
+    <field name="res_model">estate.tenant.screening</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

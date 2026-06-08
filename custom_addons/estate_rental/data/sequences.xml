@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="seq_estate_lease"      model="ir.sequence"><field name="name">Estate Lease</field><field name="code">estate.lease</field><field name="prefix">LEASE/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+  <record id="seq_estate_maintenance" model="ir.sequence"><field name="name">Estate Maintenance</field><field name="code">estate.maintenance</field><field name="prefix">MNT/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+  <record id="seq_estate_inspection" model="ir.sequence"><field name="name">Estate Inspection</field><field name="code">estate.inspection</field><field name="prefix">INSP/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+  <record id="seq_estate_deposit"    model="ir.sequence"><field name="name">Estate Deposit</field><field name="code">estate.deposit</field><field name="prefix">DEP/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+  <record id="seq_estate_demand"     model="ir.sequence"><field name="name">Estate Demand Notice</field><field name="code">estate.demand.notice</field><field name="prefix">DN/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+  <record id="seq_estate_svc_charge" model="ir.sequence"><field name="name">Estate Service Charge</field><field name="code">estate.service.charge</field><field name="prefix">SC/%(year)s/</field><field name="padding">4</field><field name="company_id" eval="False"/></record>
+</odoo>

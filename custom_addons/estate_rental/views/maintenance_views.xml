@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="estate_maintenance_view_list" model="ir.ui.view">
+    <field name="name">estate.maintenance.list</field>
+    <field name="model">estate.maintenance.request</field>
+    <field name="arch" type="xml">
+      <list string="Maintenance Requests"
+            decoration-danger="priority=='3'"
+            decoration-warning="priority=='2'"
+            decoration-success="status=='done'"
+            decoration-muted="status=='cancelled'">
+        <field name="ref"/><field name="name"/>
+        <field name="property_id"/>
+        <field name="category"/>
+        <field name="priority" widget="priority"/>
+        <field name="assigned_to"/>
+        <field name="status" widget="badge"
+               decoration-warning="status=='in_progress'"
+               decoration-success="status=='done'"
+               decoration-danger="status=='new'"/>
+        <field name="estimated_cost" sum="Est. Cost"/>
+        <field name="actual_cost"    sum="Actual Cost"/>
+        <field name="date_reported"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_maintenance_view_form" model="ir.ui.view">
+    <field name="name">estate.maintenance.form</field>
+    <field name="model">estate.maintenance.request</field>
+    <field name="arch" type="xml">
+      <form string="Maintenance Request">
+        <header>
+          <button name="action_start" type="object" string="Start Work" invisible="status != 'new'" class="oe_highlight"/>
+          <button name="action_done"  type="object" string="Mark Done"  invisible="status not in ('in_progress','waiting_parts')"/>
+          <field name="status" widget="statusbar" statusbar_visible="new,in_progress,done"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+            <span class="o_form_label">Ref:</span>
+            <field name="ref" readonly="1"/>
+            <h1><field name="name"/></h1>
+          </div>
+          <group>
+            <group>
+              <field name="property_id"/>
+              <field name="unit_id"/>
+              <field name="lease_id"/>
+              <field name="reported_by"/>
+              <field name="assigned_to"/>
+            </group>
+            <group>
+              <field name="category"/>
+              <field name="priority" widget="priority"/>
+              <field name="estimated_cost"/>
+              <field name="actual_cost"/>
+              <field name="date_reported"/>
+              <field name="date_resolved"/>
+            </group>
+          </group>
+          <field name="description"/>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_maintenance_action" model="ir.actions.act_window">
+    <field name="name">Maintenance Requests</field>
+    <field name="res_model">estate.maintenance.request</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

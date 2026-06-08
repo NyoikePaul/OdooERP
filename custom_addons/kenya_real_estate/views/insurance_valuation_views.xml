@@ -71,7 +71,7 @@
         <field name="valuation_date"/>
         <field name="property_id"/>
         <field name="valuation_value"/>
-        <field name="valuation_method"/>
+        <field name="method"/>
         <field name="valued_by"/>
         <field name="report_ref"/>
       </list>

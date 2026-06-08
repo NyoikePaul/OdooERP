@@ -1,0 +1,23 @@
+{
+    'name':        'Estate Core',
+    'version':     '18.0.1.0.0',
+    'category':    'Real Estate',
+    'summary':     'Core property models — Property, Building, Unit, Types, Tags',
+    'author':      'Paul Nyoike',
+    'website':     'https://github.com/NyoikePaul/OdooERP',
+    'license':     'LGPL-3',
+    'depends':     ['base', 'account', 'mail'],
+    'data': [
+        'security/groups.xml',
+        'security/ir.model.access.csv',
+        'data/sequences.xml',
+        'views/property_type_views.xml',
+        'views/property_views.xml',
+        'views/building_views.xml',
+        'views/res_partner_views.xml',
+        'views/menu_views.xml',
+    ],
+    'installable':  True,
+    'application':  True,
+    'auto_install': False,
+}

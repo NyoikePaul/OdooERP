@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_offer_user,estate.offer.user,model_estate_offer,base.group_user,1,1,1,0
+access_estate_offer_mgr,estate.offer.mgr,model_estate_offer,base.group_system,1,1,1,1
+access_estate_commission_user,estate.commission.user,model_estate_commission,base.group_user,1,1,1,0
+access_estate_commission_mgr,estate.commission.mgr,model_estate_commission,base.group_system,1,1,1,1
+access_estate_screening_user,estate.screening.user,model_estate_tenant_screening,base.group_user,1,1,1,0
+access_estate_screening_mgr,estate.screening.mgr,model_estate_tenant_screening,base.group_system,1,1,1,1

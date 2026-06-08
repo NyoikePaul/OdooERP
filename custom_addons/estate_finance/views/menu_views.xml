@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_kra" name="KRA MRI Returns" parent="estate_core.menu_re_root" action="estate_kra_action" sequence="16"/>
+</odoo>

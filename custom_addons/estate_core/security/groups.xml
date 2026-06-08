@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="module_category_real_estate" model="ir.module.category">
+    <field name="name">Real Estate</field>
+    <field name="description">Kenya Real Estate Management</field>
+    <field name="sequence">100</field>
+  </record>
+
+  <!-- Technician: maintenance tasks only -->
+  <record id="group_estate_technician" model="res.groups">
+    <field name="name">Technician</field>
+    <field name="category_id" ref="module_category_real_estate"/>
+    <field name="comment">View and update maintenance work orders only.</field>
+  </record>
+
+  <!-- Agent: leads, viewings, sales -->
+  <record id="group_estate_agent" model="res.groups">
+    <field name="name">Agent</field>
+    <field name="category_id" ref="module_category_real_estate"/>
+    <field name="implied_ids" eval="[(4, ref('group_estate_technician'))]"/>
+    <field name="comment">Manage leads, viewings, and sales transactions.</field>
+  </record>
+
+  <!-- Property Manager: full property + lease management -->
+  <record id="group_estate_manager" model="res.groups">
+    <field name="name">Property Manager</field>
+    <field name="category_id" ref="module_category_real_estate"/>
+    <field name="implied_ids" eval="[(4, ref('group_estate_agent'))]"/>
+    <field name="comment">Full access to properties, leases, tenants, maintenance.</field>
+  </record>
+
+  <!-- Administrator: full access including configuration -->
+  <record id="group_estate_admin" model="res.groups">
+    <field name="name">Administrator</field>
+    <field name="category_id" ref="module_category_real_estate"/>
+    <field name="implied_ids" eval="[(4, ref('group_estate_manager'))]"/>
+    <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    <field name="comment">Full access including financial reports, configuration, and KRA returns.</field>
+  </record>
+</odoo>

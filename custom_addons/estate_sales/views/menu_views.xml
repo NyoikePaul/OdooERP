@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_offers"     name="Offers"           parent="estate_core.menu_re_root" action="estate_offer_action"      sequence="5"/>
+  <menuitem id="menu_screening"  name="Tenant Screening" parent="estate_core.menu_re_root" action="estate_screening_action"  sequence="6"/>
+  <menuitem id="menu_commissions" name="Commissions"     parent="estate_core.menu_re_root" action="estate_commission_action" sequence="15"/>
+</odoo>
