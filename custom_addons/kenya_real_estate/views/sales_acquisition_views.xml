@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- SALE LIST -->
+  <record id="estate_sale_list" model="ir.ui.view">
+    <field name="name">estate.property.sale.list</field>
+    <field name="model">estate.property.sale</field>
+    <field name="arch" type="xml">
+      <list string="Property Sales"
+            decoration-success="status=='sold'"
+            decoration-info="status in ('reserved','agreement','invoiced','paid')"
+            decoration-warning="status in ('offer','viewing')"
+            decoration-muted="status=='cancelled'">
+        <field name="name"/><field name="property_id"/>
+        <field name="buyer_id"/><field name="agent_id"/>
+        <field name="asking_price"/><field name="agreed_price"/>
+        <field name="stamp_duty"/><field name="agent_commission"/>
+        <field name="total_payable" sum="Total"/>
+        <field name="date_reservation"/><field name="date_completion"/>
+        <field name="status" widget="badge"
+               decoration-success="status=='sold'"
+               decoration-info="status=='reserved'"
+               decoration-warning="status=='offer'"/>
+        <button name="action_reserve"         type="object" string="Reserve"  icon="fa-lock"    invisible="status != 'offer'"/>
+        <button name="action_create_invoice"  type="object" string="Invoice"  icon="fa-file"    invisible="status != 'agreement'"/>
+        <button name="action_complete_transfer" type="object" string="Transfer" icon="fa-check" invisible="status != 'paid'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_sale_form" model="ir.ui.view">
+    <field name="name">estate.property.sale.form</field>
+    <field name="model">estate.property.sale</field>
+    <field name="arch" type="xml">
+      <form string="Property Sale">
+        <header>
+          <button name="action_schedule_viewing" type="object" string="Schedule Viewing" invisible="status != 'lead'"/>
+          <button name="action_make_offer"       type="object" string="Offer Made"       invisible="status != 'viewing'"/>
+          <button name="action_reserve"          type="object" string="Reserve"          invisible="status != 'offer'" class="oe_highlight"/>
+          <button name="action_sign_agreement"   type="object" string="Sign Agreement"   invisible="status != 'reserved'"/>
+          <button name="action_create_invoice"   type="object" string="Generate Invoice" invisible="status != 'agreement'" class="oe_highlight"/>
+          <button name="action_complete_transfer" type="object" string="Transfer Complete" invisible="status != 'paid'" class="oe_highlight"/>
+          <button name="action_cancel"           type="object" string="Cancel"           invisible="status == 'sold'"/>
+          <field name="status" widget="statusbar" statusbar_visible="lead,offer,reserved,agreement,sold"/>
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-file">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group string="Sale Details">
+              <field name="property_id"/><field name="buyer_id"/>
+              <field name="agent_id"/><field name="source"/>
+              <field name="title_number"/><field name="transfer_ref"/>
+            </group>
+            <group string="Financials">
+              <field name="asking_price" readonly="1"/>
+              <field name="agreed_price"/>
+              <field name="deposit_paid"/>
+              <field name="commission_rate"/>
+              <field name="stamp_duty" readonly="1"/>
+              <field name="legal_fees"/>
+              <field name="agent_commission" readonly="1"/>
+              <field name="total_payable" readonly="1"/>
+            </group>
+          </group>
+          <group string="Timeline">
+            <field name="date_viewing"/><field name="date_offer"/>
+            <field name="date_reservation"/><field name="date_agreement"/>
+            <field name="date_completion"/>
+          </group>
+          <field name="notes"/>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_sale_action" model="ir.actions.act_window">
+    <field name="name">Property Sales</field><field name="res_model">estate.property.sale</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- VIEWING LIST -->
+  <record id="estate_viewing_list" model="ir.ui.view">
+    <field name="name">estate.viewing.list</field>
+    <field name="model">estate.viewing</field>
+    <field name="arch" type="xml">
+      <list string="Viewings"
+            decoration-success="status=='completed' and client_rating=='hot'"
+            decoration-warning="status=='scheduled'"
+            decoration-danger="status=='no_show'"
+            decoration-muted="status=='cancelled'">
+        <field name="name"/><field name="viewing_date"/>
+        <field name="property_id"/><field name="client_id"/>
+        <field name="agent_id"/><field name="source"/>
+        <field name="client_rating" widget="badge"
+               decoration-success="client_rating=='hot'"
+               decoration-warning="client_rating=='warm'"/>
+        <field name="status" widget="badge"/>
+        <field name="next_step"/>
+        <button name="action_confirm"      type="object" string="Confirm"   icon="fa-check"   invisible="status != 'scheduled'"/>
+        <button name="action_complete"     type="object" string="Done"      icon="fa-flag"    invisible="status != 'confirmed'"/>
+        <button name="action_create_sale"  type="object" string="Create Sale" icon="fa-home"  invisible="status not in ('completed',) or client_rating != 'hot'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_viewing_action" model="ir.actions.act_window">
+    <field name="name">Viewings</field><field name="res_model">estate.viewing</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- WORK ORDER LIST -->
+  <record id="estate_work_order_list" model="ir.ui.view">
+    <field name="name">estate.work.order.list</field>
+    <field name="model">estate.work.order</field>
+    <field name="arch" type="xml">
+      <list string="Work Orders"
+            decoration-success="status=='done'"
+            decoration-warning="status=='in_progress'"
+            decoration-danger="status=='billed'">
+        <field name="name"/><field name="property_id"/>
+        <field name="maintenance_id"/><field name="assigned_to"/>
+        <field name="contractor_id"/><field name="scheduled_date"/>
+        <field name="labor_hours"/><field name="labor_cost"/>
+        <field name="material_cost"/><field name="total_cost" sum="Total"/>
+        <field name="status" widget="badge"/>
+        <button name="action_assign"             type="object" string="Assign"   icon="fa-user"   invisible="status != 'draft'"/>
+        <button name="action_complete"           type="object" string="Complete" icon="fa-check"  invisible="status != 'in_progress'"/>
+        <button name="action_create_vendor_bill" type="object" string="Bill"     icon="fa-money"  invisible="status != 'done'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_work_order_form" model="ir.ui.view">
+    <field name="name">estate.work.order.form</field>
+    <field name="model">estate.work.order</field>
+    <field name="arch" type="xml">
+      <form string="Work Order">
+        <header>
+          <button name="action_assign"             type="object" string="Assign"     invisible="status != 'draft'" class="oe_highlight"/>
+          <button name="action_start"              type="object" string="Start Work" invisible="status != 'assigned'"/>
+          <button name="action_complete"           type="object" string="Mark Done"  invisible="status != 'in_progress'" class="oe_highlight"/>
+          <button name="action_create_vendor_bill" type="object" string="Create Vendor Bill" invisible="status != 'done'"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,assigned,in_progress,done,billed"/>
+        </header>
+        <sheet>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group>
+              <field name="maintenance_id"/><field name="property_id" readonly="1"/>
+              <field name="assigned_to"/><field name="contractor_id"/>
+              <field name="contractor_ref"/><field name="scheduled_date"/>
+            </group>
+            <group string="Costs">
+              <field name="labor_hours"/><field name="labor_rate"/>
+              <field name="labor_cost" readonly="1"/>
+              <field name="material_cost" readonly="1"/>
+              <field name="total_cost" readonly="1"/>
+              <field name="vendor_bill_id" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Materials">
+              <field name="item_ids">
+                <list editable="bottom">
+                  <field name="description"/><field name="quantity"/>
+                  <field name="unit_cost" sum="Unit Cost"/><field name="total_cost" sum="Total"/>
+                  <field name="supplier"/>
+                </list>
+              </field>
+            </page>
+            <page string="Work Notes">
+              <field name="work_notes"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_work_order_action" model="ir.actions.act_window">
+    <field name="name">Work Orders</field><field name="res_model">estate.work.order</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ACQUISITION LIST -->
+  <record id="estate_acquisition_list" model="ir.ui.view">
+    <field name="name">estate.property.acquisition.list</field>
+    <field name="model">estate.property.acquisition</field>
+    <field name="arch" type="xml">
+      <list string="Property Acquisitions"
+            decoration-success="status=='available'"
+            decoration-info="status=='registration'"
+            decoration-warning="status in ('purchase','renovation')">
+        <field name="name"/><field name="property_id"/>
+        <field name="seller_id"/><field name="purchase_price"/>
+        <field name="stamp_duty"/><field name="legal_fees"/>
+        <field name="total_cost" sum="Total Invested"/>
+        <field name="roi_estimate" string="Est. ROI %"/>
+        <field name="status" widget="badge"/>
+        <field name="checklist_title_search" string="Title ✓" optional="show"/>
+        <field name="checklist_consent" string="LCB ✓" optional="show"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_acquisition_action" model="ir.actions.act_window">
+    <field name="name">Property Acquisitions</field>
+    <field name="res_model">estate.property.acquisition</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- OWNER STATEMENT LIST -->
+  <record id="estate_owner_statement_list" model="ir.ui.view">
+    <field name="name">estate.owner.statement.list</field>
+    <field name="model">estate.owner.statement</field>
+    <field name="arch" type="xml">
+      <list string="Owner Statements"
+            decoration-success="status=='paid'"
+            decoration-warning="status=='sent'">
+        <field name="name"/><field name="landlord_id"/>
+        <field name="period_month"/><field name="period_year"/>
+        <field name="gross_rent_collected" sum="Gross"/><field name="management_fee"/>
+        <field name="wht_deducted"/><field name="maintenance_costs"/>
+        <field name="net_payout" sum="Net Payout"/>
+        <field name="status" widget="badge"/>
+        <button name="action_populate"          type="object" string="Auto-Populate" icon="fa-download" invisible="status != 'draft'"/>
+        <button name="action_send_to_landlord"  type="object" string="Send"          icon="fa-envelope" invisible="status != 'draft'"/>
+      </list>
+    </field>
+  </record>
+  <record id="estate_owner_statement_form" model="ir.ui.view">
+    <field name="name">estate.owner.statement.form</field>
+    <field name="model">estate.owner.statement</field>
+    <field name="arch" type="xml">
+      <form string="Owner Statement">
+        <header>
+          <button name="action_populate"         type="object" string="Auto-Populate from Invoices" invisible="status != 'draft'"/>
+          <button name="action_send_to_landlord" type="object" string="Send to Landlord" class="oe_highlight" invisible="status != 'draft'"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,sent,paid"/>
+        </header>
+        <sheet>
+          <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+          <group>
+            <group string="Statement">
+              <field name="landlord_id"/><field name="period_month"/>
+              <field name="period_year"/><field name="management_fee_pct"/>
+            </group>
+            <group string="Summary">
+              <field name="gross_rent_collected"/><field name="other_income"/>
+              <field name="total_income" readonly="1"/>
+              <separator string="Deductions"/>
+              <field name="management_fee" readonly="1"/>
+              <field name="wht_deducted"/><field name="maintenance_costs"/>
+              <field name="insurance_costs"/><field name="other_deductions"/>
+              <field name="total_deductions" readonly="1"/>
+              <separator string="Net"/>
+              <field name="net_payout" readonly="1"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Property Lines">
+              <field name="line_ids">
+                <list>
+                  <field name="property_id"/><field name="tenant_id"/>
+                  <field name="rent_due"/><field name="rent_collected"/>
+                  <field name="wht"/><field name="net_to_owner"/>
+                </list>
+              </field>
+            </page>
+            <page string="Notes"><field name="notes"/></page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+  <record id="estate_owner_statement_action" model="ir.actions.act_window">
+    <field name="name">Owner Statements</field>
+    <field name="res_model">estate.owner.statement</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- AGING VIEW -->
+  <record id="estate_aging_action" model="ir.actions.act_window">
+    <field name="name">Rent Aging Analysis</field>
+    <field name="res_model">estate.payment.aging</field>
+    <field name="view_mode">list</field>
+  </record>
+</odoo>
