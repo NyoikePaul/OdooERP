@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_partner_kenya_inherit" model="ir.ui.view">
+    <field name="name">res.partner.kenya.inherit</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+
+      <!-- Smart buttons for leases + M-Pesa -->
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="action_open_leases" type="object"
+                class="oe_stat_button" icon="fa-home"
+                invisible="active_lease_count == 0">
+          <field name="active_lease_count" widget="statinfo" string="Leases"/>
+        </button>
+        <button name="action_open_mpesa_txns" type="object"
+                class="oe_stat_button" icon="fa-mobile">
+          <div class="o_stat_info">
+            <span class="o_stat_text">M-Pesa</span>
+          </div>
+        </button>
+      </xpath>
+
+      <!-- Kenya fields tab -->
+      <xpath expr="//notebook" position="inside">
+        <page name="kenya" string="Kenya Details">
+          <group>
+            <group string="Tax / Identity">
+              <field name="kra_pin"/>
+              <field name="id_number"/>
+              <field name="nhif_number"/>
+              <field name="nssf_number"/>
+            </group>
+            <group string="M-Pesa / Rental">
+              <field name="mpesa_phone"/>
+              <field name="is_tenant"/>
+              <field name="is_landlord"/>
+              <separator string="Rental Summary"/>
+              <field name="active_lease_count" readonly="1"/>
+              <field name="total_arrears" readonly="1"/>
+            </group>
+          </group>
+        </page>
+      </xpath>
+
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_property_user,estate.property.user,model_estate_property,base.group_user,1,1,1,0
+access_estate_property_mgr,estate.property.mgr,model_estate_property,base.group_system,1,1,1,1
+access_estate_property_type,estate.property.type,model_estate_property_type,base.group_user,1,1,1,0
+access_estate_property_tag,estate.property.tag,model_estate_property_tag,base.group_user,1,1,1,0
+access_estate_amenity,estate.amenity,model_estate_amenity,base.group_user,1,1,1,0
+access_estate_building_user,estate.building.user,model_estate_building,base.group_user,1,1,1,0
+access_estate_building_mgr,estate.building.mgr,model_estate_building,base.group_system,1,1,1,1
+access_estate_unit_user,estate.unit.user,model_estate_unit,base.group_user,1,1,1,0
+access_estate_unit_mgr,estate.unit.mgr,model_estate_unit,base.group_system,1,1,1,1
+access_estate_valuation_user,estate.valuation.user,model_estate_property_valuation,base.group_user,1,1,1,0
+access_estate_valuation_mgr,estate.valuation.mgr,model_estate_property_valuation,base.group_system,1,1,1,1
+access_estate_insurance_user,estate.insurance.user,model_estate_insurance,base.group_user,1,1,1,0
+access_estate_insurance_mgr,estate.insurance.mgr,model_estate_insurance,base.group_system,1,1,1,1

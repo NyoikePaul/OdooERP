@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="seq_estate_property" model="ir.sequence">
+    <field name="name">Estate Property</field>
+    <field name="code">estate.property</field>
+    <field name="prefix">PROP/%(year)s/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+  </record>
+  <record id="seq_estate_building" model="ir.sequence">
+    <field name="name">Estate Building</field>
+    <field name="code">estate.building</field>
+    <field name="prefix">BLD/%(year)s/</field>
+    <field name="padding">3</field>
+    <field name="company_id" eval="False"/>
+  </record>
+  <record id="seq_estate_unit" model="ir.sequence">
+    <field name="name">Estate Unit</field>
+    <field name="code">estate.unit</field>
+    <field name="prefix">UNIT/%(year)s/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+  </record>
+  <record id="seq_estate_insurance" model="ir.sequence">
+    <field name="name">Estate Insurance</field>
+    <field name="code">estate.insurance</field>
+    <field name="prefix">INS/%(year)s/</field>
+    <field name="padding">4</field>
+    <field name="company_id" eval="False"/>
+  </record>
+</odoo>
