@@ -29,10 +29,6 @@
   </record>
 
   <!-- Add shortcut menus -->
-  <menuitem id="menu_arrears" name="Rent Arrears"
-            parent="menu_re_root"
-            action="estate_lease_arrears_action" sequence="8"/>
-  <menuitem id="menu_expiring" name="Expiring Leases"
-            parent="menu_re_root"
-            action="estate_lease_expiring_action" sequence="9"/>
+  
+  
 </odoo>
