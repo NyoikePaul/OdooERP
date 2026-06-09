@@ -75,3 +75,4 @@ access_estate_owner_statement_line_user,estate_owner_statement_line.user,model_e
 access_estate_owner_statement_line_mgr,estate_owner_statement_line.mgr,model_estate_owner_statement_line,base.group_system,1,1,1,1
 access_estate_payment_aging_user,estate_payment_aging.user,model_estate_payment_aging,base.group_user,1,1,1,0
 access_estate_payment_aging_mgr,estate_payment_aging.mgr,model_estate_payment_aging,base.group_system,1,1,1,1
+access_estate_dashboard,estate.dashboard,model_estate_dashboard,base.group_user,1,0,0,0

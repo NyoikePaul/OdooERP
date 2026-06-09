@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+<t t-name="kenya_real_estate.Dashboard">
+  <div class="o_estate_dashboard" style="
+    background:#f0f2f5;min-height:100vh;padding:20px;font-family:'Inter',sans-serif;">
+
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;
+                margin-bottom:24px;background:#fff;padding:16px 24px;
+                border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08);">
+      <div>
+        <h2 style="margin:0;font-size:1.4rem;font-weight:700;color:#1a1a2e">
+          🏘️ Kenya Real Estate Dashboard
+        </h2>
+        <p style="margin:0;color:#6b7280;font-size:.8rem">
+          Live portfolio overview · <t t-esc="new Date().toLocaleDateString('en-KE', {weekday:'long',year:'numeric',month:'long',day:'numeric'})"/>
+        </p>
+      </div>
+      <button t-on-click="refresh" style="
+        background:#00c853;color:#fff;border:none;padding:8px 20px;
+        border-radius:6px;font-weight:600;cursor:pointer;font-size:.85rem;">
+        ↻ Refresh
+      </button>
+    </div>
+
+    <t t-if="state.loading">
+      <div style="text-align:center;padding:80px;color:#6b7280">
+        <div style="font-size:2rem;margin-bottom:12px">⏳</div>
+        Loading dashboard...
+      </div>
+    </t>
+
+    <t t-if="!state.loading and state.data">
+      <t t-set="d" t-value="state.data"/>
+
+      <!-- ROW 1 — Portfolio Overview -->
+      <div style="margin-bottom:8px;font-size:.7rem;font-weight:700;color:#6b7280;
+                  letter-spacing:.1em;text-transform:uppercase;padding:0 4px">
+        Portfolio Overview
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px">
+        <div style="background:#fff;border-radius:8px;padding:16px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #6366f1">
+          <div style="font-size:1.8rem;font-weight:800;color:#1a1a2e">
+            <t t-esc="d.total_properties"/>
+          </div>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:2px">Total Properties</div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:16px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #00c853">
+          <div style="font-size:1.8rem;font-weight:800;color:#00c853">
+            <t t-esc="d.leased_properties"/>
+          </div>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:2px">Leased</div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:16px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #3b82f6">
+          <div style="font-size:1.8rem;font-weight:800;color:#3b82f6">
+            <t t-esc="d.available_properties"/>
+          </div>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:2px">Available</div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:16px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #f59e0b">
+          <div style="font-size:1.8rem;font-weight:800;color:#f59e0b">
+            <t t-esc="d.for_sale_properties"/>
+          </div>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:2px">For Sale</div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:16px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #00c853">
+          <div style="font-size:1.6rem;font-weight:800;color:#00c853">
+            <t t-esc="d.occupancy_rate"/>%
+          </div>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:2px">Occupancy Rate</div>
+          <div style="margin-top:6px;background:#e5e7eb;border-radius:4px;height:4px">
+            <div t-attf-style="width:#{d.occupancy_rate}%;background:#00c853;height:4px;border-radius:4px"/>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:16px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #8b5cf6">
+          <div style="font-size:1.8rem;font-weight:800;color:#8b5cf6">
+            <t t-esc="d.unit_occupancy_rate"/>%
+          </div>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:2px">Unit Occupancy</div>
+          <div style="font-size:.65rem;color:#9ca3af;margin-top:2px">
+            <t t-esc="d.occupied_units"/> / <t t-esc="d.total_units"/> units
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2 — Revenue KPIs -->
+      <div style="margin-bottom:8px;font-size:.7rem;font-weight:700;color:#6b7280;
+                  letter-spacing:.1em;text-transform:uppercase;padding:0 4px">
+        Revenue &amp; Collections
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px">
+        <div style="background:#fff;border-radius:8px;padding:20px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #00c853">
+          <div style="font-size:.7rem;color:#6b7280;text-transform:uppercase;
+                      letter-spacing:.08em;margin-bottom:8px">Monthly Rent Roll</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#1a1a2e">
+            KES <t t-esc="component.fmt(d.monthly_rent_roll)"/>
+          </div>
+          <div style="font-size:.68rem;color:#00c853;margin-top:4px">
+            <t t-esc="d.active_leases"/> active leases
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:20px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #3b82f6">
+          <div style="font-size:.7rem;color:#6b7280;text-transform:uppercase;
+                      letter-spacing:.08em;margin-bottom:8px">Collected This Month</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#1a1a2e">
+            KES <t t-esc="component.fmt(d.collected_this_month)"/>
+          </div>
+          <div style="font-size:.68rem;color:#3b82f6;margin-top:4px">
+            <t t-esc="d.collection_rate"/>% collection rate
+          </div>
+        </div>
+        <div t-on-click="() => openAction('kenya_real_estate.estate_lease_arrears_action')"
+             style="background:#fff;border-radius:8px;padding:20px;cursor:pointer;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #ef4444;
+                    transition:transform .15s" onmouseenter="this.style.transform='translateY(-2px)'"
+             onmouseleave="this.style.transform='none'">
+          <div style="font-size:.7rem;color:#6b7280;text-transform:uppercase;
+                      letter-spacing:.08em;margin-bottom:8px">Outstanding Arrears ↗</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#ef4444">
+            KES <t t-esc="component.fmt(d.outstanding_arrears)"/>
+          </div>
+          <div style="font-size:.68rem;color:#ef4444;margin-top:4px">
+            <t t-esc="d.leases_in_arrears"/> leases · click to view
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:8px;padding:20px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:3px solid #f59e0b">
+          <div style="font-size:.7rem;color:#6b7280;text-transform:uppercase;
+                      letter-spacing:.08em;margin-bottom:8px">Revenue YTD</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#1a1a2e">
+            KES <t t-esc="component.fmt(d.annual_revenue_ytd)"/>
+          </div>
+          <div style="font-size:.68rem;olor:#f59e0b;margin-top:4px">
+            Jan — <t t-esc="new Date().toLocaleString('en-KE',{month:'short'})"/> <t t-esc="new Date().getFullYear()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3 — Arrears Aging -->
+      <div style="margin-bottom:8px;font-size:.7rem;font-weight:700;color:#6b7280;
+                  letter-spacing:.1em;text-transform:uppercase;padding:0 4px">
+        Arrears Aging Analysis
+      </div>
+      <div style="background:#fff;border-radius:8px;padding:20px;
+            box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:24px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+          <div style="text-align:center;padding:16px;background:#f0fdf4;border-radius:6px">
+            <div style="font-size:1.3rem;font-weight:700;color:#16a34a">
+              KES <t t-esc="component.fmt(d.arrears_30d)"/>
+            </div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:4px">1 – 30 Days</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:#fffbeb;border-radius:6px">
+            <div style="font-size:1.3rem;font-weight:700;color:#d97706">
+              KES <t t-esc="component.fmt(d.arrears_60d)"/>
+            </div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:4px">31 – 60 Days</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:#fff7ed;border-radius:6px">
+            <div style="font-size:1.3rem;font-weight:700;color:#ea580c">
+              KES <t t-esc="component.fmt(d.arrears_90d)"/>
+            </div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:4px">61 – 90 Days</div>
+          </div>
+          <div style="text-align:center;padding:16px;background:#fef2f2;border-radius:6px">
+            <div style="font-size:1.3rem;font-weight:700;color:#dc2626">
+              KES <t t-esc="component.fmt(d.arrears_90plus)"/>
+            </div>
+            <div style="font-size:.7rem;color:#6b7280;margin-top:4px">90+ Days (Critical)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 4 — Operations -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px">
+
+        <!-- Lease Alerts -->
+        <div style="background:#fff;border-radius:8px;padding:20px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08)">
+          <div style="font-size:.75rem;font-weight:700;color:#1a1a2e;margin-bottom:16px;
+                      text-transform:uppercase;letter-spacing:.08em">
+         ease Alerts
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div t-on-click="() => openAction('kenya_real_estate.estate_lease_expiring_action')"
+                 style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#fffbeb;border-radius:6px;cursor:pointer">
+              <span style="font-size:.78rem;color:#92400e">⏰ Expiring in 30 days</span>
+              <span style="background:#f59e0b;color:#fff;padding:2px 10px;
+                           border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.expiring_30d"/>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#fef2f2;border-radius:6px">
+              <span style="font-size:.78rem;color:#991b1b">🔴 In Arrears</span>
+              <span style="background:#ef4444;color:#fff;padding:2px 10px;
+                       border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.leases_in_arrears"/>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#f0f9ff;border-radius:6px">
+              <span style="font-size:.78rem;color:#1e40af">📄 Total Active</span>
+              <span style="background:#3b82f6;color:#fff;padding:2px 10px;
+                        der-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.active_leases"/>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maintenance -->
+        <div style="background:#fff;border-radius:8px;padding:20px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08)">
+          <div style="font-size:.75rem;font-weight:700;color:#1a1a2e;margin-bottom:16px;
+                      text-transform:uppercase;letter-spacing:.08em">
+            🔧 Maintenanc       </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#fef2f2;border-radius:6px">
+              <span style="font-size:.78rem;color:#991b1b">🚨 Critical/High</span>
+              <span style="background:#ef4444;color:#fff;padding:2px 10px;
+                           border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="ntenance_critical"/>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#fff7ed;border-radius:6px">
+              <span style="font-size:.78rem;color:#9a3412">⚙️ In Progress</span>
+              <span style="background:#f97316;color:#fff;padding:2px 10px;
+                           border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.maintenance_in_prog"/>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#f5f3ff;border-radius:6px">
+              <span style="font-size:.78rem;color:#5b21b6">📊 Avg Resolution</span>
+              <span style="background:#7c3aed;color:#fff;padding:2px 10px;
+                           border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.avg_resolution_days"/>d
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales Pipeline -->
+        <div style="background:#fff;border-radius:8px;padding:20px;
+                    box-shadow:0 1px 4px rgba(0,0,0,.08)">
+          <div style="font-size:.75rem;font-weight:700;color:#1a1a2e;margin-bottom:16px;
+                      text-transform:uppercase;letter-spacing:.08em">
+            🏷️ Sales Pipeline
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#f0f9ff;border-radius:6px">
+              <span style="font-size:.78rem;color:#1e40af">👁️ Viewings</span>
+              <span style="background:#3b82f6;color:#fff;padding:2px 10px;
+                           border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.active_viewings"/>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;
+                        padding:10px;background:#f0fdf4;border-radius:6px">
+              <span style="font-size:.78rem;color:#166534">✋ Active Offers</span>
+              <span style="background:#16a34a;color:#fff;padding:2px 10px;
+                           border-radius:12px;font-size:.75rem;font-weight:700">
+                <t t-esc="d.active_offers"/>
+              </span>
+            </div>
+            <div style="display:flex;justify-content:spetween;align-items:center;
+                        padding:10px;background:#f5f3ff;border-radius:6px">
+              <span style="font-size:.78rem;color:#5b21b6">💰 Commission YTD</span>
+              <span style="font-size:.72rem;font-weight:700;color:#7c3aed">
+                KES <t t-esc="component.fmt(d.commission_ytd)"/>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 5 — Quick Actions -->
+      <div style="background:#1a1a2e;border-radius:8px;p20px;
+                  box-shadow:0 1px 4px rgba(0,0,0,.15)">
+        <div style="font-size:.75rem;font-weight:700;color:#9ca3af;margin-bottom:16px;
+                    text-transform:uppercase;letter-spacing:.1em">
+          ⚡ Quick Actions
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button t-on-click="() => openAction('kenya_real_estate.action_rent_invoice_wizard')"
+                  style="background:#00c853;color:#000;border:none;padding:8px 18px;
+                        border-radius:6px;font-weight:700;cursor:pointer;font-size:.78rem">
+            💸 Generate Rent Invoices
+          </button>
+          <button t-on-click="() => openAction('kenya_real_estate.estate_demand_action')"
+                  style="background:#ef4444;color:#fff;border:none;padding:8px 18px;
+                         border-radius:6px;font-weight:700;cursor:pointer;font-size:.78rem">
+            ⚖️ Issue Demand Notice
+          </button>
+          <button t-on-click="() => openActionya_real_estate.estate_kra_action')"
+                  style="background:#f59e0b;color:#000;border:none;padding:8px 18px;
+                         border-radius:6px;font-weight:700;cursor:pointer;font-size:.78rem">
+            🏛️ KRA MRI Returns
+          </button>
+          <button t-on-click="() => openAction('kenya_real_estate.estate_screening_action')"
+                  style="background:#3b82f6;color:#fff;border:none;padding:8px 18px;
+                         border-radius:6px;font-weight:700;curs:pointer;font-size:.78rem">
+            🔍 Tenant Applications
+          </button>
+          <button t-on-click="() => openAction('kenya_real_estate.estate_maintenance_action')"
+                  style="background:#7c3aed;color:#fff;border:none;padding:8px 18px;
+                         border-radius:6px;font-weight:700;cursor:pointer;font-size:.78rem">
+            🔧 Maintenance
+          </button>
+          <button t-on-click="() => openAction('mpesa_integration.mpesa_transaction_action')"
+                  style="background:#fff;color:#000;border:none;padding:8px 18px;
+                         border-radius:6px;font-weight:700;cursor:pointer;font-size:.78rem">
+            📱 M-Pesa Transactions
+          </button>
+        </div>
+      </div>
+
+    </t>
+  </div>
+</t>
+</templates>

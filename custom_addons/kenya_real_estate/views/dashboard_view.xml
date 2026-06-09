@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Dashboard client action -->
+  <record id="action_estate_dashboard" model="ir.actions.client">
+    <field name="name">Real Estate Dashboard</field>
+    <field name="tag">estate_dashboard</field>
+  </record>
+
+  <!-- Shortcut actions for drill-down -->
+  <record id="estate_lease_arrears_action" model="ir.actions.act_window">
+    <field name="name">Rent Arrears</field>
+    <field name="res_model">estate.lease</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('status','=','active'),('months_arrears','>',0)]</field>
+  </record>
+  <record id="estate_lease_expiring_action" model="ir.actions.act_window">
+    <field name="name">Expiring Leases (30 days)</field>
+    <field name="res_model">estate.lease</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('status','=','active'),('is_expiring_soon','=',True)]</field>
+  </record>
+</odoo>

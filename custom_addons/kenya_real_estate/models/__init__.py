@@ -25,3 +25,4 @@ from . import owner_statement
 from . import payment_aging
 from . import account_move
 from . import res_partner_kenya
+from . import dashboard

@@ -3,6 +3,7 @@
   <menuitem id="menu_re_root" name="Real Estate" sequence="50"/>
 
   <!-- Portfolio -->
+  <menuitem id="menu_dashboard" name="📊 Dashboard" parent="menu_re_root" action="action_estate_dashboard" sequence="0"/>
   <menuitem id="menu_buildings"    name="Buildings"           parent="menu_re_root" action="estate_building_action"         sequence="1"/>
   <menuitem id="menu_properties"   name="Properties"          parent="menu_re_root" action="estate_property_action"         sequence="2"/>
 

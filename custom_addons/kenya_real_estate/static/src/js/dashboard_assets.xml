@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="assets_backend" inherit_id="web.assets_backend">
+    <xpath expr="." position="inside">
+      <script type="module" src="/kenya_real_estate/static/src/js/dashboard.js"/>
+      <t t-call-assets="kenya_real_estate.dashboard_templates" t-js="false"/>
+    </xpath  </template>
+
+  <template id="dashboard_templates">
+    <t t-call="web.assets_common">
+      <t t-js="false">
+        <include src="/kenya_real_estate/static/src/xml/dashboard.xml"/>
+      </t>
+    </t>
+  </template>
+</odoo>
