@@ -55,9 +55,16 @@ EXISTING:
         'report/demand_notice_report.xml',
         'report/tenancy_agreement.xml',
         'report/rent_roll.xml',
+        'views/dashboard_view.xml',
         'views/menu_views.xml',
     ],
     'demo':        ['demo/demo.xml'],
+    'assets': {
+        'web.assets_backend': [
+            'kenya_real_estate/static/src/js/dashboard.js',
+            'kenya_real_estate/static/src/xml/dashboard.xml',
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,
