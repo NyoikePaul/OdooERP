@@ -45,3 +45,16 @@ addons/
 *.bak
 *.sql.bak
 dump.sql
+
+# Binaries and archives
+ngrok
+ngrok-*.tgz
+*.tgz
+*.tar.gz
+
+# Socket/port files
+127.0.0.1:*
+
+# Dev scratch files
+badge_hunt.txt
+patch_manifest.log
