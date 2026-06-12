@@ -58,3 +58,6 @@ ngrok-*.tgz
 # Dev scratch files
 badge_hunt.txt
 patch_manifest.log
+
+# Old duplicate directory — use custom_addons/ (underscore) only
+custom-addons/
