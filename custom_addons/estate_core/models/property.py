@@ -128,11 +128,6 @@ class EstateProperty(models.Model):
     vacancy_loss     = fields.Monetary("Vacancy Revenue Loss", currency_field='currency_id', compute='_compute_occupancy', store=True)
 
     # ── Relations ────────────────────────────────────────
-    lease_ids        = fields.One2many('estate.lease',              'property_id', string="Leases")
-    offer_ids        = fields.One2many('estate.offer',              'property_id', string="Offers")
-    commission_ids   = fields.One2many('estate.commission',         'property_id', string="Commissions")
-    inspection_ids   = fields.One2many('estate.inspection',         'property_id', string="Inspections")
-    maintenance_ids  = fields.One2many('estate.maintenance.request','property_id', string="Maintenance")
     unit_ids         = fields.One2many('estate.unit',               'property_id', string="Units")
     insurance_ids    = fields.One2many('estate.insurance',          'property_id', string="Insurance")
     valuation_ids    = fields.One2many('estate.property.valuation', 'property_id', string="Valuations")

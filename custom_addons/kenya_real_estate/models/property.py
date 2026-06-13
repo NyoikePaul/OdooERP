@@ -6,9 +6,9 @@ _logger = logging.getLogger(__name__)
 
 
 class EstateProperty(models.Model):
-    _name            = 'estate.property'
+    _inherit         = 'estate.property'
     _description     = 'Real Estate Property'
-    _inherit         = ['mail.thread', 'mail.activity.mixin']
+    _inherit         = ['estate.property', 'mail.thread', 'mail.activity.mixin']
     _order           = 'ref desc'
     _rec_name        = 'name'
 
