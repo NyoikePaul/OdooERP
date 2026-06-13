@@ -3,12 +3,6 @@ access_estate_property_user,estate_property.user,model_estate_property,base.grou
 access_estate_property_mgr,estate_property.mgr,model_estate_property,base.group_system,1,1,1,1
 access_estate_property_type_user,estate_property_type.user,model_estate_property_type,base.group_user,1,1,1,0
 access_estate_property_type_mgr,estate_property_type.mgr,model_estate_property_type,base.group_system,1,1,1,1
-access_estate_property_tag_user,estate_property_tag.user,model_estate_property_tag,base.group_user,1,1,1,0
-access_estate_property_tag_mgr,estate_property_tag.mgr,model_estate_property_tag,base.group_system,1,1,1,1
-access_estate_amenity_user,estate_amenity.user,model_estate_amenity,base.group_user,1,1,1,0
-access_estate_amenity_mgr,estate_amenity.mgr,model_estate_amenity,base.group_system,1,1,1,1
-access_estate_building_user,estate_building.user,model_estate_building,base.group_user,1,1,1,0
-access_estate_building_mgr,estate_building.mgr,model_estate_building,base.group_system,1,1,1,1
 access_estate_lease_user,estate_lease.user,model_estate_lease,base.group_user,1,1,1,0
 access_estate_lease_mgr,estate_lease.mgr,model_estate_lease,base.group_system,1,1,1,1
 access_estate_maintenance_request_user,estate_maintenance_request.user,model_estate_maintenance_request,base.group_user,1,1,1,0
