@@ -1,722 +1,736 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>OdooERP Kenya — Enterprise ERP for East Africa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --g:#00c853;--g2:#69f0ae;--g3:#1b5e20;
-  --dark:#05080a;--d2:#080d10;--d3:#0c1318;
-  --card:#0f181e;--bdr:#162028;--bdr2:#1e2d38;
-  --txt:#b0c4ce;--mut:#4a6070;--wht:#e8f4f8;
-  --red:#ff5252;--gold:#ffd740;--blue:#40c4ff;--orange:#ff9800;
-  --r:4px;
-}
-html{scroll-behavior:smooth;font-size:16px}
-body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--txt);overflow-x:hidden}
-
-/* SCANLINES */
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,83,.008) 2px,rgba(0,200,83,.008) 4px)}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;
-  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;
-  background:rgba(5,8,10,.92);border-bottom:1px solid var(--bdr);backdrop-filter:blur(16px)}
-.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
-.logo-icon{width:28px;height:28px;background:var(--g);display:flex;align-items:center;
-  justify-content:center;font-size:.7rem;font-weight:800;color:var(--dark);
-  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
-.logo-text{font-size:.95rem;font-weight:700;color:var(--wht);letter-spacing:-.02em}
-.logo-text span{color:var(--g)}
-.nav-links{display:flex;gap:1.8rem;list-style:none}
-.nav-links a{color:var(--mut);text-decoration:none;font-size:.75rem;font-weight:500;
-  letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
-.nav-links a:hover{color:var(--g)}
-.nav-right{display:flex;align-items:center;gap:1rem}
-.nav-badge{font-size:.6rem;color:var(--g);border:1px solid var(--g);
-  padding:.2rem .6rem;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.nav-cta{background:var(--g);color:var(--dark);padding:.4rem 1rem;font-size:.72rem;
-  font-weight:700;text-decoration:none;letter-spacing:.04em;
-  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
-  transition:background .2s}
-.nav-cta:hover{background:var(--g2)}
-.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:.3rem}
-.hamburger span{display:block;width:20px;height:2px;background:var(--txt);transition:all .3s}
-
-/* HERO */
-.hero{position:relative;z-index:1;min-height:100svh;display:flex;align-items:center;
-  padding:80px 2rem 4rem;max-width:1280px;margin:0 auto;gap:4rem}
-.hero-left{flex:1;min-width:0}
-.hero-right{flex:1;min-width:0;position:relative}
-
-.hero-tag{display:inline-flex;align-items:center;gap:.5rem;font-size:.62rem;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--g);
-  background:rgba(0,200,83,.07);border:1px solid rgba(0,200,83,.2);
-  padding:.3rem .8rem;margin-bottom:1.8rem}
-
-h1{font-size:clamp(2.6rem,5vw,4.8rem);font-weight:900;line-height:.9;
-  letter-spacing:-.05em;color:var(--wht);margin-bottom:1.4rem}
-h1 .line2{color:var(--g);display:block}
-h1 .line3{font-size:.55em;font-weight:300;color:var(--txt);display:block;
-  letter-spacing:.02em;margin-top:.3rem;font-family:'JetBrains Mono',monospace}
-
-.hero-desc{font-size:.9rem;line-height:1.75;color:var(--mut);max-width:500px;margin-bottom:2rem}
-
-.hero-btns{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:2.5rem}
-.btn-primary{background:var(--g);color:var(--dark);padding:.7rem 1.6rem;
-  font-size:.8rem;font-weight:700;text-decoration:none;letter-spacing:.03em;
-  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-  transition:all .2s}
-.btn-primary:hover{background:var(--g2);transform:translateY(-2px)}
-.btn-ghost{border:1px solid var(--bdr2);color:var(--txt);padding:.7rem 1.6rem;
-  font-size:.8rem;font-weight:600;text-decoration:none;transition:all .2s}
-.btn-ghost:hover{border-color:var(--g);color:var(--g)}
-
-.hero-stats{display:flex;gap:2rem;padding-top:1.8rem;border-top:1px solid var(--bdr)}
-.stat-val{font-size:1.6rem;font-weight:800;color:var(--wht);letter-spacing:-.04em;line-height:1}
-.stat-val em{color:var(--g);font-style:normal}
-.stat-lbl{font-size:.6rem;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem}
-
-/* MOCK BROWSER SCREENS */
-.screen-stack{position:relative;height:520px}
-.screen{position:absolute;border-radius:var(--r);overflow:hidden;
-  border:1px solid var(--bdr2);background:var(--card);box-shadow:0 40px 80px rgba(0,0,0,.5)}
-.screen.main{width:95%;left:0;top:0;z-index:3;box-shadow:0 24px 60px rgba(0,200,83,.08),0 40px 80px rgba(0,0,0,.5)}
-.screen.back1{width:88%;left:6%;top:20px;z-index:1;opacity:.4;transform:scale(.97) translateY(8px)}
-.screen-bar{height:32px;background:var(--d3);border-bottom:1px solid var(--bdr);
-  display:flex;align-items:center;padding:0 12px;gap:6px}
-.s-dot{width:8px;height:8px;border-radius:50%}
-.s-dot.r{background:#ff5f57}.s-dot.y{background:#febc2e}.s-dot.g{background:#28c840}
-.s-url{flex:1;margin-left:8px;height:18px;background:rgba(255,255,255,.04);
-  border-radius:2px;display:flex;align-items:center;padding:0 8px;
-  font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--mut)}
-.screen-body{padding:1rem}
-
-/* Odoo Nav mockup */
-.odoo-nav{background:#714B67;height:40px;display:flex;align-items:center;
-  padding:0 1rem;gap:1.5rem;font-size:.65rem;color:rgba(255,255,255,.85);margin-bottom:1px}
-.odoo-nav .brand{font-weight:700;font-size:.75rem;color:white;margin-right:.5rem}
-.odoo-nav a{color:rgba(255,255,255,.7);text-decoration:none;font-size:.6rem;
-  padding:.2rem .5rem;border-radius:3px;transition:background .2s;white-space:nowrap}
-.odoo-nav a:hover,.odoo-nav a.active{background:rgba(255,255,255,.15);color:white}
-
-/* Property list mockup */
-.prop-list-header{display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;
-  gap:6px;background:var(--d3);border-bottom:1px solid var(--bdr);
-  padding:.5rem .8rem;font-size:.5rem;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
-.prop-row{display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;
-  gap:6px;padding:.45rem .8rem;border-bottom:1px solid var(--bdr);
-  font-size:.58rem;align-items:center;transition:background .2s}
-.prop-row:hover{background:rgba(255,255,255,.02)}
-.prop-ref{color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.52rem}
-.prop-name{color:var(--wht);font-weight:500}
-.badge{padding:.1rem .4rem;border-radius:2px;font-size:.5rem;font-weight:600;letter-spacing:.05em}
-.badge.leased{background:rgba(33,150,243,.15);color:#42a5f5;border:1px solid rgba(33,150,243,.3)}
-.badge.avail{background:rgba(0,200,83,.12);color:var(--g);border:1px solid rgba(0,200,83,.25)}
-.badge.maint{background:rgba(255,152,0,.12);color:#ffa726;border:1px solid rgba(255,152,0,.25)}
-
-/* TICKER */
-.ticker{position:relative;z-index:1;background:var(--d2);border-top:1px solid var(--bdr);
-  border-bottom:1px solid var(--bdr);height:40px;overflow:hidden;display:flex;align-items:center}
-.ticker-inner{display:flex;gap:0;animation:tick 35s linear infinite;white-space:nowrap}
-.ticker-item{display:flex;align-items:center;gap:.7rem;padding:0 2rem;
-  font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);
-  border-right:1px solid var(--bdr)}
-.ticker-item .bullet{color:var(--g)}
-@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* SECTIONS */
-section{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:6rem 2rem}
-.eyebrow{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--g);
-  margin-bottom:.8rem;display:flex;align-items:center;gap:.8rem}
-.eyebrow::after{content:'';flex:1;height:1px;background:var(--bdr);max-width:60px}
-h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-.04em;
-  color:var(--wht);line-height:.95;margin-bottom:1rem}
-.section-sub{color:var(--mut);font-size:.875rem;line-height:1.8;max-width:520px;margin-bottom:3rem}
-
-/* MARKET STATS BAND */
-.stats-band{position:relative;z-index:1;background:var(--d2);
-  border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:3rem 2rem}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
-  background:var(--bdr);border:1px solid var(--bdr);max-width:1280px;margin:0 auto}
-.stat-card{background:var(--d2);padding:2rem 1.5rem;border-left:3px solid transparent;transition:all .3s}
-.stat-card:hover{background:var(--d3);border-left-color:var(--g)}
-.stat-card .big{font-size:2.4rem;font-weight:800;color:var(--wht);letter-spacing:-.05em;line-height:1}
-.stat-card .big em{color:var(--g);font-style:normal}
-.stat-card .label{font-size:.7rem;color:var(--mut);letter-spacing:.08em;text-transform:uppercase;margin-top:.4rem}
-.stat-card .source{font-size:.55rem;color:var(--mut);opacity:.5;margin-top:.6rem}
-
-/* PAIN POINTS */
-.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr)}
-.pain{background:var(--dark);padding:2rem 1.5rem;position:relative;overflow:hidden;transition:background .3s}
-.pain::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--g),transparent);transform:scaleX(0);
-  transform-origin:left;transition:transform .4s}
-.pain:hover{background:var(--d2)}
-.pain:hover::before{transform:scaleX(1)}
-.pain-num{font-size:.6rem;color:var(--mut);letter-spacing:.15em;margin-bottom:.8rem;
-  font-family:'JetBrains Mono',monospace}
-.pain-icon{font-size:1.4rem;margin-bottom:.8rem;display:block}
-.pain-title{font-size:.95rem;font-weight:700;color:var(--wht);margin-bottom:.5rem;letter-spacing:-.02em}
-.pain-desc{font-size:.75rem;color:var(--mut);line-height:1.7}
-.pain-solution{font-size:.68rem;color:var(--g);margin-top:.6rem;
-  padding:.3rem .6rem;background:rgba(0,200,83,.06);border-left:2px solid var(--g)}
-
-/* MODULE TABLE */
-.mod-table{width:100%;border-collapse:collapse;border:1px solid var(--bdr)}
-.mod-table th{background:var(--d3);text-align:left;padding:.8rem 1rem;
-  font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);
-  border-bottom:1px solid var(--bdr);font-weight:400}
-.mod-table td{padding:.8rem 1rem;font-size:.78rem;border-bottom:1px solid var(--bdr);
-  vertical-align:top}
-.mod-table tr:last-child td{border-bottom:none}
-.mod-table tr:hover td{background:var(--d2)}
-.mod-name{color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600}
-.mod-desc{color:var(--mut)}
-.tag{display:inline-block;border:1px solid var(--bdr);padding:.1rem .4rem;
-  font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:.1rem .1rem .1rem 0}
-.tag.live{border-color:var(--g);color:var(--g)}
-
-/* FEATURE SHOWCASE */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr)}
-.feat{background:var(--dark);padding:1.8rem 1.5rem;transition:background .25s}
-.feat:hover{background:var(--d2)}
-.feat-num{font-size:.55rem;color:var(--mut);letter-spacing:.15em;font-family:'JetBrains Mono',monospace;margin-bottom:.8rem}
-.feat-icon{font-size:1.3rem;margin-bottom:.7rem;display:block}
-.feat-title{font-size:.9rem;font-weight:700;color:var(--wht);margin-bottom:.5rem;letter-spacing:-.02em}
-.feat-desc{font-size:.73rem;color:var(--mut);line-height:1.7}
-
-/* CODE BLOCK */
-.code-block{background:var(--d2);border:1px solid var(--bdr);padding:1.5rem;
-  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--txt);
-  overflow-x:auto;border-left:3px solid var(--g);margin:1.5rem 0}
-.code-block .c-comment{color:var(--mut)}
-.code-block .c-cmd{color:var(--g)}
-.code-block .c-str{color:var(--gold)}
-.code-block .c-var{color:var(--blue)}
-
-/* ROADMAP */
-.roadmap-list{display:flex;flex-direction:column;gap:0}
-.road-item{display:flex;gap:1.2rem;align-items:flex-start;padding:1rem 0;border-bottom:1px solid var(--bdr)}
-.road-item:last-child{border-bottom:none}
-.road-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:.1rem}
-.road-icon.done{background:rgba(0,200,83,.12);border:1px solid var(--g)}
-.road-icon.wip{background:rgba(255,152,0,.12);border:1px solid var(--orange)}
-.road-icon.todo{background:var(--card);border:1px solid var(--bdr)}
-.road-text{font-size:.8rem;color:var(--txt);line-height:1.6}
-.road-label{font-size:.58rem;color:var(--mut);letter-spacing:.08em;text-transform:uppercase;margin-top:.15rem}
-
-/* COMPLIANCE TABLE */
-.compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);border:1px solid var(--bdr)}
-.compliance-item{background:var(--dark);padding:1.5rem;transition:background .2s}
-.compliance-item:hover{background:var(--d2)}
-.c-flag{font-size:.6rem;color:var(--g);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.4rem}
-.c-law{font-size:.88rem;font-weight:700;color:var(--wht);margin-bottom:.3rem}
-.c-impl{font-size:.73rem;color:var(--mut);line-height:1.6}
-
-/* CTA */
-.cta-band{position:relative;z-index:1;padding:7rem 2rem;text-align:center;border-top:1px solid var(--bdr)}
-.cta-band h2{margin:0 auto 1rem;max-width:580px}
-.cta-btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:2rem}
-
-/* FOOTER */
-footer{position:relative;z-index:1;border-top:1px solid var(--bdr);
-  padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:.8rem;font-size:.67rem;color:var(--mut)}
-footer a{color:var(--g);text-decoration:none}
-footer a:hover{color:var(--g2)}
-.footer-links{display:flex;gap:1.5rem}
-
-/* MOBILE */
-.mob-nav{display:none;position:fixed;top:60px;left:0;right:0;z-index:199;
-  background:rgba(5,8,10,.98);border-bottom:1px solid var(--bdr);
-  padding:1.2rem 1.5rem;flex-direction:column;gap:1rem}
-.mob-nav.open{display:flex}
-.mob-nav a{color:var(--txt);text-decoration:none;font-size:.85rem;padding:.5rem 0;
-  border-bottom:1px solid var(--bdr)}
-.mob-cta{background:var(--g);color:var(--dark);text-align:center;padding:.7rem;
-  font-weight:700;border-bottom:none;margin-top:.3rem}
-
-@media(max-width:900px){
-  .hero{flex-direction:column;gap:2rem;padding:80px 1.2rem 3rem}
-  .hero-right{width:100%}
-  .screen-stack{height:320px}
-  .stats-grid,.pain-grid,.feat-grid,.compliance-grid{grid-template-columns:1fr;background:transparent;border:none;gap:1px}
-  .stats-grid .stat-card,.pain,.feat,.compliance-item{border:1px solid var(--bdr);margin-bottom:1px}
-  .nav-links,.nav-badge{display:none}
-  .hamburger{display:flex}
-  section{padding:4rem 1.2rem}
-  h1{font-size:clamp(2rem,8vw,2.8rem)}
-}
-@media(max-width:600px){
-  .hero-stats{gap:1.2rem;flex-wrap:wrap}
-  nav{padding:0 1rem}
-  .mod-table{display:block;overflow-x:auto}
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.hero-left>*{animation:fadeUp .6s ease both}
-.hero-left>*:nth-child(1){animation-delay:.0s}
-.hero-left>*:nth-child(2){animation-delay:.1s}
-.hero-left>*:nth-child(3){animation-delay:.2s}
-.hero-left>*:nth-child(4){animation-delay:.3s}
-.hero-left>*:nth-child(5){animation-delay:.4s}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ArtBeat Studio — Art · Insurance · Sound | Naivasha, Kenya</title>
+  <meta name="description" content="ArtBeat Studio Naivasha — Premium fine art commissions, APA insurance advisory, and world-class DJ experiences in the Great Rift Valley."/>
+  <meta property="og:title" content="ArtBeat Studio — Art · Insurance · Sound"/>
+  <meta property="og:description" content="Naivasha's premier creative studio. Art commissions, APA Insurance, DJ bookings."/>
+  <meta property="og:type" content="website"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="/" class="logo">
-    <div class="logo-icon">O</div>
-    <span class="logo-text">Odoo<span>ERP</span></span>
+  <!-- ═══ TOP BAR ═══ -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span>📍 Naivasha, Rift Valley — Kenya's Creative Hub</span>
+      <div class="topbar-right">
+        <a href="tel:+254114663650">📞 0114 663 650</a>
+        <span class="tb-sep">·</span>
+        <a href="mailto:hello@artbeatstudio.co.ke">hello@artbeatstudio.co.ke</a>
+        <span class="tb-sep">·</span>
+        <span class="tb-hours">Mon–Sat: 8am–7pm</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">ArtBeat<span>Studio</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#arts">Arts</a></li>
+      <li><a href="#insurance">Insurance</a></li>
+      <li><a href="#dj">DJ</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact" class="nav-cta">Book Now</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══ HERO SLIDESHOW ═══ -->
+  <section class="hero" id="home">
+    <div class="slides-container" id="slidesContainer">
+
+      <div class="slide active" data-index="0">
+        <div class="slide-img" style="background-image:url('img-mural.jpeg')"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-cat">Fine Art &amp; Painting</span>
+          <h1>Where Walls<br/><em>Speak</em></h1>
+          <p>Bespoke murals, paintings &amp; installations that transform any space into a living masterpiece — crafted in the heart of Naivasha.</p>
+          <div class="slide-btns">
+            <a href="#arts" class="btn btn-primary">Explore Art →</a>
+            <a href="#contact" class="btn btn-ghost-white">Get a Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="1">
+        <div class="slide-img" style="background-image:url('img-bird.jpeg')"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-cat">Fine Art &amp; Painting</span>
+          <h1>Nature Rendered<br/><em>Timeless</em></h1>
+          <p>Paper sculpture, mixed media &amp; layered art commissioned for collectors, lodges, and private spaces across the Rift Valley.</p>
+          <div class="slide-btns">
+            <a href="#arts" class="btn btn-primary">Commission a Piece →</a>
+            <a href="#contact" class="btn btn-ghost-white">Enquire</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="2">
+        <div class="slide-img" style="background-image:url('img-head.jpeg')"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-cat">Fine Art &amp; Sculpture</span>
+          <h1>Art That<br/><em>Provokes</em></h1>
+          <p>3D sculpture and conceptual installations for corporate lobbies, safari lodges &amp; private collections.</p>
+          <div class="slide-btns">
+            <a href="#arts" class="btn btn-primary">View Portfolio →</a>
+            <a href="#contact" class="btn btn-ghost-white">Consult Us</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="3">
+        <div class="slide-img" style="background-image:url('img-lips.jpeg')"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-cat">Statement Art</span>
+          <h1>Bold. Daring.<br/><em>Unforgettable.</em></h1>
+          <p>Sculptural art pieces that command attention and define the character of any hotel, restaurant, or office environment.</p>
+          <div class="slide-btns">
+            <a href="#arts" class="btn btn-primary">Get a Quote →</a>
+            <a href="#contact" class="btn btn-ghost-white">Talk to Us</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="4">
+        <div class="slide-img" style="background-image:url('img-weave.jpeg')"></div>
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-cat">Textile &amp; Mixed Media</span>
+          <h1>Texture, Thread<br/>&amp; <em>Soul</em></h1>
+          <p>Handcrafted textile art — wall hangings, weavings, and fibre installations for homes, hotels &amp; offices in Naivasha and beyond.</p>
+          <div class="slide-btns">
+            <a href="#arts" class="btn btn-primary">Explore Textile Art →</a>
+            <a href="#contact" class="btn btn-ghost-white">Commission Now</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-index="5">
+        <div class="slide-img" style="background-image:url('img-apa-family.jpeg')"></div>
+        <div class="slide-overlay slide-overlay-blue"></div>
+        <div class="slide-content">
+          <span class="slide-cat">APA Insurance Advisory</span>
+          <h1>Protect What<br/><em>Matters Most</em></h1>
+          <p>Jamii Plus Family Health Cover &amp; full APA Insurance products — tailored advisory for individuals, families &amp; businesses in Naivasha.</p>
+          <div class="slide-btns">
+            <a href="#insurance" class="btn btn-gold">Free Consultation →</a>
+            <a href="tel:+254114663650" class="btn btn-ghost-white">Call Now: 0114 663 650</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="slide-arrow slide-prev" id="slidePrev" aria-label="Previous">&#8592;</button>
+    <button class="slide-arrow slide-next" id="slideNext" aria-label="Next">&#8594;</button>
+
+    <div class="slide-dots" id="slideDots">
+      <button class="dot active" data-slide="0"></button>
+      <button class="dot" data-slide="1"></button>
+      <button class="dot" data-slide="2"></button>
+      <button class="dot" data-slide="3"></button>
+      <button class="dot" data-slide="4"></button>
+      <button class="dot" data-slide="5"></button>
+    </div>
+
+    <div class="slide-progress"><div class="slide-progress-bar" id="slideProgressBar"></div></div>
+
+    <div class="hero-strip">
+      <div class="strip-item"><span class="strip-dot"></span>Fine Art &amp; Painting</div>
+      <div class="strip-sep">·</div>
+      <div class="strip-item"><span class="strip-dot"></span>APA Insurance</div>
+      <div class="strip-sep">·</div>
+      <div class="strip-item"><span class="strip-dot"></span>Premium DJ</div>
+      <div class="strip-sep">·</div>
+      <div class="strip-stat"><strong>340+</strong> Works · <strong>1,200+</strong> Events · <strong>Naivasha</strong></div>
+    </div>
+  </section>
+
+  <!-- ═══ TRUST BAR ═══ -->
+  <div class="trust-bar">
+    <div class="trust-inner">
+      <div class="trust-item"><span class="trust-n">340+</span><span class="trust-l">Art Commissions</span></div>
+      <div class="trust-div"></div>
+      <div class="trust-item"><span class="trust-n">1,200+</span><span class="trust-l">Events Powered</span></div>
+      <div class="trust-div"></div>
+      <div class="trust-item"><span class="trust-n">8+</span><span class="trust-l">Years in Naivasha</span></div>
+      <div class="trust-div"></div>
+      <div class="trust-item"><span class="trust-n">APA</span><span class="trust-l">Certified Partner</span></div>
+      <div class="trust-div"></div>
+      <div class="trust-item"><span class="trust-n">98%</span><span class="trust-l">Client Satisfaction</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ MARQUEE ═══ -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Fine Art Commissions</span><span class="mx">✦</span>
+      <span>Mural &amp; Installation</span><span class="mx">✦</span>
+      <span>APA Health Cover</span><span class="mx">✦</span>
+      <span>APA Life Insurance</span><span class="mx">✦</span>
+      <span>Event Liability Cover</span><span class="mx">✦</span>
+      <span>DJ Corporate Events</span><span class="mx">✦</span>
+      <span>Wedding DJ Naivasha</span><span class="mx">✦</span>
+      <span>Festival Bookings</span><span class="mx">✦</span>
+      <span>Textile &amp; Sculpture</span><span class="mx">✦</span>
+      <span>Portrait Commissions</span><span class="mx">✦</span>
+      <span>Rift Valley Art</span><span class="mx">✦</span>
+      <span>Safari Lodge Decor</span><span class="mx">✦</span>
+      <span>Fine Art Commissions</span><span class="mx">✦</span>
+      <span>Mural &amp; Installation</span><span class="mx">✦</span>
+      <span>APA Health Cover</span><span class="mx">✦</span>
+      <span>APA Life Insurance</span><span class="mx">✦</span>
+      <span>Event Liability Cover</span><span class="mx">✦</span>
+      <span>DJ Corporate Events</span><span class="mx">✦</span>
+      <span>Wedding DJ Naivasha</span><span class="mx">✦</span>
+      <span>Festival Bookings</span><span class="mx">✦</span>
+      <span>Textile &amp; Sculpture</span><span class="mx">✦</span>
+      <span>Portrait Commissions</span><span class="mx">✦</span>
+      <span>Rift Valley Art</span><span class="mx">✦</span>
+      <span>Safari Lodge Decor</span><span class="mx">✦</span>
+    </div>
+  </div>
+
+  <!-- ═══ ARTS SECTION ═══ -->
+  <section class="section arts-section" id="arts">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">01 — Fine Art &amp; Painting</span>
+        <h2 class="section-title">Canvas That <em>Speaks</em></h2>
+        <p class="section-desc">Every brushstroke tells a story. Our resident artists deliver bespoke paintings — from intimate portraits to monumental installations — that transform spaces and stir souls across the Rift Valley.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item gallery-item-lg reveal">
+          <img src="img-mural.jpeg" alt="Red leaves mural painting" loading="lazy"/>
+          <div class="gallery-overlay">
+            <span class="gallery-cat">Murals &amp; Paintings</span>
+            <h3>Environmental Art</h3>
+            <p>Large-scale murals that transform spaces — lodges, offices, homes</p>
+            <a href="#contact" class="btn btn-sm">Commission →</a>
+          </div>
+        </div>
+        <div class="gallery-item reveal">
+          <img src="img-bird.jpeg" alt="Colourful tropical bird paper art" loading="lazy"/>
+          <div class="gallery-overlay">
+            <span class="gallery-cat">Paper &amp; Mixed Media</span>
+            <h3>Layered Sculpture</h3>
+            <p>Paper art &amp; mixed media for collectors</p>
+            <a href="#contact" class="btn btn-sm">Enquire →</a>
+          </div>
+        </div>
+        <div class="gallery-item reveal">
+          <img src="img-head.jpeg" alt="White geometric head sculpture" loading="lazy"/>
+          <div class="gallery-overlay">
+            <span class="gallery-cat">3D Sculpture</span>
+            <h3>Conceptual Pieces</h3>
+            <p>Statement sculptures for any space</p>
+            <a href="#contact" class="btn btn-sm">Get Quote →</a>
+          </div>
+        </div>
+        <div class="gallery-item reveal">
+          <img src="img-weave.jpeg" alt="Handcrafted ocean weave wall art" loading="lazy"/>
+          <div class="gallery-overlay">
+            <span class="gallery-cat">Textile &amp; Fibre</span>
+            <h3>Woven Wall Art</h3>
+            <p>Handcrafted textile art &amp; installations</p>
+            <a href="#contact" class="btn btn-sm">Enquire →</a>
+          </div>
+        </div>
+        <div class="gallery-item reveal">
+          <img src="img-lips.jpeg" alt="Red lips geometric wall sculpture" loading="lazy"/>
+          <div class="gallery-overlay">
+            <span class="gallery-cat">Statement Art</span>
+            <h3>Bold Sculptures</h3>
+            <p>Geometric sculptures that command rooms</p>
+            <a href="#contact" class="btn btn-sm">Commission →</a>
+          </div>
+        </div>
+      </div>
+      <div class="process-band reveal">
+        <h3>The Creative Process</h3>
+        <div class="process-steps">
+          <div class="process-step">
+            <span class="ps-num">I</span>
+            <strong>Discovery</strong>
+            <p>We discuss your vision, space &amp; intent — in-studio or on-site visit</p>
+          </div>
+          <div class="ps-arrow">→</div>
+          <div class="process-step">
+            <span class="ps-num">II</span>
+            <strong>Concept</strong>
+            <p>Sketches &amp; palette proposals — 3 options presented for your approval</p>
+          </div>
+          <div class="ps-arrow">→</div>
+          <div class="process-step">
+            <span class="ps-num">III</span>
+            <strong>Creation</strong>
+            <p>Masterful execution with weekly progress photos &amp; updates</p>
+          </div>
+          <div class="ps-arrow">→</div>
+          <div class="process-step">
+            <span class="ps-num">IV</span>
+            <strong>Delivery</strong>
+            <p>White-glove delivery &amp; professional installation included</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ INSURANCE SECTION ═══ -->
+  <section class="section insurance-section" id="insurance">
+    <div class="container">
+      <div class="ins-grid">
+        <div class="ins-visual-col reveal">
+          <div class="ins-img-stack">
+            <div class="ins-img-main">
+              <img src="img-apa-family.jpeg" alt="APA Insurance Jamii Plus family" loading="lazy"/>
+              <div class="ins-img-badge">
+                <img src="img-apa-logo.jpeg" alt="APA Insurance logo" loading="lazy"/>
+              </div>
+            </div>
+            <div class="ins-floating-card ins-card-1">
+              <span class="ifc-icon">🛡️</span>
+              <div><strong>Jamii Plus</strong><span>Family Health Cover</span></div>
+            </div>
+            <div class="ins-floating-card ins-card-2">
+              <span class="ifc-icon">✓</span>
+              <div><strong>APA Certified</strong><span>Advisory Partner</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ins-content-col reveal">
+          <span class="section-label">02 — APA Insurance Advisory</span>
+          <h2 class="section-title">Protect What <em>Matters</em></h2>
+          <p class="section-desc">Partnered with APA Insurance — General · Life · Health — we deliver tailored coverage for individuals, creatives, families and businesses across Naivasha and the Rift Valley.</p>
+          <div class="ins-products">
+            <div class="ins-product">
+              <div class="ip-icon">❤️</div>
+              <div>
+                <h4>Jamii Plus Health Cover</h4>
+                <p>Get the most out of your money with APA Family Health Cover. Comprehensive inpatient &amp; outpatient plans for the whole family — from KES 3,500/month.</p>
+              </div>
+            </div>
+            <div class="ins-product">
+              <div class="ip-icon">🌿</div>
+              <div>
+                <h4>Life &amp; Critical Illness</h4>
+                <p>Long-term life cover and critical illness plans for creatives, freelancers &amp; professionals. Secure your family's future from KES 500/month.</p>
+              </div>
+            </div>
+            <div class="ins-product">
+              <div class="ip-icon">🎨</div>
+              <div>
+                <h4>Art &amp; Asset Cover</h4>
+                <p>Protect your art collection, instruments &amp; equipment from damage, theft and transit risks. Specialist cover for creative professionals.</p>
+              </div>
+            </div>
+            <div class="ins-product">
+              <div class="ip-icon">🎵</div>
+              <div>
+                <h4>Event Liability Insurance</h4>
+                <p>Single-event and annual event insurance for concerts, exhibitions and corporate functions in Naivasha and across Kenya.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ins-contact-line">
+            <span>📞</span>
+            <div>
+              <strong>APA Insurance Hotline</strong>
+              <a href="tel:+254709912777">0709 912 777</a> ·
+              <a href="https://www.apainsurance.org" target="_blank">apainsurance.org</a>
+            </div>
+          </div>
+          <a href="#contact" class="btn btn-primary">Get a Free Consultation</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DJ SECTION ═══ -->
+  <section class="section dj-section" id="dj">
+    <div class="dj-bg"></div>
+    <div class="container">
+      <div class="section-header section-center reveal">
+        <span class="section-label">03 — DJ Experiences</span>
+        <h2 class="section-title">Sound That <em>Moves</em> You</h2>
+        <p class="section-desc">From intimate lakeside sessions at Lake Naivasha to 5,000-capacity Rift Valley festivals — our world-class DJs deliver sonic experiences that become the heartbeat of every event.</p>
+      </div>
+      <div class="dj-cards">
+        <div class="dj-card reveal">
+          <div class="dj-card-gfx dj-gfx-1"><div class="dj-ripple"></div><span class="dj-icon">🎙️</span></div>
+          <div class="dj-genre">Afrobeats · Amapiano · R&amp;B</div>
+          <h3>Corporate &amp; Gala</h3>
+          <p>Sophisticated sets for product launches, award nights &amp; executive dinners at Naivasha's premier venues — Enashipai, Sopa Lodge, Great Rift Valley Lodge.</p>
+          <ul class="dj-list">
+            <li>✓ Full sound system provided</li>
+            <li>✓ MC services available</li>
+            <li>✓ Lighting rigs on request</li>
+            <li>✓ From KES 25,000</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Book Corporate</a>
+        </div>
+        <div class="dj-card dj-card-hero reveal">
+          <div class="dj-hero-tag">Most Booked</div>
+          <div class="dj-card-gfx dj-gfx-2"><div class="dj-ripple"></div><span class="dj-icon">💍</span></div>
+          <div class="dj-genre">Hip-Hop · House · Afro · R&amp;B</div>
+          <h3>Weddings &amp; Celebrations</h3>
+          <p>Naivasha's #1 wedding DJ experience. From ceremony at Lake Naivasha to reception at your chosen venue — we craft playlists that mirror your love story.</p>
+          <ul class="dj-list">
+            <li>✓ Personalised playlist consultation</li>
+            <li>✓ Ceremony &amp; reception coverage</li>
+            <li>✓ Photo booth integration</li>
+            <li>✓ From KES 35,000</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Book Weddings</a>
+        </div>
+        <div class="dj-card reveal">
+          <div class="dj-card-gfx dj-gfx-3"><div class="dj-ripple"></div><span class="dj-icon">🎪</span></div>
+          <div class="dj-genre">Techno · Electronic · Afro</div>
+          <h3>Festivals &amp; Live Shows</h3>
+          <p>High-energy performances for Rift Valley festivals, Naivasha beach events, outdoor concerts and large-scale productions across Kenya.</p>
+          <ul class="dj-list">
+            <li>✓ Festival-grade production</li>
+            <li>✓ Live mixing &amp; mashups</li>
+            <li>✓ Outdoor &amp; indoor venues</li>
+            <li>✓ From KES 50,000</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Book Festival</a>
+        </div>
+      </div>
+      <div class="equalizer" aria-hidden="true">
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PRICING ═══ -->
+  <section class="section pricing-section" id="pricing">
+    <div class="container">
+      <div class="section-header section-center reveal">
+        <span class="section-label">Transparent Pricing</span>
+        <h2 class="section-title">Simple. Clear. <em>No Surprises.</em></h2>
+        <p class="section-desc">Every project is unique — these are our starting rates. All packages fully customisable. Free consultation included.</p>
+      </div>
+      <div class="pricing-grid">
+        <!-- ART PRICING -->
+        <div class="pricing-card reveal">
+          <div class="pricing-icon">🎨</div>
+          <h3>Fine Art</h3>
+          <div class="pricing-from">From</div>
+          <div class="pricing-price">KES 15,000</div>
+          <ul class="pricing-list">
+            <li>✓ Custom paintings — A3 to monumental</li>
+            <li>✓ 3 concept sketches included</li>
+            <li>✓ Progress photos throughout</li>
+            <li>✓ Framing options available</li>
+            <li>✓ Certificate of authenticity</li>
+            <li>✓ Naivasha delivery included</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline btn-full">Get Art Quote</a>
+        </div>
+        <div class="pricing-card pricing-card-hero reveal">
+          <div class="pricing-badge">Best Value</div>
+          <div class="pricing-icon">🎵</div>
+          <h3>Wedding DJ</h3>
+          <div class="pricing-from">From</div>
+          <div class="pricing-price">KES 35,000</div>
+          <ul class="pricing-list">
+            <li>✓ Up to 6 hours coverage</li>
+            <li>✓ Ceremony + reception</li>
+            <li>✓ Full PA sound system</li>
+            <li>✓ 2-hour planning consultation</li>
+            <li>✓ Custom playlist collaboration</li>
+            <li>✓ MC services included</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary btn-full">Book Wedding DJ</a>
+        </div>
+        <div class="pricing-card reveal">
+          <div class="pricing-icon">🛡️</div>
+          <h3>APA Insurance</h3>
+          <div class="pricing-from">From</div>
+          <div class="pricing-price">KES 3,500<span>/mo</span></div>
+          <ul class="pricing-list">
+            <li>✓ Jamii Plus Health Cover</li>
+            <li>✓ Inpatient &amp; outpatient</li>
+            <li>✓ Free advisory session</li>
+            <li>✓ Claims support included</li>
+            <li>✓ Annual &amp; monthly plans</li>
+            <li>✓ Family &amp; individual options</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline btn-full">Get Insurance Quote</a>
+        </div>
+      </div>
+      <div class="pricing-note reveal">
+        <span>💬</span>
+        <p>All prices are starting rates. Final pricing depends on scope, size, and complexity. <strong>Free consultations</strong> for all services — call us on <a href="tel:+254114663650">0114 663 650</a> or use the form below.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TESTIMONIALS ═══ -->
+  <section class="section testimonials-section" id="about">
+    <div class="container">
+      <div class="section-header section-center reveal">
+        <span class="section-label">Client Voices</span>
+        <h2 class="section-title">What They <em>Say</em></h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card reveal">
+          <div class="testi-stars">★★★★★</div>
+          <p>"ArtBeat Studio created a stunning mural for our lodge in Naivasha. Every single guest photographs it. It's become our most talked-about feature."</p>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#6b21a8,#c026d3)">MN</div>
+            <div><strong>Margaret Njoroge</strong><span>GM, Rift Valley Safari Lodge</span></div>
+          </div>
+        </div>
+        <div class="testi-card testi-card-ft reveal">
+          <div class="testi-stars">★★★★★</div>
+          <p>"They sorted our APA event insurance in under 24 hours for our Naivasha festival. Fully covered, zero stress — and the DJ absolutely owned the stage."</p>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#d4af37,#f97316)">JO</div>
+            <div><strong>James Ochieng</strong><span>Founder, Rift Valley Music Festival</span></div>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="testi-stars">★★★★★</div>
+          <p>"Our Lake Naivasha wedding was absolutely perfect. The DJ kept everyone — including our grandparents — dancing until midnight. Unforgettable."</p>
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#0ea5e9,#6b21a8)">AK</div>
+            <div><strong>Amina &amp; Kevin Waweru</strong><span>Lake Naivasha, 2024</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHY US ═══ -->
+  <section class="section why-section">
+    <div class="container">
+      <div class="section-header section-center reveal">
+        <span class="section-label">Why ArtBeat Studio</span>
+        <h2 class="section-title">Naivasha's <em>Only</em> Creative Powerhouse</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card reveal">
+          <span class="why-icon">🏆</span>
+          <h4>8+ Years in Naivasha</h4>
+          <p>Deep roots in the Rift Valley. We know the local venues, lodges, and creative landscape like no one else.</p>
+        </div>
+        <div class="why-card reveal">
+          <span class="why-icon">🎯</span>
+          <h4>Three Services, One Studio</h4>
+          <p>Art, insurance, and DJ — no referrals needed. We handle everything under one roof for seamless event planning.</p>
+        </div>
+        <div class="why-card reveal">
+          <span class="why-icon">🤝</span>
+          <h4>APA Certified Partner</h4>
+          <p>Officially certified APA Insurance advisory partner. You get direct access to the full APA product suite with expert guidance.</p>
+        </div>
+        <div class="why-card reveal">
+          <span class="why-icon">📍</span>
+          <h4>Local. Always Available.</h4>
+          <p>Based in Naivasha — 90 minutes from Nairobi. We serve the entire Rift Valley and travel nationwide for major events.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section class="section contact-section" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-left reveal">
+          <span class="section-label">Get in Touch</span>
+          <h2 class="section-title">Let's Create <em>Together</em></h2>
+          <p>Whether you're commissioning art, protecting your family with APA, or booking your event DJ — reach us directly. We respond within 2 hours.</p>
+          <div class="contact-info">
+            <div class="ci">
+              <span class="ci-icon">📍</span>
+              <div><strong>Location</strong><span>Naivasha Town, Nakuru County, Kenya</span></div>
+            </div>
+            <div class="ci">
+              <span class="ci-icon">📞</span>
+              <div><strong>Phone / WhatsApp</strong><a href="tel:+254114663650" class="ci-link">0114 663 650</a></div>
+            </div>
+            <div class="ci">
+              <span class="ci-icon">✉️</span>
+              <div><strong>Email</strong><a href="mailto:hello@artbeatstudio.co.ke" class="ci-link">hello@artbeatstudio.co.ke</a></div>
+            </div>
+            <div class="ci">
+              <span class="ci-icon">🕐</span>
+              <div><strong>Hours</strong><span>Monday – Saturday: 8:00 AM – 7:00 PM</span></div>
+            </div>
+          </div>
+          <a href="https://wa.me/254114663650?text=Hello%20ArtBeat%20Studio!%20I%27d%20like%20to%20enquire%20about%20your%20services." target="_blank" class="btn btn-whatsapp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp Us Now
+          </a>
+          <div class="apa-callout">
+            <img src="img-apa-logo.jpeg" alt="APA Insurance" class="apa-callout-logo"/>
+            <div>
+              <strong>APA Insurance Enquiries</strong>
+              <span>Call 0709 912 777 · apainsurance.org</span>
+            </div>
+          </div>
+        </div>
+        <div class="contact-right reveal">
+          <form class="form" id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" placeholder="Your full name" required/>
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone / WhatsApp *</label>
+                <input type="tel" id="phone" placeholder="07XX XXX XXX" required/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" placeholder="your@email.com"/>
+            </div>
+            <div class="form-group">
+              <label for="service">Service Interest *</label>
+              <select id="service" required>
+                <option value="">Select a service</option>
+                <option value="art">Fine Art &amp; Painting Commission</option>
+                <option value="mural">Mural &amp; Installation</option>
+                <option value="sculpture">Sculpture &amp; Textile Art</option>
+                <option value="insurance-health">APA Health Insurance (Jamii Plus)</option>
+                <option value="insurance-life">APA Life Insurance</option>
+                <option value="insurance-event">APA Event Liability Cover</option>
+                <option value="dj-wedding">DJ — Wedding &amp; Celebrations</option>
+                <option value="dj-corporate">DJ — Corporate &amp; Gala</option>
+                <option value="dj-festival">DJ — Festival &amp; Live Show</option>
+                <option value="multiple">Multiple Services</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="date">Event / Project Date</label>
+              <input type="date" id="date"/>
+            </div>
+            <div class="form-group">
+              <label for="message">Tell Us More *</label>
+              <textarea id="message" rows="4" placeholder="Describe your project, event, or enquiry. The more detail, the better we can help..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="submitBtn">Send Enquiry ✦</button>
+            <p class="form-note">We respond within 2 hours during business hours. Your details are never shared.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MAP / LOCATION ═══ -->
+  <section class="location-section">
+    <div class="container">
+      <div class="location-inner reveal">
+        <div class="location-text">
+          <span class="section-label">Find Us</span>
+          <h2 class="section-title">We're in <em>Naivasha</em></h2>
+          <p>Located in Naivasha Town, Nakuru County — the gateway to Kenya's Great Rift Valley. 90 minutes from Nairobi on the Nairobi–Nakuru Highway. We serve Naivasha, Narok, Nakuru, Gilgil and travel nationwide.</p>
+          <div class="location-details">
+            <div class="loc-item">📍 Naivasha Town, Nakuru County</div>
+            <div class="loc-item">🚗 90 min from Nairobi CBD</div>
+            <div class="loc-item">📞 <a href="tel:+254114663650">0114 663 650</a></div>
+          </div>
+        </div>
+        <div class="map-embed">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63839.51516507944!2d36.36!3d-0.717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182986a2b5b63a2d%3A0x3d27cd09a4c19cc3!2sNaivasha!5e0!3m2!1sen!2ske!4v1699000000000!5m2!1sen!2ske"
+            width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" title="ArtBeat Studio Naivasha Location">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">ArtBeat<span>Studio</span></a>
+          <p>Where art, protection &amp; sound converge.<br/>Naivasha's premier creative studio.</p>
+          <div class="footer-contact-quick">
+            <a href="tel:+254114663650">📞 0114 663 650</a>
+            <a href="mailto:hello@artbeatstudio.co.ke">✉️ Email Us</a>
+          </div>
+          <div class="socials">
+            <a href="#" aria-label="Instagram" class="social-btn">IG</a>
+            <a href="#" aria-label="Twitter" class="social-btn">TW</a>
+            <a href="#" aria-label="LinkedIn" class="social-btn">LI</a>
+            <a href="#" aria-label="YouTube" class="social-btn">YT</a>
+          </div>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>Services</h4>
+            <ul>
+              <li><a href="#arts">Fine Art &amp; Painting</a></li>
+              <li><a href="#arts">Murals &amp; Installations</a></li>
+              <li><a href="#arts">Textile &amp; Sculpture</a></li>
+              <li><a href="#insurance">APA Health Cover</a></li>
+              <li><a href="#insurance">APA Life Insurance</a></li>
+              <li><a href="#dj">DJ Bookings</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#pricing">Pricing</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="#">Portfolio</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+              <li>Naivasha Town, Nakuru County</li>
+              <li><a href="tel:+254114663650">0114 663 650</a></li>
+              <li>hello@artbeatstudio.co.ke</li>
+              <li>APA Hotline: 0709 912 777</li>
+              <li>Mon–Sat: 8am – 7pm</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 ArtBeat Studio, Naivasha. All rights reserved.</p>
+        <p class="footer-tag">Art · Insurance · Sound</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FAB -->
+  <a href="https://wa.me/254114663650?text=Hello%20ArtBeat%20Studio!" target="_blank" class="whatsapp-fab" aria-label="WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
-  <ul class="nav-links">
-    <li><a href="#market">Market</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#modules">Modules</a></li>
-    <li><a href="#compliance">Compliance</a></li>
-    <li><a href="#setup">Setup</a></li>
-  </ul>
-  <div class="nav-right">
-    <div class="nav-badge"><span class="live-dot"></span>v5.0 Live</div>
-    <a href="https://github.com/NyoikePaul/OdooERP" class="nav-cta" target="_blank">GitHub →</a>
-  </div>
-  <button class="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></button>
-</nav>
 
-<div class="mob-nav" id="mobNav">
-  <a href="#market" onclick="closeNav()">Market Research</a>
-  <a href="#features" onclick="closeNav()">Features</a>
-  <a href="#modules" onclick="closeNav()">Modules</a>
-  <a href="#compliance" onclick="closeNav()">Compliance</a>
-  <a href="#setup" onclick="closeNav()">Setup</a>
-  <a href="https://github.com/NyoikePaul/OdooERP" class="mob-cta" target="_blank">View on GitHub →</a>
-</div>
-
-<!-- HERO -->
-<div style="position:relative;z-index:1">
-<div class="hero">
-  <div class="hero-left">
-    <div class="hero-tag"><span class="live-dot"></span>Kenya · East Africa · Odoo 18 · LGPL-3</div>
-    <h1>Enterprise ERP<span class="line2">for East Africa.</span><span class="line3">// M-Pesa · KRA eTIMS · Real Estate</span></h1>
-    <p class="hero-desc">Built on real market research. Solves the exact pain points of Kenya's 53% of landlords still using manual rent collection, the new KRA MRI tax system, and East Africa's unique property management challenges.</p>
-    <div class="hero-btns">
-      <a href="https://github.com/NyoikePaul/OdooERP" class="btn-primary" target="_blank">★ Star on GitHub</a>
-      <a href="#features" class="btn-ghost">See Features →</a>
-      <a href="SETUP.md" class="btn-ghost" target="_blank">Quick Start</a>
-    </div>
-    <div class="hero-stats">
-      <div><div class="stat-val">22<em>+</em></div><div class="stat-lbl">Custom Models</div></div>
-      <div><div class="stat-val">9<em> crons</em></div><div class="stat-lbl">Automated</div></div>
-      <div><div class="stat-val">KES<em>0</em></div><div class="stat-lbl">License Cost</div></div>
-      <div><div class="stat-val">18<em>.0</em></div><div class="stat-lbl">Odoo Version</div></div>
-    </div>
-  </div>
-
-  <!-- BROWSER MOCKUP -->
-  <div class="hero-right">
-    <div class="screen-stack" id="screenStack">
-      <div class="screen back1">
-        <div class="screen-bar"><div class="s-dot r"></div><div class="s-dot y"></div><div class="s-dot g"></div><div class="s-url">localhost:8069/odoo/real-estate</div></div>
-        <div class="odoo-nav"><span class="brand">▣ Odoo</span><a>Invoicing</a><a>M-Pesa</a><a class="active">Real Estate</a><a>Settings</a></div>
-        <div class="screen-body" style="font-size:.6rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
-            <span style="color:var(--wht);font-weight:600;font-size:.75rem">Buildings</span>
-            <span style="background:var(--g);color:var(--dark);padding:.2rem .5rem;font-size:.55rem;font-weight:700">+ New</span>
-          </div>
-          <div style="border:1px solid var(--bdr);border-radius:3px;overflow:hidden">
-            <div style="display:grid;grid-template-columns:1fr 80px 60px 55px 60px;background:var(--d3);border-bottom:1px solid var(--bdr);padding:.4rem .7rem;gap:.5rem;font-size:.5rem;color:var(--mut);text-transform:uppercase">
-              <div>Building</div><div>Units</div><div>Occupied</div><div>Vacant</div><div>Occupancy</div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 80px 60px 55px 60px;padding:.4rem .7rem;gap:.5rem;border-bottom:1px solid var(--bdr);align-items:center">
-              <div style="color:var(--wht);font-size:.62rem">Kilimani Heights</div>
-              <div style="font-size:.6rem">4</div><div style="font-size:.6rem;color:var(--g)">3</div>
-              <div style="font-size:.6rem;color:var(--orange)">1</div>
-              <div style="font-size:.6rem"><span style="background:rgba(0,200,83,.15);color:var(--g);padding:.1rem .3rem;border-radius:2px">75%</span></div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 80px 60px 55px 60px;padding:.4rem .7rem;gap:.5rem;align-items:center">
-              <div style="color:var(--wht);font-size:.62rem">Westlands Biz Park</div>
-              <div style="font-size:.6rem">2</div><div style="font-size:.6rem;color:var(--g)">1</div>
-              <div style="font-size:.6rem;color:var(--orange)">1</div>
-              <div style="font-size:.6rem"><span style="background:rgba(255,152,0,.15);color:var(--orange);padding:.1rem .3rem;border-radius:2px">50%</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- MAIN SCREEN -->
-      <div class="screen main" id="mainScreen">
-        <div class="screen-bar"><div class="s-dot r"></div><div class="s-dot y"></div><div class="s-dot g"></div><div class="s-url" id="screenUrl">localhost:8069/odoo/real-estate/properties</div></div>
-        <div class="odoo-nav"><span class="brand">▣ Odoo</span><a>Invoicing</a><a>M-Pesa</a><a class="active">Real Estate</a><a>Settings</a></div>
-        <div id="screenContent">
-          <!-- Properties list -->
-          <div style="padding:.6rem .8rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:.5rem">
-              <span style="background:var(--g);color:var(--dark);padding:.2rem .55rem;font-size:.58rem;font-weight:700;cursor:pointer">New</span>
-              <span style="color:var(--wht);font-size:.68rem;font-weight:600">Properties</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:.5rem">
-              <span style="border:1px solid var(--bdr);padding:.2rem .6rem;font-size:.55rem;color:var(--mut)">🔍 Search...</span>
-              <span style="font-size:.55rem;color:var(--mut)">1-4 / 4</span>
-            </div>
-          </div>
-          <div class="prop-list-header"><div>Ref</div><div>Property Name</div><div>Category</div><div>County</div><div>Tenant</div><div>Rent (KES)</div><div>Status</div></div>
-          <div class="prop-row"><div class="prop-ref">PROP/0001</div><div class="prop-name">Kilimani 3BR Apt</div><div style="color:var(--txt)">Residential</div><div style="color:var(--mut)">Nairobi</div><div style="font-size:.52rem;color:var(--txt)">Wanjiru Mwangi</div><div style="color:var(--wht)">85,000</div><div><span class="badge leased">Leased</span></div></div>
-          <div class="prop-row"><div class="prop-ref">PROP/0002</div><div class="prop-name">Westlands Office</div><div style="color:var(--txt)">Commercial</div><div style="color:var(--mut)">Nairobi</div><div style="font-size:.52rem;color:var(--txt)">Odhiambo Ltd</div><div style="color:var(--wht)">150,000</div><div><span class="badge leased">Leased</span></div></div>
-          <div class="prop-row"><div class="prop-ref">PROP/0003</div><div class="prop-name">Nyali Beach Villa</div><div style="color:var(--txt)">Residential</div><div style="color:var(--mut)">Mombasa</div><div style="font-size:.52rem;color:var(--mut)">—</div><div style="color:var(--wht)">200,000</div><div><span class="badge avail">Available</span></div></div>
-          <div class="prop-row"><div class="prop-ref">PROP/0004</div><div class="prop-name">Karen Maisonette</div><div style="color:var(--txt)">Residential</div><div style="color:var(--mut)">Nairobi</div><div style="font-size:.52rem;color:var(--mut)">—</div><div style="color:var(--wht)">120,000</div><div><span class="badge avail">Available</span></div></div>
-        </div>
-      </div>
-    </div>
-    <!-- Slide dots -->
-    <div style="display:flex;gap:.4rem;margin-top:2.5rem;padding-left:4px" id="slides">
-      <div onclick="showSlide(0)" style="width:32px;height:2px;background:var(--g);cursor:pointer" id="dot0"></div>
-      <div onclick="showSlide(1)" style="width:20px;height:2px;background:var(--bdr2);cursor:pointer" id="dot1"></div>
-      <div onclick="showSlide(2)" style="width:20px;height:2px;background:var(--bdr2);cursor:pointer" id="dot2"></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <div class="ticker-item"><span class="bullet">▶</span>M-Pesa Daraja 2.0</div>
-    <div class="ticker-item"><span class="bullet">▶</span>KRA MRI Returns</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Generator Billing</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Service Charge Apportionment</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Demand Notices</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Tenant Screening</div>
-    <div class="ticker-item"><span class="bullet">▶</span>BPRT Compliance</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Zero License Cost</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Docker Production</div>
-    <div class="ticker-item"><span class="bullet">▶</span>M-Pesa Daraja 2.0</div>
-    <div class="ticker-item"><span class="bullet">▶</span>KRA MRI Returns</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Generator Billing</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Service Charge Apportionment</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Demand Notices</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Tenant Screening</div>
-    <div class="ticker-item"><span class="bullet">▶</span>BPRT Compliance</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Zero License Cost</div>
-    <div class="ticker-item"><span class="bullet">▶</span>Docker Production</div>
-  </div>
-</div>
-
-<!-- MARKET RESEARCH STATS -->
-<div class="stats-band" id="market">
-  <div style="max-width:1280px;margin:0 auto">
-    <div class="eyebrow" style="justify-content:center;max-width:none;margin-bottom:1.5rem">// Kenya Real Estate Market 2025</div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="big">47<em>.2%</em></div>
-        <div class="label">Agents using rent software</div>
-        <div class="source">KNBS Real Estate Survey 2024</div>
-      </div>
-      <div class="stat-card">
-        <div class="big">12<em>%</em></div>
-        <div class="label">Commercial rental yields</div>
-        <div class="source">Kenya Police Investment Co-op 2025</div>
-      </div>
-      <div class="stat-card">
-        <div class="big">72<em>.7%</em></div>
-        <div class="label">Prime occupancy rate</div>
-        <div class="source">HassConsult 2024</div>
-      </div>
-      <div class="stat-card">
-        <div class="big">200<em>k+</em></div>
-        <div class="label">Housing units deficit/year</div>
-        <div class="source">Willstone Homes 2025</div>
-      </div>
-    </div>
-    <p style="font-size:.72rem;color:var(--mut);text-align:center;margin-top:1.5rem;max-width:600px;margin-left:auto;margin-right:auto">
-      53% of Kenya landlords still use manual systems. KRA introduced a new rental income tax system in April 2025. We built the module that solves all of this.
-    </p>
-  </div>
-</div>
-
-<!-- KENYA PAIN POINTS -->
-<section>
-  <div class="eyebrow">// East Africa Pain Points We Solve</div>
-  <h2>Built from<br>real problems.</h2>
-  <p class="section-sub">Not a generic real estate module with Kenya flag added. Every feature was designed for a specific East African market failure.</p>
-  <div class="pain-grid">
-    <div class="pain">
-      <div class="pain-num">01</div>
-      <span class="pain-icon">💸</span>
-      <div class="pain-title">Manual Rent Collection</div>
-      <div class="pain-desc">53% of Kenya landlords still use WhatsApp, cash, and Excel. Chasing tenants is the #1 complaint.</div>
-      <div class="pain-solution">→ M-Pesa STK Push auto-reconciled to invoices. Tenant receives phone prompt.</div>
-    </div>
-    <div class="pain">
-      <div class="pain-num">02</div>
-      <span class="pain-icon">🏛️</span>
-      <div class="pain-title">KRA MRI Compliance (2025)</div>
-      <div class="pain-desc">KRA launched new Monthly Rental Income system April 2025. Most landlords don't know how to comply.</div>
-      <div class="pain-solution">→ Auto-populate returns from invoices. Tax due calculated. 7.5% / 30% rates applied.</div>
-    </div>
-    <div class="pain">
-      <div class="pain-num">03</div>
-      <span class="pain-icon">⚡</span>
-      <div class="pain-title">Generator Cost Disputes</div>
-      <div class="pain-desc">Every building has a standby generator. Fuel costs split among tenants is a constant dispute.</div>
-      <div class="pain-solution">→ Log hours run → auto-calculate fuel cost → apportion by unit → generate invoices.</div>
-    </div>
-    <div class="pain">
-      <div class="pain-num">04</div>
-      <span class="pain-icon">📋</span>
-      <div class="pain-title">No Tenant Vetting Process</div>
-      <div class="pain-desc">Kenya has no formal credit bureau. Bad tenants are onboarded due to lack of screening tools.</div>
-      <div class="pain-solution">→ Scoring engine: ID + payslips + employment + income ratio + previous landlord ref.</div>
-    </div>
-    <div class="pain">
-      <div class="pain-num">05</div>
-      <span class="pain-icon">⚖️</span>
-      <div class="pain-title">Eviction Process Confusion</div>
-      <div class="pain-desc">Landlord & Tenant Act (Cap 301) + BPRT for commercial. Most landlords skip steps and face court loss.</div>
-      <div class="pain-solution">→ Formal demand notice workflow → 7-day/30-day → BPRT escalation → court summons.</div>
-    </div>
-    <div class="pain">
-      <div class="pain-num">06</div>
-      <span class="pain-icon">💧</span>
-      <div class="pain-title">Service Charge Disputes</div>
-      <div class="pain-desc">Security, cleaning, borehole, compound lighting costs shared among tenants — manual calculations cause disputes.</div>
-      <div class="pain-solution">→ Apportion by equal split / unit sqft / bedrooms. Auto-generate invoices per unit.</div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<div style="background:var(--d2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)">
-<section id="features" style="padding-top:6rem;padding-bottom:6rem">
-  <div class="eyebrow">// Enterprise Feature Matrix</div>
-  <h2>22 models.<br>9 crons. Zero gaps.</h2>
-  <p class="section-sub">Every feature an East African property manager needs — in one open source Odoo module.</p>
-  <div class="feat-grid">
-    <div class="feat"><div class="feat-num">01</div><span class="feat-icon">🏢</span><div class="feat-title">Building Portfolio</div><div class="feat-desc">Building → Floor → Unit hierarchy. Occupancy rates, caretaker assignment, generator + utility tracking per building.</div></div>
-    <div class="feat"><div class="feat-num">02</div><span class="feat-icon">📄</span><div class="feat-title">Lease Management</div><div class="feat-desc">Draft → Active → Escalate → Renew → Surrender. KRA WHT, deposit validation, break clause, subletting approval, overlap protection.</div></div>
-    <div class="feat"><div class="feat-num">03</div><span class="feat-icon">📱</span><div class="feat-title">M-Pesa Rent Collection</div><div class="feat-desc">STK Push from any invoice. Callback auto-reconciles to tenant account. C2B paybill listener. B2C vendor payouts. Token cache + retry.</div></div>
-    <div class="feat"><div class="feat-num">04</div><span class="feat-icon">🏛️</span><div class="feat-title">KRA MRI Returns</div><div class="feat-desc">Auto-populate monthly returns from paid invoices. 7.5% residential / 30% normal rates. Due date alerts. Filing tracking.</div></div>
-    <div class="feat"><div class="feat-num">05</div><span class="feat-icon">⚡</span><div class="feat-title">Generator Billing</div><div class="feat-desc">Log generator hours → auto-calculate fuel consumption → apportion among units → generate invoices per tenant.</div></div>
-    <div class="feat"><div class="feat-num">06</div><span class="feat-icon">🏗️</span><div class="feat-title">Service Charges</div><div class="feat-desc">Security, cleaning, lifting, borehole, refuse. Apportion equally, by sqft, or by bedrooms. One-click invoice generation.</div></div>
-    <div class="feat"><div class="feat-num">07</div><span class="feat-icon">⚖️</span><div class="feat-title">Demand Notices</div><div class="feat-desc">7-day arrears → 30-day vacate → BPRT filing → court summons. Auto-deadline computation. Witness recording.</div></div>
-    <div class="feat"><div class="feat-num">08</div><span class="feat-icon">🔍</span><div class="feat-title">Tenant Screening</div><div class="feat-desc">Score out of 100: ID, payslips, income ratio (3x minimum), employer verification, previous landlord reference.</div></div>
-    <div class="feat"><div class="feat-num">09</div><span class="feat-icon">🛡️</span><div class="feat-title">Caretaker Management</div><div class="feat-desc">Caretaker records with NHIF/NSSF/KRA numbers. Salary + house allowance. One-click vendor bill generation.</div></div>
-    <div class="feat"><div class="feat-num">10</div><span class="feat-icon">💰</span><div class="feat-title">Financial KPIs</div><div class="feat-desc">NOI, Cap Rate, Gross Yield, Landlord Payout after WHT + management fee. Vacancy revenue loss. All computed live.</div></div>
-    <div class="feat"><div class="feat-num">11</div><span class="feat-icon">🔧</span><div class="feat-title">Maintenance</div><div class="feat-desc">Priority requests, contractor assignment, cost tracking. Linked to lease + property. PDF inspection checklist.</div></div>
-    <div class="feat"><div class="feat-num">12</div><span class="feat-icon">📊</span><div class="feat-title">PDF Reports</div><div class="feat-desc">Rent Roll with KPI summary. Arrears Aging with color-coded severity. Tenancy Agreement (Kenya law compliant).</div></div>
-  </div>
-</section>
-</div>
-
-<!-- MODULE TABLE -->
-<section id="modules">
-  <div class="eyebrow">// Module Registry</div>
-  <h2>4 installable<br>add-ons.</h2>
-  <p class="section-sub">Install the full stack or individual modules. All LGPL-3 — free in any commercial project.</p>
-  <table class="mod-table">
-    <thead>
-      <tr><th>Module</th><th>Purpose</th><th>Key Deps</th><th>Status</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><div class="mod-name">mpesa_connector</div></td>
-        <td class="mod-desc">Daraja 2.0 API kernel — token cache, retry, STK push, C2B, B2C, reversal, status query</td>
-        <td><span class="tag">account</span><span class="tag">payment</span></td>
-        <td><span class="tag live">✅ v2.0</span></td>
-      </tr>
-      <tr>
-        <td><div class="mod-name">mpesa_integration</div></td>
-        <td class="mod-desc">Transaction audit log, reconciliation wizard, status query, scheduled cleanup</td>
-        <td><span class="tag">mpesa_connector</span><span class="tag">mail</span></td>
-        <td><span class="tag live">✅ v2.0</span></td>
-      </tr>
-      <tr>
-        <td><div class="mod-name">kenya_mpesa_acquirer</div></td>
-        <td class="mod-desc">Odoo payment provider UI — STK wizard, C2B registration, B2C, webhook controllers</td>
-        <td><span class="tag">payment</span><span class="tag">mpesa_connector</span></td>
-        <td><span class="tag live">✅ v2.0</span></td>
-      </tr>
-      <tr>
-        <td><div class="mod-name">kenya_real_estate</div></td>
-        <td class="mod-desc">Full East Africa Real Estate CRM — 22 models, 9 crons, PDF reports, KRA compliance</td>
-        <td><span class="tag">account</span><span class="tag">mail</span><span class="tag">mpesa_connector</span></td>
-        <td><span class="tag live">✅ v5.0</span></td>
-      </tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- COMPLIANCE -->
-<div style="background:var(--d2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)">
-<section id="compliance">
-  <div class="eyebrow">// Kenya Legal Compliance</div>
-  <h2>Every regulation.<br>Built in.</h2>
-  <p class="section-sub">Not an afterthought. Compliance is core business logic — auto-computed, tracked, and reported.</p>
-  <div class="compliance-grid">
-    <div class="compliance-item">
-      <div class="c-flag">🏛️ KRA — April 2025</div>
-      <div class="c-law">Monthly Rental Income (MRI) Tax</div>
-      <div class="c-impl">Auto-populate returns from paid invoices. Residential: 7.5% flat (income &lt; KES 288k/mo). 5-day filing reminder cron. Track filed → paid status.</div>
-    </div>
-    <div class="compliance-item">
-      <div class="c-flag">📋 Income Tax Act — Section 35 KITA</div>
-      <div class="c-law">Withholding Tax (WHT)</div>
-      <div class="c-impl">5% residential / 10% commercial auto-computed on every lease. Deducted from landlord payout. Shown separately on invoices.</div>
-    </div>
-    <div class="compliance-item">
-      <div class="c-flag">⚖️ Cap 301 — Landlord &amp; Tenant Act</div>
-      <div class="c-law">Tenancy Agreement &amp; Eviction</div>
-      <div class="c-impl">PDF tenancy agreement template. Formal demand notice workflow: 7-day → 30-day → court. All steps logged with witness records.</div>
-    </div>
-    <div class="compliance-item">
-      <div class="c-flag">🏢 Business Premises Rent Tribunal</div>
-      <div class="c-law">Commercial Rent Disputes (BPRT)</div>
-      <div class="c-impl">Commercial lease escalation requires BPRT notice. Workflow flags commercial leases and routes demand notices to BPRT filing track.</div>
-    </div>
-    <div class="compliance-item">
-      <div class="c-flag">📱 Safaricom — Daraja 2.0</div>
-      <div class="c-law">M-Pesa Integration</div>
-      <div class="c-impl">OAuth2 token caching. Phone normalization to 2547XXXXXXXX. STK Push + C2B paybill + B2C payouts. Full sandbox/production switch.</div>
-    </div>
-    <div class="compliance-item">
-      <div class="c-flag">👷 Employment Act — NHIF/NSSF</div>
-      <div class="c-law">Caretaker Employment</div>
-      <div class="c-impl">Caretaker records store NHIF, NSSF, KRA PIN numbers. Monthly salary + house allowance auto-generates vendor bills for payroll.</div>
-    </div>
-  </div>
-</section>
-</div>
-
-<!-- QUICK START -->
-<section id="setup">
-  <div class="eyebrow">// Quick Start</div>
-  <h2>Up in 60 seconds.</h2>
-  <p class="section-sub">Docker Compose handles everything. One command to start, one to install modules.</p>
-  <div class="code-block">
-    <span class="c-comment"># 1. Clone & configure</span><br>
-    <span class="c-cmd">git clone</span> <span class="c-str">https://github.com/NyoikePaul/OdooERP.git</span><br>
-    <span class="c-cmd">cd</span> OdooERP &amp;&amp; <span class="c-cmd">cp</span> .env.example .env<br><br>
-    <span class="c-comment"># 2. Add your M-Pesa Daraja credentials to .env</span><br>
-    <span class="c-var">MPESA_CONSUMER_KEY</span>=your_key<br>
-    <span class="c-var">MPESA_CONSUMER_SECRET</span>=your_secret<br><br>
-    <span class="c-comment"># 3. Start Docker</span><br>
-    <span class="c-cmd">docker compose up -d</span><br><br>
-    <span class="c-comment"># 4. Install modules</span><br>
-    <span class="c-cmd">docker compose run --rm web odoo \</span><br>
-    &nbsp;&nbsp;-d odoo_kenya -i <span class="c-str">mpesa_connector,mpesa_integration,kenya_mpesa_acquirer,kenya_real_estate</span> \<br>
-    &nbsp;&nbsp;--stop-after-init --no-http<br><br>
-    <span class="c-comment"># 5. Open http://localhost:8069 → login admin/admin</span>
-  </div>
-  <div style="display:flex;gap:1rem;flex-wrap:wrap">
-    <a href="https://github.com/NyoikePaul/OdooERP/blob/main/SETUP.md" class="btn-primary" target="_blank">Full Setup Guide →</a>
-    <a href="https://github.com/NyoikePaul/OdooERP" class="btn-ghost" target="_blank">View on GitHub →</a>
-  </div>
-</section>
-
-<!-- ROADMAP -->
-<div style="background:var(--d2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)">
-<section>
-  <div class="eyebrow">// Roadmap</div>
-  <h2>What's next.</h2>
-  <div class="roadmap-list">
-    <div class="road-item"><div class="road-icon done">✅</div><div><div class="road-text">M-Pesa STK Push + auto-reconciliation + B2C + C2B</div><div class="road-label">Shipped · v2.0</div></div></div>
-    <div class="road-item"><div class="road-icon done">✅</div><div><div class="road-text">Real Estate CRM — buildings, leases, deposit, inspection, commission</div><div class="road-label">Shipped · v4.0</div></div></div>
-    <div class="road-item"><div class="road-icon done">✅</div><div><div class="road-text">KRA MRI tax returns, generator billing, demand notices, tenant screening, caretaker management</div><div class="road-label">Shipped · v5.0</div></div></div>
-    <div class="road-item"><div class="road-icon wip">⚡</div><div><div class="road-text">WhatsApp rent reminders via Africa's Talking API</div><div class="road-label">In Progress</div></div></div>
-    <div class="road-item"><div class="road-icon todo">○</div><div><div class="road-text">Uganda localization (URA tax, MTN Mobile Money)</div><div class="road-label">Planned · Q3 2026</div></div></div>
-    <div class="road-item"><div class="road-icon todo">○</div><div><div class="road-text">Tanzania localization (ZARB compliance, M-Pesa TZ)</div><div class="road-label">Planned · Q3 2026</div></div></div>
-    <div class="road-item"><div class="road-icon todo">○</div><div><div class="road-text">Tenant self-service portal (view invoices, log maintenance, pay via M-Pesa)</div><div class="road-label">Planned · Q4 2026</div></div></div>
-    <div class="road-item"><div class="road-icon todo">○</div><div><div class="road-text">Odoo App Store listing (OCA submission)</div><div class="road-label">Planned</div></div></div>
-  </div>
-</section>
-</div>
-
-<!-- CTA -->
-<div class="cta-band">
-  <div class="eyebrow" style="justify-content:center;max-width:none;margin-bottom:1rem">// Open Source · LGPL-3 · 100% Free</div>
-  <h2>The ERP East Africa<br>has been waiting for.</h2>
-  <p style="color:var(--mut);font-size:.875rem;max-width:480px;margin:0 auto">Clone today. Deploy in 60 seconds. KRA compliant. M-Pesa ready. Zero licensing cost forever.</p>
-  <div class="cta-btns">
-    <a href="https://github.com/NyoikePaul/OdooERP" class="btn-primary" target="_blank">★ Star on GitHub</a>
-    <a href="https://github.com/NyoikePaul/OdooERP/blob/main/SETUP.md" class="btn-ghost" target="_blank">Setup Guide →</a>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div>© 2026 <a href="https://github.com/NyoikePaul" target="_blank">Paul Nyoike</a> · OdooERP Kenya · LGPL-3</div>
-  <div class="footer-links">
-    <a href="https://github.com/NyoikePaul/OdooERP" target="_blank">GitHub</a>
-    <a href="https://github.com/NyoikePaul/OdooERP/blob/main/SETUP.md" target="_blank">Docs</a>
-    <a href="https://github.com/NyoikePaul/OdooERP/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
-    <span>🇰🇪 Built in Nairobi</span>
-  </div>
-</footer>
-
-<script>
-// Slideshow
-const slides = [
-  {
-    url: 'localhost:8069/odoo/real-estate/properties',
-    html: `<div style="padding:.6rem .8rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:.5rem"><span style="background:var(--g);color:var(--dark);padding:.2rem .55rem;font-size:.58rem;font-weight:700">New</span><span style="color:var(--wht);font-size:.68rem;font-weight:600">Properties</span></div><span style="font-size:.55rem;color:var(--mut)">1-4 / 4</span></div><div style="display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;gap:6px;background:var(--d3);border-bottom:1px solid var(--bdr);padding:.5rem .8rem;font-size:.5rem;color:var(--mut);text-transform:uppercase"><div>Ref</div><div>Property</div><div>Category</div><div>County</div><div>Tenant</div><div>Rent</div><div>Status</div></div><div style="display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;gap:6px;padding:.45rem .8rem;border-bottom:1px solid var(--bdr);font-size:.58rem;align-items:center"><div style="color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.52rem">PROP/0001</div><div style="color:var(--wht);font-weight:500">Kilimani 3BR Apt</div><div style="color:var(--txt)">Residential</div><div style="color:var(--mut)">Nairobi</div><div style="font-size:.52rem">Wanjiru Mwangi</div><div style="color:var(--wht)">85,000</div><div><span style="background:rgba(33,150,243,.15);color:#42a5f5;border:1px solid rgba(33,150,243,.3);padding:.1rem .4rem;font-size:.5rem">Leased</span></div></div><div style="display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;gap:6px;padding:.45rem .8rem;border-bottom:1px solid var(--bdr);font-size:.58rem;align-items:center"><div style="color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.52rem">PROP/0002</div><div style="color:var(--wht);font-weight:500">Westlands Office</div><div style="color:var(--txt)">Commercial</div><div style="color:var(--mut)">Nairobi</div><div style="font-size:.52rem">Odhiambo Ltd</div><div style="color:var(--wht)">150,000</div><div><span style="background:rgba(33,150,243,.15);color:#42a5f5;border:1px solid rgba(33,150,243,.3);padding:.1rem .4rem;font-size:.5rem">Leased</span></div></div><div style="display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;gap:6px;padding:.45rem .8rem;border-bottom:1px solid var(--bdr);font-size:.58rem;align-items:center"><div style="color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.52rem">PROP/0003</div><div style="color:var(--wht);font-weight:500">Nyali Beach Villa</div><div style="color:var(--txt)">Residential</div><div style="color:var(--mut)">Mombasa</div><div style="font-size:.52rem;color:var(--mut)">—</div><div style="color:var(--wht)">200,000</div><div><span style="background:rgba(0,200,83,.12);color:var(--g);border:1px solid rgba(0,200,83,.25);padding:.1rem .4rem;font-size:.5rem">Available</span></div></div><div style="display:grid;grid-template-columns:80px 1fr 70px 70px 90px 60px 55px;gap:6px;padding:.45rem .8rem;font-size:.58rem;align-items:center"><div style="color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.52rem">PROP/0004</div><div style="color:var(--wht);font-weight:500">Karen Maisonette</div><div style="color:var(--txt)">Residential</div><div style="color:var(--mut)">Nairobi</div><div style="font-size:.52rem;color:var(--mut)">—</div><div style="color:var(--wht)">120,000</div><div><span style="background:rgba(0,200,83,.12);color:var(--g);border:1px solid rgba(0,200,83,.25);padding:.1rem .4rem;font-size:.5rem">Available</span></div></div>`
-  },
-  {
-    url: 'localhost:8069/odoo/real-estate/mpesa-payment-provider',
-    html: `<div style="padding:1rem;font-size:.65rem"><div style="font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--mut);margin-bottom:.5rem">Invoicing / Payment Providers / M-Pesa Kenya</div><div style="font-size:1.1rem;font-weight:700;color:var(--wht);margin-bottom:.2rem">M-Pesa Kenya</div><div style="font-size:.65rem;color:var(--mut);margin-bottom:1rem">Safaricom Daraja 2.0 — STK Push · C2B · B2C</div><div style="font-size:.6rem;font-weight:600;letter-spacing:.12em;color:var(--g);text-transform:uppercase;margin-bottom:.6rem">M-Pesa Daraja Credentials</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.8rem"><div><div style="font-size:.52rem;color:var(--mut);margin-bottom:.2rem">Consumer Key</div><div style="background:var(--d3);border:1px solid var(--bdr);padding:.25rem .5rem;font-size:.58rem;color:var(--mut)">••••••••••••••</div></div><div><div style="font-size:.52rem;color:var(--mut);margin-bottom:.2rem">Token Status</div><div style="background:var(--d3);border:1px solid rgba(0,200,83,.3);padding:.25rem .5rem;font-size:.58rem;color:var(--g)">Connected ✅</div></div><div><div style="font-size:.52rem;color:var(--mut);margin-bottom:.2rem">Business Shortcode</div><div style="background:var(--d3);border:1px solid var(--bdr);padding:.25rem .5rem;font-size:.58rem;color:var(--wht)">174379</div></div><div><div style="font-size:.52rem;color:var(--mut);margin-bottom:.2rem">Sandbox Mode</div><div style="background:var(--d3);border:1px solid var(--bdr);padding:.25rem .5rem;font-size:.58rem;color:var(--orange)">⚡ Test Mode</div></div></div><div style="display:flex;gap:.4rem;margin-bottom:1rem"><div style="background:var(--card);border:1px solid var(--bdr);padding:.3rem .6rem;font-size:.58rem;color:var(--txt)">🔌 Test Connection</div><div style="background:var(--card);border:1px solid var(--bdr);padding:.3rem .6rem;font-size:.58rem;color:var(--txt)">🔗 Register C2B</div><div style="background:var(--g);padding:.3rem .7rem;font-size:.58rem;color:var(--dark);font-weight:700">📱 STK Push</div></div><div style="display:flex;gap:1rem"><div style="display:flex;align-items:center;gap:.3rem;font-size:.58rem;color:var(--mut)"><div style="width:8px;height:8px;border-radius:50%;border:1px solid var(--mut)"></div>Disabled</div><div style="display:flex;align-items:center;gap:.3rem;font-size:.58rem;color:var(--mut)"><div style="width:8px;height:8px;border-radius:50%;border:1px solid var(--mut)"></div>Enabled</div><div style="display:flex;align-items:center;gap:.3rem;font-size:.58rem;color:var(--orange)"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></div>Test Mode ✓</div></div></div>`
-  },
-  {
-    url: 'localhost:8069/odoo/real-estate/kra-returns',
-    html: `<div style="padding:.6rem .8rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between"><span style="color:var(--wht);font-size:.68rem;font-weight:600">KRA MRI Returns</span><span style="background:var(--g);color:var(--dark);padding:.2rem .55rem;font-size:.58rem;font-weight:700">+ New Return</span></div><div style="display:grid;grid-template-columns:80px 1fr 60px 50px 80px 60px 60px;gap:4px;background:var(--d3);border-bottom:1px solid var(--bdr);padding:.4rem .7rem;font-size:.48rem;color:var(--mut);text-transform:uppercase"><div>Ref</div><div>Landlord</div><div>Period</div><div>Year</div><div>Gross Income</div><div>Tax Due</div><div>Status</div></div><div style="display:grid;grid-template-columns:80px 1fr 60px 50px 80px 60px 60px;gap:4px;padding:.4rem .7rem;border-bottom:1px solid var(--bdr);font-size:.55rem;align-items:center"><div style="color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.5rem">KRA/0001</div><div style="color:var(--wht)">Kamau Prop Ltd</div><div>May</div><div>2026</div><div>235,000</div><div style="color:var(--gold)">17,625</div><div><span style="background:rgba(0,200,83,.12);color:var(--g);border:1px solid rgba(0,200,83,.25);padding:.1rem .4rem;font-size:.48rem">Filed</span></div></div><div style="display:grid;grid-template-columns:80px 1fr 60px 50px 80px 60px 60px;gap:4px;padding:.4rem .7rem;border-bottom:1px solid var(--bdr);font-size:.55rem;align-items:center"><div style="color:var(--g);font-family:'JetBrains Mono',monospace;font-size:.5rem">KRA/0002</div><div style="color:var(--wht)">Coastal Estates</div><div>May</div><div>2026</div><div>200,000</div><div style="color:var(--red)">15,000</div><div><span style="background:rgba(255,152,0,.12);color:var(--orange);border:1px solid rgba(255,152,0,.25);padding:.1rem .4rem;font-size:.48rem">Due 20 Jun</span></div></div><div style="padding:.6rem .8rem;background:rgba(0,200,83,.04);font-size:.58rem;color:var(--mut);border-top:1px solid var(--bdr)">Residential MRI: <span style="color:var(--wht)">7.5% flat rate</span> (income &lt; KES 288,000/mo) · KRA April 2025 system · <span style="color:var(--g)">Auto-populate from invoices</span></div>`
-  }
-];
-
-let cur = 0;
-function showSlide(n) {
-  cur = n;
-  document.getElementById('screenUrl').textContent = slides[n].url;
-  document.getElementById('screenContent').innerHTML = slides[n].html;
-  for (let i = 0; i < 3; i++) {
-    const d = document.getElementById('dot'+i);
-    if (d) { d.style.width = i === n ? '32px' : '20px'; d.style.background = i === n ? 'var(--g)' : 'var(--bdr2)'; }
-  }
-}
-setInterval(() => showSlide((cur + 1) % slides.length), 4500);
-
-// Mobile nav
-function toggleNav() {
-  const nav = document.getElementById('mobNav');
-  nav.classList.toggle('open');
-}
-function closeNav() {
-  document.getElementById('mobNav').classList.remove('open');
-}
-document.addEventListener('click', e => {
-  const nav = document.getElementById('mobNav');
-  if (nav && nav.classList.contains('open') && !nav.contains(e.target)) {
-    closeNav();
-  }
-});
-
-// Scroll reveal
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.animation = 'fadeUp .5s ease both';
-      io.unobserve(e.target);
-    }
-  });
-}, {threshold: .08});
-document.querySelectorAll('.pain,.feat,.stat-card,.compliance-item,.road-item,.tag').forEach(el => {
-  el.style.opacity = '0';
-  io.observe(el);
-});
-</script>
+  <script src="main.js"></script>
 </body>
 </html>
