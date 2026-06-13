@@ -1,175 +1,194 @@
 <div align="center">
 
-# OdooERP Kenya 🇰🇪
+<pre>
+ ██████╗ ██████╗  ██████╗  ██████╗     ███████╗██████╗ ██████╗ 
+██╔═══██╗██╔══██╗██╔═══██╗██╔═══██╗    ██╔════╝██╔══██╗██╔══██╗
+██║   ██║██║  ██║██║   ██║██║   ██║    █████╗  ██████╔╝██████╔╝
+██║   ██║██║  ██║██║   ██║██║   ██║    ██╔══╝  ██╔══██╗██╔═══╝ 
+╚██████╔╝██████╔╝╚██████╔╝╚██████╔╝    ███████╗██║  ██║██║     
+ ╚═════╝ ╚═════╝  ╚═════╝  ╚═════╝     ╚══════╝╚═╝  ╚═╝╚═╝     
+                         K E N Y A
+</pre>
 
-**Enterprise ERP built for the African market.**
-M-Pesa · Real Estate CRM · KRA eTIMS · Odoo 18
+**Enterprise Real Estate & Property Management ERP**
+Built on Odoo 18 · Kenya-localised · M-Pesa · KRA eTIMS
 
-[![Odoo](https://img.shields.io/badge/Odoo-18.0-4A4A4A?style=for-the-badge&logo=odoo)](https://odoo.com)
-[![M-Pesa](https://img.shields.io/badge/M--Pesa-Daraja_2.0-00A651?style=for-the-badge)](https://developer.safaricom.co.ke)
-[![KRA eTIMS](https://img.shields.io/badge/KRA-eTIMS-FF6600?style=for-the-badge)](https://etims.kra.go.ke)
-[![License](https://img.shields.io/badge/License-LGPL--3-blue?style=for-the-badge)](LICENSE)
-[![Kenya](https://img.shields.io/badge/Made_for-Kenya-006600?style=for-the-badge)](https://github.com/NyoikePaul/OdooERP)
+[![CI](https://github.com/NyoikePaul/OdooERP/actions/workflows/ci.yml/badge.svg)](https://github.com/NyoikePaul/OdooERP/actions)
+[![Odoo](https://img.shields.io/badge/Odoo-18.0-875A7B?logo=odoo)](https://www.odoo.com)
+[![License](https://img.shields.io/badge/License-LGPL--3-blue)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python)](https://python.org)
+[![M-Pesa](https://img.shields.io/badge/M--Pesa-Daraja%202.0-00B300)](https://developer.safaricom.co.ke)
 
-[Live Demo](https://nyoikepaul.github.io/OdooERP/) · [Setup Guide](SETUP.md) · [Changelog](CHANGELOG.md)
+[Features](#-features) · [Modules](#-modules) · [Quick Start](#-quick-start) · [Architecture](#-architecture) · [Screenshots](#-screenshots)
 
 </div>
 
 ---
 
-## What's Inside
+## 🖼 Screenshots
 
-| Module | Description | Version |
-|--------|-------------|---------|
-| `mpesa_connector` | Daraja 2.0 API kernel — token cache, retry, all endpoints | 2.0.0 |
-| `mpesa_integration` | Transaction audit log + reconciliation wizard | 2.0.0 |
-| `kenya_mpesa_acquirer` | Odoo payment provider — STK Push, C2B, B2C | 2.0.0 |
-| `kenya_real_estate` | Enterprise Real Estate CRM — 16 models, 7 crons | 4.0.0 |
+<div align="center">
 
----
+![OdooERP Kenya Demo](docs/assets/workflow.gif)
 
-## Real Estate CRM — Feature Matrix
+| Property Dashboard | Lease Management | KPI Analytics |
+|:---:|:---:|:---:|
+| ![](docs/assets/frames/frame1.png) | ![](docs/assets/frames/frame2.png) | ![](docs/assets/frames/frame3.png) |
 
-| Feature | Status |
-|---------|--------|
-| Building + Unit hierarchy | ✅ |
-| Full lease lifecycle (draft → renew → surrender) | ✅ |
-| KRA WHT 5%/10% auto-computed | ✅ |
-| Auto monthly rent invoicing | ✅ |
-| Late payment penalties + grace period | ✅ |
-| Rent escalation engine + auto-apply cron | ✅ |
-| Security deposit ledger | ✅ |
-| Property insurance tracking + alerts | ✅ |
-| Property valuation history | ✅ |
-| Lease templates | ✅ |
-| Tenant broadcast messaging | ✅ |
-| Agent commission tracking | ✅ |
-| Move-in/out inspection checklists | ✅ |
-| Utility billing (water/electricity) | ✅ |
-| Property offers & enquiry pipeline | ✅ |
-| PDF Rent Roll report | ✅ |
-| PDF Arrears Aging report | ✅ |
-| PDF Tenancy Agreement (Kenya law) | ✅ |
-| NOI, Cap Rate, Gross Yield KPIs | ✅ |
-| Vacancy tracking + revenue loss | ✅ |
+</div>
 
 ---
 
-## Quick Start
+## ✨ Features
 
-```bash
+| Category | Capability |
+|---|---|
+| 💳 **Payments** | M-Pesa STK Push, C2B, B2C, auto-reconciliation, callback handling |
+| 🧾 **Tax Compliance** | KRA eTIMS OSCU real-time invoice submission, WHT, VAT 16% |
+| 🏠 **Property** | Multi-building, unit management, occupancy tracking, county mapping |
+| 📋 **Leasing** | Lease lifecycle, renewal wizard, demand notices (Cap 301), bulk rent |
+| 📊 **Dashboard** | Live OWL KPI dashboard — occupancy, arrears aging, revenue, pipeline |
+| 🔧 **Maintenance** | Work orders, priority escalation, avg resolution tracking |
+| 🤝 **Sales** | Viewings, offers, acquisition pipeline, commission management |
+| 👤 **Screening** | Tenant screening workflow, Kenya PIN validation |
+| 📄 **Reports** | Rent roll, tenancy agreement, demand notice PDF reports |
+
+---
+
+## 📦 Modules
+
+<pre>
+custom_addons/
+├── estate_core/           # Base models: property, unit, building, lease
+├── estate_rental/         # Rental workflows, demand notices, caretaker payroll
+├── estate_sales/          # Sales pipeline, viewings, offers, acquisitions
+├── estate_finance/        # Revenue, commissions, owner statements
+├── kenya_real_estate/     # Kenya extensions + live OWL KPI dashboard
+├── kenya_mpesa_acquirer/  # Odoo payment acquirer — M-Pesa
+├── mpesa_connector/       # Daraja 2.0: STK, C2B, B2C, reversal, status
+├── mpesa_integration/     # M-Pesa ↔ account.move auto-reconciliation
+└── kenya_kra_etims/       # KRA eTIMS OSCU real-time invoice submission
+</pre>
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker & Docker Compose
+- Git
+
+### Run locally
+
+<pre>
 git clone https://github.com/NyoikePaul/OdooERP.git
 cd OdooERP
-cp .env.example .env
-# Edit .env — add your M-Pesa Daraja credentials
+cp .env.example .env          # fill in your credentials
 docker compose up -d
-```
+</pre>
 
-Open **http://localhost:8069** → login `admin / admin`
+Open [http://localhost:8070](http://localhost:8070) · default login: `admin / admin`
 
----
+### Install Kenya modules
 
-## M-Pesa Setup
+In Odoo → Apps → search **Kenya** → install in this order:
 
-1. Create an app at [developer.safaricom.co.ke](https://developer.safaricom.co.ke)
-2. Copy Consumer Key + Secret → add to `.env`
-3. In Odoo: **Invoicing → Configuration → Payment Providers → M-Pesa Kenya**
-4. Enter credentials → **Test Connection** ✅
-5. Click **Register C2B URLs** to enable paybill
-
----
-
-## Deploy to Production
-
-```bash
-# Production deployment with Nginx + SSL
-cp .env.example .env
-# Set DOMAIN, LETSENCRYPT_EMAIL in .env
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-```
+<pre>
+1. estate_core
+2. estate_rental + estate_sales + estate_finance
+3. kenya_real_estate
+4. mpesa_connector → kenya_mpesa_acquirer
+5. kenya_kra_etims
+</pre>
 
 ---
 
-## Kenya Compliance
+## 🏗 Architecture
 
-| Regulation | Implementation |
-|-----------|----------------|
-| KRA WHT (Section 35 KITA) | 5% residential / 10% commercial auto-computed |
-| KRA eTIMS OSCU | Real-time invoice submission — no hardware needed |
-| Kenya Landlord & Tenant Act (Cap 301) | PDF tenancy agreement template |
-| Safaricom Daraja 2.0 | Full API — STK Push, C2B, B2C, reversal |
+<pre>
+┌─────────────────────────────────────────────┐
+│            Odoo 18 Web Client               │
+│          OWL Dashboard · PDF Reports        │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│           Custom Addons Layer               │
+│   estate_core → rental / sales / finance    │
+│   kenya_real_estate  (KPIs, compliance)     │
+│   mpesa_connector    · kenya_kra_etims      │
+└──────────┬──────────────────┬───────────────┘
+           │                  │
+┌──────────▼────────┐ ┌───────▼──────────────┐
+│  Safaricom        │ │  KRA eTIMS OSCU      │
+│  Daraja 2.0       │ │  Invoice Submission  │
+│  M-Pesa API       │ │  Real-time           │
+└───────────────────┘ └──────────────────────┘
+</pre>
+
+---
+
+## 💳 M-Pesa Integration
+
+<pre>
+- STK Push    — prompt tenant phone directly from lease or invoice
+- C2B         — receive paybill/till payments, auto-match to invoice
+- B2C         — send refunds or deposits to tenant phone
+- Reversal    — full transaction lifecycle management
+- Token cache — 55-min OAuth token cache, auto-refresh
+- Retry       — 3-attempt retry with exponential backoff
+- Normaliser  — handles 07xx / 2547xx / +2547xx formats
+</pre>
 
 ---
 
-## Architecture
+## 🧾 KRA eTIMS Compliance
 
-OdooERP Kenya
-├── mpesa_connector        # Abstract Daraja 2.0 API mixin
+Real-time invoice submission to KRA eTIMS OSCU on every posted invoice.
 
-├── mpesa_integration      # Transaction log + reconciliation
-
-├── kenya_mpesa_acquirer   # Payment provider UI + webhooks
-
-└── kenya_real_estate      # Real Estate CRM (16 models)
-
-├── estate.building    # Buildings + units
-
-├── estate.property    # Property portfolio
-
-├── estate.lease       # Tenancy agreements
-
-├── estate.offer       # Enquiry pipeline
-
-├── estate.inspection  # Move-in/out checklists
-
-├── estate.deposit     # Deposit ledger
-
-├── estate.commission  # Agent commissions
-
-├── estate.utility.*   # Meter readings + billing
-
-├── estate.insurance   # Policy tracking
-
-├── estate.*.valuation # Valuation history
-
-└── estate.maintenance # Maintenance requests
+<pre>
+- VAT 16%           standard rated supplies
+- Withholding Tax   WHT deduction tracking
+- Zero-rated        and exempt supplies
+- KRA PIN           validation on all partners
+</pre>
 
 ---
-## M-Pesa
 
-<img width="1366" height="587" alt="image" src="https://github.com/user-attachments/assets/2f7a8275-768e-498a-bc46-2937c3b51397" />
+## ⚙️ Environment Variables
 
+Copy `.env.example` → `.env`:
 
-## Real Estate Module
-<img width="1366" height="585" alt="image" src="https://github.com/user-attachments/assets/1c141000-6232-4e05-9b3b-bafff4dcb79c" />
+<pre>
+POSTGRES_USER=odoo
+POSTGRES_PASSWORD=your_secure_password
 
+MPESA_CONSUMER_KEY=your_daraja_consumer_key
+MPESA_CONSUMER_SECRET=your_daraja_consumer_secret
+MPESA_SHORTCODE=your_paybill_or_till
+MPESA_PASSKEY=your_lipa_na_mpesa_passkey
+MPESA_ENV=sandbox                          # or production
 
+KRA_ETIMS_URL=https://etims-api.kra.go.ke
+KRA_ETIMS_PIN=your_kra_pin
+</pre>
 
+---
 
-<img width="1366" height="590" alt="image" src="https://github.com/user-attachments/assets/3d4c1679-f63b-4df5-84d9-f9cd0e93b71b" />
+## 🤝 Contributing
 
+PRs welcome — please target the `dev` branch. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-<img width="1366" height="591" alt="image" src="https://github.com/user-attachments/assets/f86605d5-b2a8-4c2d-b501-9c2e10b10ef8" />
+---
 
+## 📜 License
 
+[LGPL-3.0](LICENSE) · free to use, modify, and distribute with attribution.
 
-<img width="1366" height="591" alt="image" src="https://github.com/user-attachments/assets/8bd8f980-4719-47b1-90bc-309af7bc7b03" />
+---
 
-
-##   Container 
-<img width="1366" height="646" alt="image" src="https://github.com/user-attachments/assets/188c3735-27f7-45f7-a026-f47b32cc8d4d" />
-
-
-
-
-##  Reverse proxy
-<img width="1366" height="731" alt="image" src="https://github.com/user-attachments/assets/33b43e17-29a9-42e9-a3c5-6c1cc810b5ba" />
-
-
-
-## License
-
-[LGPL-3.0](LICENSE) — matches Odoo Community Edition.
-Free to use in commercial projects. Modifications to these modules must be open-sourced.
-
-**© 2026 Paul Nyoike — Nairobi, Kenya 🇰🇪**
+<div align="center">
+<pre>
+Built with ❤️  for Kenya
+github.com/NyoikePaul · odoo-erp.vercel.app
+</pre>
+</div>
