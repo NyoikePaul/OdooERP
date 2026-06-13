@@ -11,6 +11,7 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+  'data/cron.xml',
         'views/property_type_views.xml',
         'views/property_views.xml',
         'views/building_views.xml',
