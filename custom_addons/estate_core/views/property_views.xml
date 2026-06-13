@@ -153,19 +153,6 @@
             <page string="Amenities">
               <field name="amenity_ids" widget="many2many_tags"/>
             </page>
-            <page string="Leases">
-              <field name="lease_ids" readonly="1">
-                <list>
-                  <field name="name"/>
-                  <field name="tenant_id"/>
-                  <field name="date_start"/>
-                  <field name="date_end"/>
-                  <field name="monthly_rent"/>
-                  <field name="total_outstanding"/>
-                  <field name="status" widget="badge"/>
-                </list>
-              </field>
-            </page>
             <page string="Insurance">
               <field name="insurance_ids">
                 <list editable="bottom">
