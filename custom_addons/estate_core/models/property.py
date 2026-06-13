@@ -154,32 +154,31 @@ class EstateProperty(models.Model):
 
     # ═══ COMPUTE ════════════════════════════════════════
 
-    @api.depends('lease_ids', 'offer_ids', 'maintenance_ids')
     def _compute_counts(self):
         for r in self:
-            r.lease_count       = len(r.lease_ids)
-            r.offer_count       = len(r.offer_ids)
-            r.maintenance_count = len(r.maintenance_ids)
+            r.lease_count       = self.env['estate.lease'].search_count([('property_id','=',r.id)]) if 'estate.lease' in self.env else 0
+            r.offer_count       = self.env['estate.offer'].search_count([('property_id','=',r.id)]) if 'estate.offer' in self.env else 0
+            r.maintenance_count = self.env['estate.maintenance.request'].search_count([('property_id','=',r.id)]) if 'estate.maintenance.request' in self.env else 0
             invs = self.env['account.move'].search([
                 ('lease_id.property_id','=',r.id),('move_type','=','out_invoice')])
             r.invoice_count = len(invs)
             r.total_revenue_ytd = sum(
                 invs.filtered(lambda i: i.payment_state=='paid').mapped('amount_total'))
 
-    @api.depends('lease_ids.status', 'lease_ids.tenant_id')
     def _compute_active_lease(self):
         for r in self:
-            active = r.lease_ids.filtered(lambda l: l.status == 'active')
-            r.active_lease_id   = active[:1]
-            r.current_tenant_id = active[:1].tenant_id
+            if 'estate.lease' in self.env:
+                active = self.env['estate.lease'].search([('property_id','=',r.id),('status','=','active')], limit=1)
+                r.active_lease_id   = active
+                r.current_tenant_id = active.tenant_id
+            else:
+                r.active_lease_id   = False
+                r.current_tenant_id = False
 
     @api.depends('monthly_rent', 'sale_price', 'acquisition_cost', 'annual_insurance',
-                 'management_fee', 'property_type', 'maintenance_ids.actual_cost',
-                 'lease_ids.payment_ids.payment_state', 'lease_ids.payment_ids.amount_total',
-                 'lease_ids.payment_ids.amount_residual')
+                 'management_fee', 'property_type')
     def _compute_kpis(self):
         for r in self:
-            # Revenue from all paid invoices
             invs  = self.env['account.move'].search([
                 ('lease_id.property_id', '=', r.id),
                 ('move_type', '=', 'out_invoice'),
@@ -189,7 +188,8 @@ class EstateProperty(models.Model):
 
             gross_rev    = sum(paid.mapped('amount_total'))
             arrears      = sum(unpaid.mapped('amount_residual'))
-            maint_cost   = sum(r.maintenance_ids.mapped('actual_cost'))
+            maint_recs   = self.env['estate.maintenance.request'].search([('property_id','=',r.id)]) if 'estate.maintenance.request' in self.env else self.env['estate.maintenance.request'].browse()
+            maint_cost   = sum(maint_recs.mapped('actual_cost')) if maint_recs else 0.0
             mgmt_mo      = r.monthly_rent * r.management_fee / 100
             ins_mo       = (r.annual_insurance or 0) / 12
             wht_rate     = 0.10 if r.property_type == 'commercial' else 0.05
@@ -206,14 +206,15 @@ class EstateProperty(models.Model):
             r.cap_rate       = (r.net_income / r.acquisition_cost * 100) if r.acquisition_cost else 0.0
             r.landlord_payout= r.monthly_rent - mgmt_mo - ins_mo - wht_mo
 
-    @api.depends('lease_ids.date_start', 'lease_ids.date_end', 'lease_ids.status', 'monthly_rent')
+    @api.depends('monthly_rent')
     def _compute_occupancy(self):
         from datetime import date
         today      = fields.Date.today()
         year_start = date(today.year, 1, 1)
         for r in self:
             occupied = 0
-            for l in r.lease_ids.filtered(lambda x: x.status in ('active','expired','renewed')):
+            leases = self.env['estate.lease'].search([('property_id','=',r.id),('status','in',('active','expired','renewed'))]) if 'estate.lease' in self.env else []
+            for l in leases:
                 if not l.date_start or not l.date_end:
                     continue
                 start = max(l.date_start, year_start)
