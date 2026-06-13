@@ -1,10 +1,10 @@
 """
-Kenya Real Estate Dashboard
-Single-record model that computes all KPIs live from the database.
+Kenya Real Estate Dashboard — optimised for production.
+Uses search_count(), read_group(), and a single SQL query for arrears aging.
+No full recordset loads except where field computation requires it.
 """
 from odoo import models, fields, api
 from datetime import date
-from dateutil.relativedelta import relativedelta
 
 
 class EstateDashboard(models.Model):
@@ -12,7 +12,7 @@ class EstateDashboard(models.Model):
     _description = 'Real Estate Dashboard'
     _auto        = False  # no DB table
 
-    # ── Portfolio KPIs ────────────────────────────
+    # Portfolio KPIs
     total_properties     = fields.Integer("Total Properties")
     available_properties = fields.Integer("Available")
     leased_properties    = fields.Integer("Leased")
@@ -20,15 +20,15 @@ class EstateDashboard(models.Model):
     maintenance_props    = fields.Integer("Under Maintenance")
     occupancy_rate       = fields.Float("Occupancy Rate %")
 
-    # ── Unit KPIs ─────────────────────────────────
-    total_units          = fields.Integer("Total Units")
-    occupied_units       = fields.Integer("Occupied Units")
-    vacant_units         = fields.Integer("Vacant Units")
-    unit_occupancy_rate  = fields.Float("Unit Occupancy %")
+    # Unit KPIs
+    total_units         = fields.Integer("Total Units")
+    occupied_units      = fields.Integer("Occupied Units")
+    vacant_units        = fields.Integer("Vacant Units")
+    unit_occupancy_rate = fields.Float("Unit Occupancy %")
 
-    # ── Revenue KPIs ──────────────────────────────
+    # Revenue KPIs
     currency_id          = fields.Many2one('res.currency',
-                                            default=lambda s: s.env.ref('base.KES'))
+                                           default=lambda s: s.env.ref('base.KES'))
     monthly_rent_roll    = fields.Float("Monthly Rent Roll (KES)")
     collected_this_month = fields.Float("Collected This Month (KES)")
     outstanding_arrears  = fields.Float("Total Arrears (KES)")
@@ -39,140 +39,179 @@ class EstateDashboard(models.Model):
     collection_rate      = fields.Float("Collection Rate %")
     annual_revenue_ytd   = fields.Float("Revenue YTD (KES)")
 
-    # ── Lease KPIs ────────────────────────────────
-    active_leases        = fields.Integer("Active Leases")
-    expiring_30d         = fields.Integer("Expiring in 30 Days")
-    expiring_60d         = fields.Integer("Expiring in 60 Days")
-    leases_in_arrears    = fields.Integer("Leases in Arrears")
+    # Lease KPIs
+    active_leases     = fields.Integer("Active Leases")
+    expiring_30d      = fields.Integer("Expiring in 30 Days")
+    expiring_60d      = fields.Integer("Expiring in 60 Days")
+    leases_in_arrears = fields.Integer("Leases in Arrears")
 
-    # ── Maintenance KPIs ──────────────────────────
+    # Maintenance KPIs
     maintenance_open     = fields.Integer("Open Requests")
     maintenance_critical = fields.Integer("Critical/High")
     maintenance_in_prog  = fields.Integer("In Progress")
     avg_resolution_days  = fields.Float("Avg Resolution Days")
 
-    # ── Sales KPIs ────────────────────────────────
-    active_viewings      = fields.Integer("Viewings Scheduled")
-    active_offers        = fields.Integer("Active Offers")
-    sales_this_month     = fields.Integer("Sales This Month")
-    commission_ytd       = fields.Float("Commission YTD (KES)")
+    # Sales KPIs
+    active_viewings  = fields.Integer("Viewings Scheduled")
+    active_offers    = fields.Integer("Active Offers")
+    sales_this_month = fields.Integer("Sales This Month")
+    commission_ytd   = fields.Float("Commission YTD (KES)")
 
-    # ── Screening KPIs ────────────────────────────
+    # Screening KPIs
     pending_applications = fields.Integer("Pending Applications")
 
+    # ------------------------------------------------------------------ #
+    #  Helpers                                                             #
+    # ------------------------------------------------------------------ #
+
+    def _count(self, model, domain):
+        """search_count — never loads records into memory."""
+        return self.env[model].search_count(domain)
+
+    def _sum(self, model, field, domain):
+        """read_group aggregate sum — single SQL GROUP BY query."""
+        if model not in self.env:
+            return 0.0
+        groups = self.env[model].read_group(domain, [field], [])
+        return groups[0][field] or 0.0 if groups else 0.0
+
+    def _arrears_aging(self, today):
+        """
+        Single SQL query for arrears aging buckets.
+        Far faster than loading all unpaid invoices into Python.
+        """
+        self.env.cr.execute("""
+            SELECT
+                SUM(CASE WHEN (%(today)s - invoice_date_due) BETWEEN 1  AND 30  THEN amount_residual ELSE 0 END) AS b30,
+                SUM(CASE WHEN (%(today)s - invoice_date_due) BETWEEN 31 AND 60  THEN amount_residual ELSE 0 END) AS b60,
+                SUM(CASE WHEN (%(today)s - invoice_date_due) BETWEEN 61 AND 90  THEN amount_residual ELSE 0 END) AS b90,
+                SUM(CASE WHEN (%(today)s - invoice_date_due) > 90               THEN amount_residual ELSE 0 END) AS b90p
+            FROM account_move
+            WHERE move_type       = 'out_invoice'
+              AND state           = 'posted'
+              AND payment_state   NOT IN ('paid', 'reversed')
+              AND amount_residual > 0
+              AND invoice_date_due IS NOT NULL
+        """, {'today': today})
+        row = self.env.cr.fetchone()
+        return (
+            float(row[0] or 0),
+            float(row[1] or 0),
+            float(row[2] or 0),
+            float(row[3] or 0),
+        )
+
+    def _avg_resolution_days(self, year_start):
+        """Single SQL AVG — no Python loop over done requests."""
+        self.env.cr.execute("""
+            SELECT AVG(date_resolved - date_reported)
+            FROM estate_maintenance_request
+            WHERE status        = 'done'
+              AND date_reported >= %(year_start)s
+              AND date_resolved IS NOT NULL
+              AND date_reported IS NOT NULL
+        """, {'year_start': year_start})
+        result = self.env.cr.fetchone()[0]
+        return round(float(result.days) if result else 0.0, 1)
+
+    # ------------------------------------------------------------------ #
+    #  Main KPI method                                                     #
+    # ------------------------------------------------------------------ #
+
     def _get_kpis(self):
-        """Compute all KPIs and return as dict."""
-        env = self.env
-        today = date.today()
+        today      = date.today()
         month_start = today.replace(day=1)
         year_start  = today.replace(month=1, day=1)
 
-        # Properties
-        props = env['estate.property'].search([])
-        available = props.filtered(lambda p: p.status == 'available')
-        leased    = props.filtered(lambda p: p.status == 'leased')
-        for_sale  = props.filtered(lambda p: p.status == 'for_sale')
-        maint     = props.filtered(lambda p: p.status == 'maintenance')
-        total_p   = len(props)
-        occ_rate  = (len(leased) / total_p * 100) if total_p else 0.0
+        # ── Properties (5 counts, zero records loaded) ──────────────────
+        total_p    = self._count('estate.property', [])
+        leased_p   = self._count('estate.property', [('status', '=', 'leased')])
+        avail_p    = self._count('estate.property', [('status', '=', 'available')])
+        sale_p     = self._count('estate.property', [('status', '=', 'for_sale')])
+        maint_p    = self._count('estate.property', [('status', '=', 'maintenance')])
+        occ_rate   = round(leased_p / total_p * 100, 1) if total_p else 0.0
 
-        # Units
-        units     = env['estate.unit'].search([])
-        occupied  = units.filtered(lambda u: u.status == 'leased')
-        vacant    = units.filtered(lambda u: u.status == 'vacant')
-        total_u   = len(units)
-        unit_occ  = (len(occupied) / total_u * 100) if total_u else 0.0
+        # ── Units ────────────────────────────────────────────────────────
+        total_u    = self._count('estate.unit', [])
+        occupied_u = self._count('estate.unit', [('status', '=', 'leased')])
+        vacant_u   = self._count('estate.unit', [('status', '=', 'vacant')])
+        unit_occ   = round(occupied_u / total_u * 100, 1) if total_u else 0.0
 
-        # Revenue
-        active_l  = env['estate.lease'].search([('status','=','active')])
-        rent_roll = sum(active_l.mapped('monthly_rent'))
-
-        invs_month = env['account.move'].search([
-            ('move_type','=','out_invoice'),
-            ('payment_state','=','paid'),
-            ('invoice_date','>=',month_start),
-            ('invoice_date','<=',today),
+        # ── Revenue (read_group aggregates) ──────────────────────────────
+        rent_roll = self._sum('estate.lease', 'monthly_rent', [('status', '=', 'active')])
+        collected = self._sum('account.move', 'amount_total', [
+            ('move_type',     '=',  'out_invoice'),
+            ('payment_state', '=',  'paid'),
+            ('invoice_date',  '>=', month_start),
+            ('invoice_date',  '<=', today),
         ])
-        collected = sum(invs_month.mapped('amount_total'))
-
-        invs_ytd = env['account.move'].search([
-            ('move_type','=','out_invoice'),
-            ('payment_state','=','paid'),
-            ('invoice_date','>=',year_start),
+        ytd_rev = self._sum('account.move', 'amount_total', [
+            ('move_type',     '=',  'out_invoice'),
+            ('payment_state', '=',  'paid'),
+            ('invoice_date',  '>=', year_start),
         ])
-        ytd_rev = sum(invs_ytd.mapped('amount_total'))
 
-        # Arrears by aging bucket
-        unpaid = env['account.move'].search([
-            ('move_type','=','out_invoice'),
-            ('state','=','posted'),
-            ('payment_state','not in',('paid','reversed')),
-            ('amount_residual','>',0),
-        ])
-        arr_30=arr_60=arr_90=arr_90p=0
-        for inv in unpaid:
-            if not inv.invoice_date_due:
-                continue
-            days = (today - inv.invoice_date_due).days
-            amt  = inv.amount_residual
-            if days <= 0:    pass
-            elif days <= 30: arr_30  += amt
-            elif days <= 60: arr_60  += amt
-            elif days <= 90: arr_90  += amt
-            else:            arr_90p += amt
+        # ── Arrears aging (single SQL query) ─────────────────────────────
+        arr_30, arr_60, arr_90, arr_90p = self._arrears_aging(today)
         total_arrears = arr_30 + arr_60 + arr_90 + arr_90p
-        coll_rate = (collected / (collected + total_arrears) * 100) if (collected + total_arrears) else 100.0
+        coll_rate = round(
+            collected / (collected + total_arrears) * 100, 1
+        ) if (collected + total_arrears) else 100.0
 
-        # Lease expiry
-        exp30 = active_l.filtered(lambda l: l.days_to_expiry <= 30  and l.days_to_expiry >= 0)
-        exp60 = active_l.filtered(lambda l: l.days_to_expiry <= 60  and l.days_to_expiry >= 0)
-        arr_l = active_l.filtered(lambda l: l.months_arrears > 0)
-
-        # Maintenance
-        mreqs = env['estate.maintenance.request'].search([('status','not in',('done','cancelled'))])
-        crit  = mreqs.filtered(lambda m: m.priority in ('2','3'))
-        inprog= mreqs.filtered(lambda m: m.status == 'in_progress')
-
-        done_m = env['estate.maintenance.request'].search([
-            ('status','=','done'),
-            ('date_reported','>=',year_start.strftime('%Y-%m-%d')),
-            ('date_resolved','!=',False),
+        # ── Leases ───────────────────────────────────────────────────────
+        active_l   = self._count('estate.lease', [('status', '=', 'active')])
+        exp_30     = self._count('estate.lease', [
+            ('status',        '=',  'active'),
+            ('days_to_expiry', '>=', 0),
+            ('days_to_expiry', '<=', 30),
         ])
-        if done_m:
-            avg_days = sum(
-                (m.date_resolved - m.date_reported).days
-                for m in done_m if m.date_resolved and m.date_reported
-            ) / len(done_m)
-        else:
-            avg_days = 0
-
-        # Sales
-        viewings = env['estate.viewing'].search(
-            [('status','=','scheduled')]) if 'estate.viewing' in self.env else []
-        offers   = env['estate.offer'].search([('status','=','new')])
-        sales_mo = env['estate.property.sale'].search([
-            ('status','=','sold'),
-            ('date_completion','>=',month_start),
-        ]) if 'estate.property.sale' in self.env else []
-        comm_ytd = env['estate.commission'].search([
-            ('status','=','paid'),
+        exp_60     = self._count('estate.lease', [
+            ('status',        '=',  'active'),
+            ('days_to_expiry', '>=', 0),
+            ('days_to_expiry', '<=', 60),
         ])
-        comm_total = sum(comm_ytd.mapped('commission'))
+        arr_leases = self._count('estate.lease', [
+            ('status',        '=',  'active'),
+            ('months_arrears', '>',  0),
+        ])
 
-        # Screening
-        apps = env['estate.tenant.screening'].search([('status','in',('new','screening'))])
+        # ── Maintenance ──────────────────────────────────────────────────
+        maint_open = self._count('estate.maintenance.request',
+                                  [('status', 'not in', ('done', 'cancelled'))])
+        maint_crit = self._count('estate.maintenance.request', [
+            ('status',   'not in', ('done', 'cancelled')),
+            ('priority', 'in',     ('2', '3')),
+        ])
+        maint_prog = self._count('estate.maintenance.request',
+                                  [('status', '=', 'in_progress')])
+        avg_days   = self._avg_resolution_days(year_start)
+
+        # ── Sales ────────────────────────────────────────────────────────
+        viewings  = self._count('estate.viewing',
+                                 [('status', '=', 'scheduled')])                     if 'estate.viewing' in self.env else 0
+        offers    = self._count('estate.offer', [('status', '=', 'new')])
+        sales_mo  = self._count('estate.property.sale', [
+            ('status',          '=',  'sold'),
+            ('date_completion', '>=', month_start),
+        ]) if 'estate.property.sale' in self.env else 0
+        comm_ytd  = self._sum('estate.commission', 'commission',
+                               [('status', '=', 'paid')])
+
+        # ── Screening ────────────────────────────────────────────────────
+        pending_apps = self._count('estate.tenant.screening',
+                                    [('status', 'in', ('new', 'screening'))])
 
         return {
             'total_properties':     total_p,
-            'available_properties': len(available),
-            'leased_properties':    len(leased),
-            'for_sale_properties':  len(for_sale),
-            'maintenance_props':    len(maint),
-            'occupancy_rate':       round(occ_rate, 1),
+            'available_properties': avail_p,
+            'leased_properties':    leased_p,
+            'for_sale_properties':  sale_p,
+            'maintenance_props':    maint_p,
+            'occupancy_rate':       occ_rate,
             'total_units':          total_u,
-            'occupied_units':       len(occupied),
-            'vacant_units':         len(vacant),
-            'unit_occupancy_rate':  round(unit_occ, 1),
+            'occupied_units':       occupied_u,
+            'vacant_units':         vacant_u,
+            'unit_occupancy_rate':  unit_occ,
             'monthly_rent_roll':    rent_roll,
             'collected_this_month': collected,
             'outstanding_arrears':  total_arrears,
@@ -180,21 +219,21 @@ class EstateDashboard(models.Model):
             'arrears_60d':          arr_60,
             'arrears_90d':          arr_90,
             'arrears_90plus':       arr_90p,
-            'collection_rate':      round(coll_rate, 1),
+            'collection_rate':      coll_rate,
             'annual_revenue_ytd':   ytd_rev,
-            'active_leases':        len(active_l),
-            'expiring_30d':         len(exp30),
-            'expiring_60d':         len(exp60),
-            'leases_in_arrears':    len(arr_l),
-            'maintenance_open':     len(mreqs),
-            'maintenance_critical': len(crit),
-            'maintenance_in_prog':  len(inprog),
-            'avg_resolution_days':  round(avg_days, 1),
-            'active_viewings':      len(viewings),
-            'active_offers':        len(offers),
-            'sales_this_month':     len(sales_mo),
-            'commission_ytd':       comm_total,
-            'pending_applications': len(apps),
+            'active_leases':        active_l,
+            'expiring_30d':         exp_30,
+            'expiring_60d':         exp_60,
+            'leases_in_arrears':    arr_leases,
+            'maintenance_open':     maint_open,
+            'maintenance_critical': maint_crit,
+            'maintenance_in_prog':  maint_prog,
+            'avg_resolution_days':  avg_days,
+            'active_viewings':      viewings,
+            'active_offers':        offers,
+            'sales_this_month':     sales_mo,
+            'commission_ytd':       comm_ytd,
+            'pending_applications': pending_apps,
         }
 
     @api.model
