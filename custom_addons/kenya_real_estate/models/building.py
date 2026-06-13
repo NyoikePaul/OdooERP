@@ -79,7 +79,6 @@ class EstateUnit(models.Model):
         ('maintenance','Under Maintenance'),('reserved','Reserved'),
     ], default='vacant', tracking=True, index=True)
     tenant_id    = fields.Many2one('res.partner', string="Current Tenant", readonly=True)
-    lease_ids    = fields.One2many('estate.lease', 'unit_id', string="Leases")
     active       = fields.Boolean(default=True)
 
     _sql_constraints = [('ref_unique','UNIQUE(ref)','Unit reference must be unique.')]
