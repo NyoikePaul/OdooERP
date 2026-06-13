@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <!-- Dashboard OWL client action -->
+  <record id="action_estate_dashboard" model="ir.actions.client">
+    <field name="name">Real Estate Dashboard</field>
+    <field name="tag">estate_dashboard</field>
+  </record>
+
   <!-- Property Dashboard Action -->
   <record id="estate_property_dashboard_action" model="ir.actions.act_window">
     <field name="name">Property Dashboard</field>
