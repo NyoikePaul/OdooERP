@@ -9,8 +9,6 @@ access_estate_amenity_user,estate_amenity.user,model_estate_amenity,base.group_u
 access_estate_amenity_mgr,estate_amenity.mgr,model_estate_amenity,base.group_system,1,1,1,1
 access_estate_building_user,estate_building.user,model_estate_building,base.group_user,1,1,1,0
 access_estate_building_mgr,estate_building.mgr,model_estate_building,base.group_system,1,1,1,1
-access_estate_unit_user,estate_unit.user,model_estate_unit,base.group_user,1,1,1,0
-access_estate_unit_mgr,estate_unit.mgr,model_estate_unit,base.group_system,1,1,1,1
 access_estate_lease_user,estate_lease.user,model_estate_lease,base.group_user,1,1,1,0
 access_estate_lease_mgr,estate_lease.mgr,model_estate_lease,base.group_system,1,1,1,1
 access_estate_maintenance_request_user,estate_maintenance_request.user,model_estate_maintenance_request,base.group_user,1,1,1,0
@@ -31,10 +29,6 @@ access_estate_utility_meter_user,estate_utility_meter.user,model_estate_utility_
 access_estate_utility_meter_mgr,estate_utility_meter.mgr,model_estate_utility_meter,base.group_system,1,1,1,1
 access_estate_utility_reading_user,estate_utility_reading.user,model_estate_utility_reading,base.group_user,1,1,1,0
 access_estate_utility_reading_mgr,estate_utility_reading.mgr,model_estate_utility_reading,base.group_system,1,1,1,1
-access_estate_insurance_user,estate_insurance.user,model_estate_insurance,base.group_user,1,1,1,0
-access_estate_insurance_mgr,estate_insurance.mgr,model_estate_insurance,base.group_system,1,1,1,1
-access_estate_property_valuation_user,estate_property_valuation.user,model_estate_property_valuation,base.group_user,1,1,1,0
-access_estate_property_valuation_mgr,estate_property_valuation.mgr,model_estate_property_valuation,base.group_system,1,1,1,1
 access_estate_caretaker_user,estate_caretaker.user,model_estate_caretaker,base.group_user,1,1,1,0
 access_estate_caretaker_mgr,estate_caretaker.mgr,model_estate_caretaker,base.group_system,1,1,1,1
 access_estate_generator_user,estate_generator.user,model_estate_generator,base.group_user,1,1,1,0

@@ -12,3 +12,9 @@ access_estate_valuation_user,estate.valuation.user,model_estate_property_valuati
 access_estate_valuation_mgr,estate.valuation.mgr,model_estate_property_valuation,base.group_system,1,1,1,1
 access_estate_insurance_user,estate.insurance.user,model_estate_insurance,base.group_user,1,1,1,0
 access_estate_insurance_mgr,estate.insurance.mgr,model_estate_insurance,base.group_system,1,1,1,1
+access_estate_unit_user,estate_unit.user,model_estate_unit,base.group_user,1,1,1,0
+access_estate_unit_mgr,estate_unit.mgr,model_estate_unit,base.group_system,1,1,1,1
+access_estate_insurance_user,estate_insurance.user,model_estate_insurance,base.group_user,1,1,1,0
+access_estate_insurance_mgr,estate_insurance.mgr,model_estate_insurance,base.group_system,1,1,1,1
+access_estate_property_valuation_user,estate_property_valuation.user,model_estate_property_valuation,base.group_user,1,1,1,0
+access_estate_property_valuation_mgr,estate_property_valuation.mgr,model_estate_property_valuation,base.group_system,1,1,1,1
