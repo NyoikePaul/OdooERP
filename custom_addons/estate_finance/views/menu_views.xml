@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <menuitem id="menu_kra" name="KRA MRI Returns" parent="estate_core.menu_re_root" action="estate_kra_action" sequence="16"/>
+  <menuitem id="menu_owner_statements" name="Owner Statements" parent="estate_core.menu_re_root" action="estate_owner_statement_action" sequence="15"/>
+  <menuitem id="menu_payment_aging"    name="Payment Aging"    parent="estate_core.menu_re_root" action="estate_payment_aging_action"   sequence="17"/>
 </odoo>
