@@ -54,8 +54,7 @@ EXISTING:
         'views/sales_acquisition_views.xml',
         'report/demand_notice_report.xml',
         'report/tenancy_agreement.xml',
-        'report/rent_roll.xml',
-              'views/menu_views.xml',
+                    'views/menu_views.xml',
     ],
     'demo':        ['demo/demo.xml'],
     'assets': {
