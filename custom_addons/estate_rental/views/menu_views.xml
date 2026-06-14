@@ -2,13 +2,8 @@
 <odoo>
   <menuitem id="menu_leases"       name="Leases"           parent="estate_core.menu_re_root" action="estate_lease_action"           sequence="3"/>
   <menuitem id="menu_maintenance"  name="Maintenance"      parent="estate_core.menu_re_root" action="estate_maintenance_action"     sequence="7"/>
-  <menuitem id="menu_demand"       name="Demand Notices"   parent="estate_core.menu_re_root" action="estate_demand_action"          sequence="9"/>
   <menuitem id="menu_deposits"     name="Deposits"         parent="estate_core.menu_re_root" action="estate_deposit_action"         sequence="10"/>
   <menuitem id="menu_utilities"    name="Utility Bills"    parent="estate_core.menu_re_root" action="estate_utility_action"         sequence="11"/>
-  <menuitem id="menu_svc_charges"  name="Service Charges"  parent="estate_core.menu_re_root" action="estate_service_action"         sequence="12"/>
-  <menuitem id="menu_caretakers"   name="Caretakers"       parent="estate_core.menu_re_root" action="estate_caretaker_action"       sequence="20"/>
-  <menuitem id="menu_generators"   name="Generators"       parent="estate_core.menu_re_root" action="estate_generator_action"       sequence="21"/>
   <menuitem id="menu_rent_wizard"  name="Generate Rent Invoices" parent="estate_core.menu_re_root" action="action_rent_invoice_wizard" sequence="22"/>
   <menuitem id="menu_broadcast"    name="Broadcast to Tenants"   parent="estate_core.menu_re_root" action="action_broadcast_wizard"   sequence="23"/>
-  <menuitem id="menu_lease_templates" name="Lease Templates" parent="estate_core.menu_re_config" action="estate_lease_template_action" sequence="4"/>
 </odoo>
