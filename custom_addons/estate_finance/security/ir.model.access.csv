@@ -1,4 +1,1 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_estate_kra_return_user,estate.kra.return.user,model_estate_kra_return,base.group_user,1,1,1,0
-access_estate_kra_return_mgr,estate.kra.return.mgr,model_estate_kra_return,base.group_system,1,1,1,1
-access_estate_kra_return_line,estate.kra.return.line,model_estate_kra_return_line,base.group_user,1,1,1,1
