@@ -6,16 +6,15 @@
     <field name="name">estate.owner.statement.list</field>
     <field name="model">estate.owner.statement</field>
     <field name="arch" type="xml">
-      <list string="Owner Statements" decoration-info="state=='draft'" decoration-success="state=='sent'">
+      <list string="Owner Statements" decoration-success="status=='sent'">
         <field name="name"/>
-        <field name="property_id"/>
         <field name="landlord_id"/>
-        <field name="date_from"/>
-        <field name="date_to"/>
+        <field name="period_month"/>
+        <field name="period_year"/>
         <field name="total_income"/>
-        <field name="total_expenses"/>
+        <field name="total_deductions"/>
         <field name="net_payout"/>
-        <field name="state" widget="badge"/>
+        <field name="status" widget="badge"/>
       </list>
     </field>
   </record>
@@ -26,35 +25,49 @@
     <field name="arch" type="xml">
       <form string="Owner Statement">
         <header>
-          <button name="action_send" string="Send to Owner" type="object" class="btn-primary" invisible="state != 'draft'"/>
-          <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
+          <field name="status" widget="statusbar" statusbar_visible="draft,sent"/>
         </header>
         <sheet>
           <group>
             <group>
               <field name="name" readonly="1"/>
-              <field name="property_id"/>
               <field name="landlord_id"/>
-            </group>
-            <group>
-              <field name="date_from"/>
-              <field name="date_to"/>
               <field name="currency_id" invisible="1"/>
             </group>
+            <group>
+              <field name="period_month"/>
+              <field name="period_year"/>
+            </group>
+          </group>
+          <group string="Income">
+            <field name="gross_rent_collected"/>
+            <field name="other_income"/>
+            <field name="total_income"/>
+          </group>
+          <group string="Deductions">
+            <field name="management_fee_pct"/>
+            <field name="management_fee"/>
+            <field name="wht_deducted"/>
+            <field name="maintenance_costs"/>
+            <field name="insurance_costs"/>
+            <field name="other_deductions"/>
+            <field name="total_deductions"/>
+          </group>
+          <group string="Payout">
+            <field name="net_payout"/>
           </group>
           <field name="line_ids">
             <list editable="bottom">
-              <field name="date"/>
-              <field name="description"/>
-              <field name="category"/>
-              <field name="amount"/>
+              <field name="property_id"/>
+              <field name="lease_id"/>
+              <field name="tenant_id"/>
+              <field name="rent_due"/>
+              <field name="rent_collected"/>
+              <field name="wht"/>
+              <field name="net_to_owner"/>
             </list>
           </field>
-          <group class="oe_subtotal_footer">
-            <field name="total_income"/>
-            <field name="total_expenses"/>
-            <field name="net_payout"/>
-          </group>
+          <field name="notes"/>
         </sheet>
       </form>
     </field>
@@ -74,10 +87,11 @@
       <list string="Payment Aging">
         <field name="tenant_id"/>
         <field name="property_id"/>
-        <field name="current_balance"/>
-        <field name="days_30"/>
-        <field name="days_60"/>
-        <field name="days_90"/>
+        <field name="lease_id"/>
+        <field name="current"/>
+        <field name="days_1_30"/>
+        <field name="days_31_60"/>
+        <field name="days_61_90"/>
         <field name="days_90_plus"/>
         <field name="total_outstanding"/>
       </list>
