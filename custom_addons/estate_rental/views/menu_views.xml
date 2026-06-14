@@ -2,7 +2,6 @@
 <odoo>
   <menuitem id="menu_leases"       name="Leases"           parent="estate_core.menu_re_root" action="estate_lease_action"           sequence="3"/>
   <menuitem id="menu_maintenance"  name="Maintenance"      parent="estate_core.menu_re_root" action="estate_maintenance_action"     sequence="7"/>
-  <menuitem id="menu_inspections"  name="Inspections"      parent="estate_core.menu_re_root" action="estate_inspection_action"      sequence="8"/>
   <menuitem id="menu_demand"       name="Demand Notices"   parent="estate_core.menu_re_root" action="estate_demand_action"          sequence="9"/>
   <menuitem id="menu_deposits"     name="Deposits"         parent="estate_core.menu_re_root" action="estate_deposit_action"         sequence="10"/>
   <menuitem id="menu_utilities"    name="Utility Bills"    parent="estate_core.menu_re_root" action="estate_utility_action"         sequence="11"/>
