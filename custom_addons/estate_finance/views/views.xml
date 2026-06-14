@@ -1,168 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <!-- KRA RETURNS -->
-<record id="estate_kra_view_form" model="ir.ui.view">
-    <field name="name">estate.kra.return.form</field>
-    <field name="model">estate.kra.return</field>
+
+  <!-- Owner Statements -->
+  <record id="estate_owner_statement_view_list" model="ir.ui.view">
+    <field name="name">estate.owner.statement.list</field>
+    <field name="model">estate.owner.statement</field>
     <field name="arch" type="xml">
-      <form string="KRA MRI Return">
+      <list string="Owner Statements" decoration-info="state=='draft'" decoration-success="state=='sent'">
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="landlord_id"/>
+        <field name="date_from"/>
+        <field name="date_to"/>
+        <field name="total_income"/>
+        <field name="total_expenses"/>
+        <field name="net_payout"/>
+        <field name="state" widget="badge"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="estate_owner_statement_view_form" model="ir.ui.view">
+    <field name="name">estate.owner.statement.form</field>
+    <field name="model">estate.owner.statement</field>
+    <field name="arch" type="xml">
+      <form string="Owner Statement">
         <header>
-          <button name="action_populate"   type="object" string="Auto-Populate from Invoices" invisible="status != 'draft'"/>
-          <button name="action_mark_filed" type="object" string="Mark Filed"   invisible="status != 'ready'" class="oe_highlight"/>
-          <button name="action_mark_paid"  type="object" string="Mark Paid"    invisible="status != 'filed'"/>
-          <field name="status" widget="statusbar" statusbar_visible="draft,ready,filed,paid"/>
+          <button name="action_send" string="Send to Owner" type="object" class="btn-primary" invisible="state != 'draft'"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
         </header>
         <sheet>
           <group>
-            <group string="Landlord"><field name="landlord_id"/><field name="kra_pin"/></group>
-            <group string="Period"><field name="period_month"/><field name="period_year"/><field name="due_date" readonly="1"/></group>
-          </group>
-          <group string="Tax Summary">
-            <field name="gross_income" readonly="1"/><field name="wht_collected" readonly="1"/>
-            <field name="tax_rate" readonly="1"/><field name="tax_due" readonly="1"/>
-          </group>
-          <notebook>
-            <page string="Income Lines">
-              <field name="line_ids">
-                <list editable="bottom">
-                  <field name="property_id"/><field name="property_type"/>
-                  <field name="gross_rent" sum="Gross"/>
-                  <field name="wht_deducted" sum="WHT"/>
-                  <field name="net_rent" sum="Net" readonly="1"/>
-                </list>
-              </field>
-            </page>
-          </notebook>
-        </sheet>
-        <chatter/>
-      </form>
-    </field>
-  </record>
-<!-- TENANT SCREENING -->
-  <record id="estate_screening_view_list" model="ir.ui.view">
-    <field name="name">estate.tenant.screening.list</field>
-    <field name="model">estate.tenant.screening</field>
-    <field name="arch" type="xml">
-      <list string="Tenant Applications"
-            decoration-success="recommendation=='approve'"
-            decoration-warning="recommendation=='review'"
-            decoration-danger="recommendation=='reject'"
-            decoration-muted="status in ('rejected','converted')">
-        <field name="name"/><field name="property_id"/><field name="applicant_id"/>
-        <field name="employment_type"/><field name="monthly_income"/>
-        <field name="income_ratio" string="Income Ratio" digits="[4,1]"/>
-        <field name="score" widget="progressbar"/>
-        <field name="recommendation" widget="badge"
-               decoration-success="recommendation=='approve'"
-               decoration-warning="recommendation=='review'"
-               decoration-danger="recommendation=='reject'"/>
-        <field name="status" widget="badge"/>
-        <button name="action_approve" type="object" string="Approve" icon="fa-check" invisible="status not in ('new','screening')"/>
-        <button name="action_convert" type="object" string="Create Lease" icon="fa-file" invisible="status != 'approved'"/>
-      </list>
-    </field>
-  </record>
-  <record id="estate_screening_action" model="ir.actions.act_window">
-    <field name="name">Tenant Screening</field><field name="res_model">estate.tenant.screening</field><field name="view_mode">list,form</field>
-  </record>
-
-  <!-- DEMAND NOTICES -->
-  <record id="estate_demand_view_list" model="ir.ui.view">
-    <field name="name">estate.demand.notice.list</field>
-    <field name="model">estate.demand.notice</field>
-    <field name="arch" type="xml">
-      <list string="Demand Notices"
-            decoration-danger="status in ('escalated','evicted')"
-            decoration-warning="status=='issued'"
-            decoration-success="status=='resolved'">
-        <field name="name"/><field name="property_id"/><field name="tenant_id"/>
-        <field name="notice_type"/><field name="arrears_amount"/>
-        <field name="issue_date"/><field name="deadline"/>
-        <field name="status" widget="badge"/>
-        <button name="action_issue"   type="object" string="Issue"     icon="fa-send" invisible="status != 'draft'"/>
-        <button name="action_resolve" type="object" string="Resolved"  icon="fa-check" invisible="status != 'issued'"/>
-        <button name="action_escalate" type="object" string="Escalate" icon="fa-arrow-up" invisible="status not in ('issued','responded')"/>
-      </list>
-    </field>
-  </record>
-  <record id="estate_demand_action" model="ir.actions.act_window">
-    <field name="name">Demand Notices</field><field name="res_model">estate.demand.notice</field><field name="view_mode">list,form</field>
-  </record>
-
-  <!-- SERVICE CHARGES -->
-  <record id="estate_service_view_list" model="ir.ui.view">
-    <field name="name">estate.service.charge.list</field>
-    <field name="model">estate.service.charge</field>
-    <field name="arch" type="xml">
-      <list string="Service Charges" decoration-success="status=='invoiced'" decoration-warning="status=='draft'">
-        <field name="name"/><field name="building_id"/><field name="period_date"/>
-        <field name="apportionment"/><field name="total_amount" sum="Total"/>
-        <field name="status" widget="badge"/>
-        <button name="action_generate_invoices" type="object" string="Generate Invoices" icon="fa-file" invisible="status != 'draft'"/>
-      </list>
-    </field>
-  </record>
-  <record id="estate_service_view_form" model="ir.ui.view">
-    <field name="name">estate.service.charge.form</field>
-    <field name="model">estate.service.charge</field>
-    <field name="arch" type="xml">
-      <form string="Service Charge">
-        <header>
-          <button name="action_generate_invoices" type="object" string="Generate Invoices" class="oe_highlight" invisible="status != 'draft'"/>
-          <field name="status" widget="statusbar" statusbar_visible="draft,invoiced"/>
-        </header>
-        <sheet>
-          <group>
-            <field name="building_id"/><field name="period_date"/>
-            <field name="apportionment"/><field name="total_amount" readonly="1"/>
+            <group>
+              <field name="name" readonly="1"/>
+              <field name="property_id"/>
+              <field name="landlord_id"/>
+            </group>
+            <group>
+              <field name="date_from"/>
+              <field name="date_to"/>
+              <field name="currency_id" invisible="1"/>
+            </group>
           </group>
           <field name="line_ids">
             <list editable="bottom">
-              <field name="description"/><field name="category"/>
-              <field name="amount" sum="Total"/><field name="supplier"/><field name="receipt_ref"/>
+              <field name="date"/>
+              <field name="description"/>
+              <field name="category"/>
+              <field name="amount"/>
             </list>
           </field>
+          <group class="oe_subtotal_footer">
+            <field name="total_income"/>
+            <field name="total_expenses"/>
+            <field name="net_payout"/>
+          </group>
         </sheet>
-        <chatter/>
       </form>
     </field>
   </record>
-  <record id="estate_service_action" model="ir.actions.act_window">
-    <field name="name">Service Charges</field><field name="res_model">estate.service.charge</field><field name="view_mode">list,form</field>
+
+  <record id="estate_owner_statement_action" model="ir.actions.act_window">
+    <field name="name">Owner Statements</field>
+    <field name="res_model">estate.owner.statement</field>
+    <field name="view_mode">list,form</field>
   </record>
 
-  <!-- CARETAKERS -->
-  <record id="estate_caretaker_view_list" model="ir.ui.view">
-    <field name="name">estate.caretaker.list</field>
-    <field name="model">estate.caretaker</field>
+  <!-- Payment Aging -->
+  <record id="estate_payment_aging_view_list" model="ir.ui.view">
+    <field name="name">estate.payment.aging.list</field>
+    <field name="model">estate.payment.aging</field>
     <field name="arch" type="xml">
-      <list string="Caretakers">
-        <field name="name"/><field name="id_number"/><field name="phone"/>
-        <field name="monthly_salary" sum="Total Salary"/>
-        <field name="building_ids" widget="many2many_tags"/>
-        <field name="active" widget="boolean_toggle"/>
-        <button name="action_pay_salary" type="object" string="Pay Salary" icon="fa-money"/>
+      <list string="Payment Aging">
+        <field name="tenant_id"/>
+        <field name="property_id"/>
+        <field name="current_balance"/>
+        <field name="days_30"/>
+        <field name="days_60"/>
+        <field name="days_90"/>
+        <field name="days_90_plus"/>
+        <field name="total_outstanding"/>
       </list>
     </field>
   </record>
-  <record id="estate_caretaker_action" model="ir.actions.act_window">
-    <field name="name">Caretakers</field><field name="res_model">estate.caretaker</field><field name="view_mode">list,form</field>
+
+  <record id="estate_payment_aging_action" model="ir.actions.act_window">
+    <field name="name">Payment Aging</field>
+    <field name="res_model">estate.payment.aging</field>
+    <field name="view_mode">list</field>
   </record>
 
-  <!-- GENERATORS -->
-  <record id="estate_generator_view_list" model="ir.ui.view">
-    <field name="name">estate.generator.list</field>
-    <field name="model">estate.generator</field>
-    <field name="arch" type="xml">
-      <list string="Generators">
-        <field name="name"/><field name="building_id"/><field name="make_model"/>
-        <field name="capacity_kva"/><field name="fuel_type"/>
-        <field name="fuel_price_litre"/><field name="total_cost_ytd" sum="Cost YTD"/>
-        <field name="next_service_date"/>
-      </list>
-    </field>
-  </record>
-  <record id="estate_generator_action" model="ir.actions.act_window">
-    <field name="name">Generators</field><field name="res_model">estate.generator</field><field name="view_mode">list,form</field>
-  </record>
 </odoo>
