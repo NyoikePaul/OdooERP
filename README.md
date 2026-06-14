@@ -29,11 +29,15 @@ Built on Odoo 18 · Kenya-localised · M-Pesa · KRA eTIMS
 
 <div align="center">
 
-![OdooERP Kenya Demo](docs/assets/workflow.gif)
+<img width="1366" height="588" alt="image" src="https://github.com/user-attachments/assets/61ca1282-2df5-42ec-95c0-54ec3f14e8a8" />
 
-| Property Dashboard | Lease Management | KPI Analytics |
+
+| Property Dashboard | Lease Management | 
 |:---:|:---:|:---:|
-| ![](docs/assets/frames/frame1.png) | ![](docs/assets/frames/frame2.png) | ![](docs/assets/frames/frame3.png) |
+| <img width="1366" height="588" alt="image" src="https://github.com/user-attachments/assets/3e7155f0-fb9a-4f1b-bd82-5eca12007cee" />
+| <img width="1366" height="588" alt="image" src="https://github.com/user-attachments/assets/38dde682-d83b-4349-a527-1e90e570bf2d" />
+| <img width="1365" height="591" alt="image" src="https://github.com/user-attachments/assets/949d5c3b-e47d-434f-9e6e-cc9759b509dd" />
+ |
 
 </div>
 
