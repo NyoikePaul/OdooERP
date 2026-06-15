@@ -25,7 +25,9 @@ Built on Odoo 18 · Kenya-localised · M-Pesa · KRA eTIMS
 
 ---
 
-## 🖼 Screenshots
+## Screenshots
+estate_installment
+<img width="1365" height="593" alt="image" src="https://github.com/user-attachments/assets/fcee2fd4-89b3-438a-875a-8d70b766b936" />
 
 <div align="center">
 
