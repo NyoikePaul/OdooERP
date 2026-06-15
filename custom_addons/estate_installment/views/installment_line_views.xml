@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="estate_installment_line_view_list" model="ir.ui.view">
+    <field name="name">estate.installment.line.list</field>
+    <field name="model">estate.installment.line</field>
+    <field name="arch" type="xml">
+      <list string="All Milestones"
+            decoration-success="state=='paid'"
+            decoration-warning="state=='due'"
+            decoration-danger="state=='overdue'"
+            decoration-info="state=='invoiced'">
+        <field name="plan_id"/>
+        <field name="name"/>
+        <field name="milestone_type"/>
+        <field name="percentage"/>
+        <field name="amount"/>
+        <field name="due_date"/>
+        <field name="state" widget="badge"
+               decoration-success="state=='paid'"
+               decoration-warning="state in ('due','invoiced')"
+               decoration-danger="state=='overdue'"/>
+        <field name="amount_paid"/>
+        <field name="amount_due"/>
+        <button name="action_create_invoice" type="object"
+                string="Invoice" icon="fa-file-text"
+                invisible="invoice_id or state == 'paid'"/>
+        <button name="action_view_invoice" type="object"
+                string="View Invoice" icon="fa-eye"
+                invisible="not invoice_id"/>
+        <field name="invoice_id" column_invisible="1"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="estate_installment_line_action" model="ir.actions.act_window">
+    <field name="name">Upcoming Milestones</field>
+    <field name="res_model">estate.installment.line</field>
+    <field name="view_mode">list</field>
+    <field name="domain">[('state','in',('pending','due','overdue'))]</field>
+    <field name="context">{'search_default_group_plan': 1}</field>
+  </record>
+</odoo>

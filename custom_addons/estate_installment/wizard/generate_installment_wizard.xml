@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="generate_installment_wizard_view" model="ir.ui.view">
+    <field name="name">estate.generate.installment.wizard.form</field>
+    <field name="model">estate.generate.installment.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Generate Installment Plan">
+        <group>
+          <group string="Property &amp; Buyer">
+            <field name="property_id"/>
+            <field name="partner_id"/>
+            <field name="date_handover"/>
+          </group>
+          <group string="Pricing">
+            <field name="currency_id" invisible="1"/>
+            <field name="total_price"/>
+            <field name="discount_pct"/>
+          </group>
+        </group>
+        <group string="Payment Schedule">
+          <field name="template" widget="radio"/>
+        </group>
+        <footer>
+          <button name="action_generate" type="object"
+                  string="Generate Plan" class="btn-primary"/>
+          <button special="cancel" string="Cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="generate_installment_wizard_action" model="ir.actions.act_window">
+    <field name="name">New Installment Plan</field>
+    <field name="res_model">estate.generate.installment.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

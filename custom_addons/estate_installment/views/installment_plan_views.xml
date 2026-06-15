@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- PLAN LIST -->
+  <record id="estate_installment_plan_view_list" model="ir.ui.view">
+    <field name="name">estate.installment.plan.list</field>
+    <field name="model">estate.installment.plan</field>
+    <field name="arch" type="xml">
+      <list string="Installment Plans"
+            decoration-success="status=='completed'"
+            decoration-warning="status=='active'"
+            decoration-muted="status=='cancelled'">
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="partner_id"/>
+        <field name="total_price"/>
+        <field name="net_price"/>
+        <field name="total_paid"/>
+        <field name="collection_rate" widget="progressbar"/>
+        <field name="completion_pct" widget="progressbar"/>
+        <field name="date_handover"/>
+        <field name="status" widget="badge"
+               decoration-success="status=='completed'"
+               decoration-warning="status=='active'"
+               decoration-danger="status=='cancelled'"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- PLAN FORM -->
+  <record id="estate_installment_plan_view_form" model="ir.ui.view">
+    <field name="name">estate.installment.plan.form</field>
+    <field name="model">estate.installment.plan</field>
+    <field name="arch" type="xml">
+      <form string="Installment Plan">
+        <header>
+          <button name="action_activate" string="Activate Plan" type="object"
+                  class="btn-primary" invisible="status != 'draft'"/>
+          <button name="action_generate_invoices" string="Generate Invoices" type="object"
+                  class="btn-secondary" invisible="status != 'active'"/>
+          <button name="action_complete" string="Mark Completed" type="object"
+                  invisible="status != 'active'"/>
+          <button name="action_cancel" string="Cancel" type="object"
+                  invisible="status in ('completed','cancelled')"/>
+          <field name="status" widget="statusbar"
+                 statusbar_visible="draft,active,completed"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+            <h1><field name="name" readonly="1"/></h1>
+          </div>
+          <group>
+            <group string="Property &amp; Buyer">
+              <field name="property_id"/>
+              <field name="partner_id"/>
+              <field name="sale_id"/>
+              <field name="date_created"/>
+              <field name="date_handover"/>
+            </group>
+            <group string="Financials (KES)">
+              <field name="currency_id" invisible="1"/>
+              <field name="total_price"/>
+              <field name="discount_pct"/>
+              <field name="net_price" readonly="1"/>
+              <field name="total_paid" readonly="1"/>
+              <field name="balance_remaining" readonly="1"/>
+              <field name="collection_rate" readonly="1" widget="progressbar"/>
+            </group>
+          </group>
+
+          <!-- KPI SUMMARY BAR -->
+          <div class="o_field_widget" style="margin:16px 0;padding:16px;background:#f8f9fa;border-radius:8px;display:flex;gap:32px">
+            <div><div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.05em">Scheduled</div><div style="font-size:20px;font-weight:700"><field name="total_scheduled" readonly="1"/></div></div>
+            <div><div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.05em">Invoiced</div><div style="font-size:20px;font-weight:700"><field name="total_invoiced" readonly="1"/></div></div>
+            <div><div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.05em">Collected</div><div style="font-size:20px;font-weight:700;color:#28a745"><field name="total_paid" readonly="1"/></div></div>
+            <div><div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.05em">Overdue</div><div style="font-size:20px;font-weight:700;color:#dc3545"><field name="total_overdue" readonly="1"/></div></div>
+            <div><div style="font-size:11px;color:#6c757d;text-transform:uppercase;letter-spacing:.05em">Completion</div><div style="font-size:20px;font-weight:700"><field name="completion_pct" readonly="1"/>%</div></div>
+          </div>
+
+          <!-- MILESTONES -->
+          <notebook>
+            <page string="Payment Milestones">
+              <field name="line_ids">
+                <list editable="bottom"
+                      decoration-success="state=='paid'"
+                      decoration-warning="state=='due'"
+                      decoration-danger="state=='overdue'"
+                      decoration-info="state=='invoiced'">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="milestone_type"/>
+                  <field name="percentage"/>
+                  <field name="amount" readonly="1"/>
+                  <field name="due_date"/>
+                  <field name="grace_days"/>
+                  <field name="state" widget="badge"
+                         decoration-success="state=='paid'"
+                         decoration-warning="state in ('due','invoiced')"
+                         decoration-danger="state=='overdue'"/>
+                  <field name="amount_paid" readonly="1"/>
+                  <field name="amount_due" readonly="1"/>
+                  <button name="action_create_invoice" type="object" string="Invoice"
+                          icon="fa-file-text" invisible="invoice_id or state == 'paid'"/>
+                  <button name="action_view_invoice" type="object" string="View"
+                          icon="fa-eye" invisible="not invoice_id"/>
+                  <field name="invoice_id" invisible="1"/>
+                </list>
+              </field>
+            </page>
+            <page string="Notes">
+              <field name="notes" placeholder="Internal notes about this installment plan..."/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- KANBAN -->
+  <record id="estate_installment_plan_view_kanban" model="ir.ui.view">
+    <field name="name">estate.installment.plan.kanban</field>
+    <field name="model">estate.installment.plan</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="status" class="o_kanban_small_column">
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="partner_id"/>
+        <field name="net_price"/>
+        <field name="total_paid"/>
+        <field name="collection_rate"/>
+        <field name="status"/>
+        <field name="date_handover"/>
+        <templates>
+          <t t-name="kanban-card">
+            <div class="oe_kanban_card oe_kanban_global_click">
+              <div class="o_kanban_record_top">
+                <div class="o_kanban_record_headings">
+                  <strong><field name="name"/></strong>
+                  <small class="text-muted"> · <field name="property_id"/></small>
+                </div>
+              </div>
+              <div><field name="partner_id"/></div>
+              <div style="margin-top:8px">
+                <div class="o_progressbar" style="height:6px;background:#e9ecef;border-radius:3px">
+                  <div style="height:100%;border-radius:3px;background:#28a745;" t-attf-style="width:#{record.collection_rate.value}%"/>
+                </div>
+                <small class="text-muted"><t t-esc="record.collection_rate.value"/>% collected</small>
+              </div>
+              <div style="margin-top:8px;display:flex;justify-content:space-between">
+                <span>KES <field name="total_paid"/></span>
+                <span class="text-muted">of <field name="net_price"/></span>
+              </div>
+              <div style="margin-top:4px">
+                <small class="text-muted">Handover: <field name="date_handover"/></small>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- ACTION -->
+  <record id="estate_installment_plan_action" model="ir.actions.act_window">
+    <field name="name">Installment Plans</field>
+    <field name="res_model">estate.installment.plan</field>
+    <field name="view_mode">list,kanban,form</field>
+  </record>
+
+</odoo>

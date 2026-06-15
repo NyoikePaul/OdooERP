@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_installment_plan_user,installment.plan.user,model_estate_installment_plan,base.group_user,1,1,1,0
+access_installment_plan_mgr,installment.plan.mgr,model_estate_installment_plan,base.group_system,1,1,1,1
+access_installment_line_user,installment.line.user,model_estate_installment_line,base.group_user,1,1,1,0
+access_installment_line_mgr,installment.line.mgr,model_estate_installment_line,base.group_system,1,1,1,1
+access_installment_payment_user,installment.payment.user,model_estate_installment_payment,base.group_user,1,1,1,0
+access_installment_payment_mgr,installment.payment.mgr,model_estate_installment_payment,base.group_system,1,1,1,1
+access_generate_wizard_user,generate.wizard.user,model_estate_generate_installment_wizard,base.group_user,1,1,1,0

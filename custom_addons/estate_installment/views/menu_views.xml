@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_installment_plans"
+            name="Installment Plans"
+            parent="estate_core.menu_re_root"
+            action="estate_installment_plan_action"
+            sequence="25"/>
+  <menuitem id="menu_installment_milestones"
+            name="Upcoming Milestones"
+            parent="estate_core.menu_re_root"
+            action="estate_installment_line_action"
+            sequence="26"/>
+  <menuitem id="menu_new_installment_plan"
+            name="New Installment Plan"
+            parent="estate_core.menu_re_root"
+            action="generate_installment_wizard_action"
+            sequence="27"/>
+</odoo>
